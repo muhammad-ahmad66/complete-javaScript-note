@@ -505,18 +505,18 @@ slider();
 
 ## Table of Contents
 
-1. [Introduction-To-DOM](#How DOM Works Behind the scenes)
+1. [IntroductionToDOM](#IntroductionToDOM)
 
    1. [INHERITANCE](#INHERITANCE)
-   2. [Document-node-type](#Document node type)
+   2. [DocumentNodeType](#DocumentNodeType)
 
-2. [Selecting-Creating-Updating-Elements](#Selecting, Creating and Updating Elements)
+2. [SelectingCreatingUpdatingElements](#SelectingCreatingUpdatingElements)
 
 ---
 
-#### Lecture 004
+## IntroductionToDOM
 
-## How DOM Works Behind the scenes
+#### How DOM Works Behind the scenes
 
 DOM is an interface between all javascript code, and the browser, or more specifically HTML documents that are rendered in by the browser.
 
@@ -541,7 +541,7 @@ DOM is an interface between all javascript code, and the browser, or more specif
 Inheritance of Methods and properties.
 Inheritance means that all the child types will also get access to the methods and properties of all their parent node types. for example an HTML element will get access to everything from the element type, like innerHTML, or classList or all other methods or properties. beside that it will also get access from the node type because that is also its parent type.
 
-### Document node type
+### DocumentNodeType
 
 Document is just another type of node. So, it contains important methods, such as querySelector, createElement and getElementById etc.
 **Remember:** querySelector is available on both document and element types.
@@ -553,55 +553,51 @@ _For more information check out MDN Documentation._
 
 ---
 
-#### Lecture 05
+## SelectingCreatingUpdatingElements
 
-## Selecting, Creating and Updating Elements
+##### How to SELECT, CREATE and DELETE elements with javascript:
 
-// --- SELECT, CREATE AND DELETE ELEMENTS --- //
-// How to SELECT, CREATE and DELETE elements with javascript:
+### SELECTING ELEMENTS:
 
-// Subheading
-// --- SELECTING ELEMENTS:
+**Selecting all document element:**
 
-// Selecting all document element:
-// console.log(document.documentElement); // entire elements
-// console.log(document.doctype);
-// console.log(document.head); // select head  
-// console.log(document.body); // select body
-// To select these things we didn't need any selector.
+- console.log(document.documentElement); // entire elements
+- console.log(document.doctype);
+- console.log(document.head); // select head
+- console.log(document.body); // select body
+  _To select these things we didn't need any selector._
 
-// querySelector and querrySelectorAll
+**querySelector and querySelectorAll**
 
-// const header = document.querySelector('.header');// this will return first element that contain header class.
+```js
+const header = document.querySelector('.header');
+// this will return first element that contain header class.
 // const allSections = document.querySelectorAll('.section');
 // console.log(allSections); //it'll return a NodeList. -similar to array
+```
 
-// These two (querrySelector & querrySelectorAll) are very common to selecting elements. these are not only availabe on document like we did(upper), but also on all the elements. we use a lot when we want to select child element.
-// to select element pass element itself, while to select id or class we pass # or . respectively.
+These two (querySelector & querySelectorAll) are very common to selecting elements. these are not only available on document like we did(here ⬆), but also on all the elements. we use a lot when we want to select child element.
+**_to select element pass element itself, while to select id or class we pass # or . respectively._**
 
-// getElementById
-// we'll pass only id name, not with #.
+**getElementById**
+we'll pass only id name, not with #.
 document.getElementById('section--1');
 
-// getElementsByTagName
+**getElementsByTagName**
 const allButtons = document.getElementsByTagName('button');
-// console.log(allButtons);
-// Remember
-// This methods returns an HTML collection. An HTML collection is so called life collection, that means if the DOM changes then this collection is also immediately updated automatically. i-e if we remove some elements then it will also remove immediately from html collection. NOW the same does't happen with the nodelist, it means it didn't uptade itself when we add or remove that element/class/ id .
+console.log(allButtons);
+**Remember** _This methods returns an HTML collection. An HTML collection is so called life collection, that means if the DOM changes then this collection is also immediately updated automatically._ i-e if we remove some elements then it will also remove immediately from html collection. NOW the same does't happen with the nodeList, it means it didn't update itself when we add or remove that element/class/ id .
 
-// getElementsByClassName
+**getElementsByClassName**
 document.getElementsByClassName('btn') // once again we don't need a selector like getElementById();
-// also returns an html collection.
+also returns an html collection.
 
-// we use querySelector almost all the time.
+_we use querySelector almost all the time._
 
-////////////////////
+### CREATING AND INSERTING ELEMENTS
 
-// Subheading
-// --- CREATING AND INSERTING ELEMENTS:
-
-// insertAdjacentHTML
-// We can create html elements using insertAdjacentHTML function.
+**insertAdjacentHTML**
+We can create html elements using insertAdjacentHTML function.
 // this is a quick way to creating elements and use the most.
 // we talked in Bankist App.
 
