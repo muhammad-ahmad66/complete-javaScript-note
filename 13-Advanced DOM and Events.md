@@ -523,6 +523,7 @@ slider();
 4. [SMOOTH_SCROLLING](#SMOOTH_SCROLLING)
 5. [EVENTS](#EVENTS)
 6. [EVENT_PROPAGATION_THEORY](#EVENT_PROPAGATION_THEORY)
+7. [EVENT_DELEGATION](#EVENT_DELEGATION)
 
 ---
 
@@ -1017,114 +1018,148 @@ const h1 = document.querySelector('h1');
 
 ## EVENT_PROPAGATION_THEORY
 
-// Java script events have very important property.
-// They have a so-called capturing phase and bubbling phase
+Java script events have very important property.
+They have a so-called **capturing phase** and **bubbling phase**
 
-// Explaining the capturing and bubbling phase:
-// When an event(click,.,..) happed on any element, the DOM generates a click event right now. However this event is actually not generated at the target elemet(element there we set event to occur, or where the event happeded). Insted the event is actually generated at the root of document, so at the very top(document) of the DOM tree. And from there(root) the capturing phase happens, where the event travels all the way down from the document root to the target element. As the event travels down teh tree, it will pass through every single parent element of the target element. As soon as an event reaches the target the target phase begins, where events can be handled right at the target. And as soon as the event accurs, the event listener runs callback function.
+##### Explaining the capturing and bubbling phase:
 
-// Now after raaching the target, the event then actually travels all the way up to the document root again, in the so called bubbling phase. We can say the event bubble up from the target to the document root. and just like in the capturing phase, the event passes through all its parent elements, (just parent not sibling ).
+When an event(click,.,..) happened on any element, the DOM generates a click event right that time. However this event is actually not generated at the target element(element there we set event to occur, or where the event happened). Instead the event is actually generated at the root of document, so at the very top(document) of the DOM tree. And from there(root) the **capturing phase** happens, where the event travels all the way down from the document root to the target element. As the event travels down the tree, it will pass through every single parent element of the target element. As soon as an event reaches the target the **target phase** begins, where events can be handled right at the target. And as soon as the event occurs, the event listener runs callback function.
 
-// Why all of these details is very Important.
-// Basically events also happened in each of the parent elements. we can attache same event listener for any of parent. this behavior will allow us to implement really poweful pattern. (we see in next video).
+Now after reaching the target element, the event then actually travels all the way up to the document root again, in the so called **bubbling phase**.
+**We can say the event bubble up from the target to the document root. And just like in the capturing phase, the event passes through all its parent elements, (just parent not sibling ).**
 
-// by default events can only be hadled in the target, in bubbling phase. However we can set up event listeners in a way that they listen an event in the capturing phase insead of bubbling.
+##### Why all of these details is very Important??
 
-// Not all type of events do have a capturing and bubbling phase. Some of them are created right on the target element, so we can only handle them there. most of the events do capture and bubble
+Basically events also happened in each of the parent elements. we can attache same event listener for any of parent. this behavior will allow us to implement really powerful pattern. (we see in next lecture).
 
-// We can also say events propagate, which is rally what capturing and bubbling is. (event is propagating from one place to another. )
+By default events can only be handled in the target, in bubbling phase. However we can set up event listeners in a way that they listen an event in the capturing phase instead of bubbling.
 
-\*/
-///////////////////////////////////////////////
+**Remember:** Not all type of events do have a capturing and bubbling phase. Some of them are created right on the target element, so we can only handle them there. most of the events do capture and bubble.
 
-#### lecture #10
+**_We can also say events propagate, which is rally what capturing and bubbling is. (event is propagating from one place to another.)_**
 
-// ---- Event Propagation Practice ----- //
+### Event Propagation Practice
 
-// here we will attach an event listener to the navigation link, and all of it's parent elements. when we click that link, we will give all these elements random background colors. to visvilise how event bubbling is happening....
+Here we will attach an event listener to the navigation link, and all of it's parent elements. when we click that link, we will give all these elements random background colors. to visualize how event bubbling is happening....
 
-/_
-// Creating Random Color:
-// random color is just a string : rgb(255,255,255);
-const randomInt = (min, max) => Math.floor(Math.random() _ (max - min + 1) + min) // for random number
+#### Creating Random Color:
 
-// we use this random integer generator function to generate random color.
-const randomColor = () => `rgb(${randomInt(0, 255)},${randomInt(0, 255)}, ${randomInt(0, 255)})`;
+Random color is just a string : rgb(255,255,255);
+
+**A Function for Random Number Generation**
+
+```js
+const randomInt = (min, max) => Math.floor(Math.random() \_ (max - min + 1) + min) // for random number
+```
+
+we use this random integer generator function to generate random color.
+
+```js
+const randomColor = () =>
+  `rgb(${randomInt(0, 255)},${randomInt(0, 255)}, ${randomInt(0, 255)})`;
 console.log(randomColor()); // yes! //rgb(69,15, 43)
+```
 
-// now we apply event listener to nav link
-document.querySelector('.nav\_\_link').addEventListener('click', function (e) {
+Now we apply event listener to nav link
 
-// remember that the 'this' key word in event handler is always point to the element where event handler is attached.
-this.style.backgroundColor = randomColor(); // here it's working BUT, what if we want to perform same thing to it's parent element?
-// copy this code and paste it in parent element.
-// when we click this link also the parest is changing its color, due to bubbling.
+**Remember that the 'this' key word in event handler is always point to the element where event handler is attached.**
 
-// now we see eventTarget : event taget means where the event is happened
-console.log('Link', e.target, e.currentTarget); // here is target is weather the event is happened. it not the element where event handler is attached.
-// currnet target is the element on which event handler is attached.
-
-// So current target is equal to this keyword, b/c both are pointin....
-// console.log(e.currentTarget === this); //true.
-
-// We can stop 'Evnent Propagation'.
-// e.stopPropagation(); // now not propagating to the parents.
+```js
+document.querySelector('.nav__link').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
 });
+```
 
-// parent of nav link
-document.querySelector('.nav**links').addEventListener('click', function (e) {
-this.style.backgroundColor = randomColor();
-// both of these two are handling the same event that is occuring at nav**link element.
+Here it's working BUT, what if we want to perform same thing to it's parent element?
+Copy this code and paste it in parent element.
+when we click this link also the parent is changing its color, due to bubbling.
 
-console.log('Container', e.target, e.currentTarget); //where event is occured. not where event hadler is attached.
+```js
+// in handler function ⤴
+console.log('Link', e.target, e.currentTarget);
+```
+
+Here is target is weather the event is happened. **it not the element where event handler is attached.**
+Now we see eventTarget: event target means where the event is happened
+**currentTarget is the element on which event handler is attached.**
+
+**So current target is equal to this keyword, b/c both are pointing to the same element....**
+**We can stop 'Event Propagation'**
+
+```js
+console.log(e.currentTarget === this); //true.
+e.stopPropagation(); // now not propagating to the parents.
+```
+
+parent of nav\_\_link
+
+```js
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+  // both of these two are handling the same event that is occurring at nav__link element.
+  console.log('Container', e.target, e.currentTarget);
 });
+```
 
-// also parent of nav link
+Also parent of nav link
+
+```js
 document.querySelector('.nav').addEventListener('click', function (e) {
-this.style.backgroundColor = randomColor();
+  this.style.backgroundColor = randomColor();
 
-console.log('Nav', e.target, e.currentTarget);
+  console.log('Nav', e.target, e.currentTarget);
 });
+```
 
-// here we see when we click on nav**link, the event is also occuring on it's parent elements(parent also changing their colors). but when we click on nav**links then nav and nav**links itself are changing their color not nav**link, so it means when any event accur on any element then same event will occur on it's parent elements, not child elements.
+Here we see when we click on nav\_\_link, the event is also occurring on it's parent elements(parent also changing their colors). but when we click on nav\_\_links then nav and nav\_\_links itself are changing their color not nav\_\_link, so it means when any event occur on any element then same event will occur on it's parent elements, not child elements.
 
-// and the tager is always where the event is occured. if we click on nav**link, then e.target will nav**link element in all three event handler function. B/c all of there are hadlling exact same event. that's because of event bubbling.
+And the target is always where the event is occurred. if we click on nav\_\_link, then e.target will nav\_\_link element in all three event handler function. B/c all of there are handling exact same event. that's because of **event bubbling.**
 
-// and currnet target is the element on which event handler is attached. So current target is same as 'this' keyword, b/c both are pointing to the element where event handler is attached.
+**_And current target is the element on which event handler is attached. So current target is same as 'this' keyword, b/c both are pointing to the element where event handler is attached._**
 
-// we can stop propagation using e.stopPropagation() funcion.
+we can stop propagation using **e.stopPropagation()** function.
 
-// we can say any element listen an event that happed on it or any of it's child element from their the event will bubbling up.
+We can say any element listen an event that happened on it or any of it's child element from their the event will bubbling up.
 
-// Form here we only talk about bubling and target pahse, and now what about the capturing phase???
-// Events are captured when they come dowm from the document root all the way to the target. BUT event handlers not picking up these events during the capture phase.
-// event listener are only listning in the pubbling phase, but not in capturing pahse that is the defaul behavior of the addEventListener method. reason for that is the capturin phase is ususlly irrelevent for us.
-// However if we want catch events during capturing phase, we can define a third parameter, in an addEventListener funtion, we can set third parameter to true or false. for example:
-/\*
-document.querySelector('.nav\_\_link').addEventListener('click', function (e) {
-this.style.backgroundColor = randomColor();
+From here we only talked about bubbling and target phase, and now what about the capturing phase???
+Events are captured when they come down from the document root all the way to the target. BUT event handlers not picking up these events during the capture phase.
+Event listener are only listening in the bubbling phase, but not in capturing phase that is the default behavior of the addEventListener method. Reason for that is the capturing phase is usually irrelevant for us.
+However if we want catch events during capturing phase, we can define a third parameter, in an addEventListener function, we can set third parameter to true or false. for example:
 
-console.log('Nav', e.target, e.currentTarget);
+```js
+document.querySelector('.nav__link').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+
+  console.log('Nav', e.target, e.currentTarget);
 });
-document.querySelector('.nav\_\_links').addEventListener('click', function (e) {
-this.style.backgroundColor = randomColor();
+```
 
-console.log('Nav', e.target, e.currentTarget);
+```js
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+
+  console.log('Nav', e.target, e.currentTarget);
 });
-document.querySelector('.nav').addEventListener('click', function (e) {
-this.style.backgroundColor = randomColor();
+```
 
-console.log('Nav', e.target, e.currentTarget);
-}, true);
+```js
+document.querySelector('.nav').addEventListener(
+  'click',
+  function (e) {
+    this.style.backgroundColor = randomColor();
 
-// in this case the event handler no longer listen to bubbling events but instead, to capturing events. In practice they gonna look same as bubbling phase. But in console we can see that the first element were an event passes in nav.
+    console.log('Nav', e.target, e.currentTarget);
+  },
+  true
+);
+```
 
-\*/
-////////////////////////////////////////////////////////
+In this case the event handler no longer listen to bubbling events but instead, to capturing events. In practice they gonna look same as bubbling phase. But in console we can see that the first element were an event passes is nav.
 
-#### lecture #11
+---
 
-// ---------- Event Delegation --------------- //
+## EVENT_DELEGATION
+
 // using power of event bubbling, we can implement event delegation.
 // here we are implementing the smooth scrolling effect on navigation menu. We'll discuss two ways to do that:
 
