@@ -511,6 +511,9 @@ slider();
    2. [DocumentNodeType](#DocumentNodeType)
 
 2. [SelectingCreatingUpdatingElements](#SelectingCreatingUpdatingElements)
+   1. [SELECTING_ELEMENTS](#SELECTING_ELEMENTS)
+   2. [CREATING-ADDING_ELEMENTS](#CREATING-ADDING_ELEMENTS)
+   3. [DELETING_ELEMENTS](#DELETING_ELEMENTS)
 
 ---
 
@@ -557,7 +560,7 @@ _For more information check out MDN Documentation._
 
 ##### How to SELECT, CREATE and DELETE elements with javascript:
 
-### SELECTING ELEMENTS:
+### SELECTING_ELEMENTS:
 
 **Selecting all document element:**
 
@@ -594,72 +597,82 @@ also returns an html collection.
 
 _we use querySelector almost all the time._
 
-### CREATING AND INSERTING ELEMENTS
+### CREATING-ADDING_ELEMENTS
 
 **insertAdjacentHTML**
 We can create html elements using insertAdjacentHTML function.
-// this is a quick way to creating elements and use the most.
-// we talked in Bankist App.
+This is a quick way to creating elements and use the most.
 
-// createElement
-// 1. using createElement method create element.
-// 2. store that element in any variable, for our facility.
-// 3. add class by using classlist method, if necassarey
-// 4. add content to the element. using textContent or innerHTML property.
-// 5. Insert into DOM.
-const message = document.createElement('div')
-// in this method we will pass a string of tag name. this will creates a DOM element into the messsage. this element is not yet in the DOM itself, so it's not found in our wabpage. If we wanted on the page then we should mannually inserted it into the page.
-// remember that the result is a dom object that is stored in message like we selecting by using querry selector and then storing into any variable.
+createElement() Method
 
+1. use createElement method to create an element.
+2. store that element in any variable, for our facility.
+3. add class by using classList method, if necessary.
+4. add content to the element. using textContent or innerHTML property.
+5. Insert into DOM.
+
+```js
+const message = document.createElement('div');
+```
+
+_In this method we will pass a string of tag name. this will creates a DOM element into the message. this element is not yet in the DOM itself, so it's not found in our webpage. If we wanted on the page then we should manually inserted it into the page._
+**Remember that the result is a dom object that is stored in message like we selecting by using query selector and then storing into any variable.**
+
+```js
 // NOW we'll add a class on it.
 message.classList.add('cookie-message');
 
 // Adding content in that element.
-// message.textContent = 'We use cookies for improved functionality and analytics.';
+message.textContent =
+  'We use cookies for improved functionality and analytics.';
 
-// // we can also innerHTML
-// message.innerHTML = 'We use cookies for improved functionality and analytics. <button class="btn btn--close-cookie">Got it!</button>';
+// we can also user innerHTML
+message.innerHTML =
+  'We use cookies for improved functionality and analytics. <button class="btn btn--close-cookie">Got it!</button>';
+```
 
-// now our element is completed, all we have to insert it into DOM.
-// we'll select our header and then append our message to that element. we already selected above in querry selector.
+Now our element is completed, all we have to insert it into DOM.
+we'll select our header and then append our message to that element. we already selected above in query selector.
 
-// 4 ways to insert in DOM.
+##### 4 ways to insert in DOM.
 
-// 1. USING prepend() method
-// prepend basically add the element as a first child of selected element, here message should first child of header.
+1. **USING prepend() method**
+   Prepend basically add the element as a first child of selected element, here message should first child of header.
+   header.prepend(message); // now it's on DOM.
 
-// header.prepend(message); // now it's on DOM.
+2. **USING append() method**
+   we can also add as a last child that's append
+   header.append(message); // first one is removed!!!
+   We see here, that element was insert at once. that's because this element here a message in now indeed a life element living in the DOM, therefor it can't be multiple places at the same time, like a person he also can't be at two places simultaneously.
 
-// 2. USING append() method
-// we can also add as a last child that's append
-// header.append(message); // first one is removed!!!
-// We see here, that element was insert at once. that's becasuse this element here a message in now indeed a life element living in the DOM, therefor it can't be multiple places at the same time, like a person he also can't be at two places simultaneously,
+   **Now _WHAT_ if we actually wanted to insert multiple copies of the same element?????**
+   In that we actually would have to copy the first element So,
+   We Use cloneNode(true) to copy
+   header.append(message.cloneNode(true)); // now it's on both places.
 
-// Now WHAT if we actually wanted to insert multiple copies of the same element?????
-// In that we actually would have to copy the first element So,
-// We Use cloneNode(true) to copy
-// header.append(message.cloneNode(true)); // now it's on both places.
+3. **before method**
+   it'll add as a sibling, but before header. -first cookie-message then header.
+   header.before(message);
 
-// 3. before method
-// it'll add as a sibling, but before header. -first cookie-message then header.
-// header.before(message);
-
-// 4. after methd
-// will add sibling but after that element.
-// header.after(message);
+4. **after method**
+   will add sibling but after that element.
+   header.after(message);
 
 ///////////////////////////
 
-// Subheading
-// --- DELETE ELEMENTS ---
+### DELETING_ELEMENTS
 
-// we wants to remove newely created (message) element when we click a button(got it) that is in that element.
+we wants to remove newly created (message) element when we click a button(got it) that is in that element.
+Fist select the button
 
-// fist select the button
-// document.querySelector('.btn--close-cookie').addEventListener('click', function () {
-// // message.remove(); // remove method is very recent. before this we use remove child element, for that first we have to select parent elemet then....that would look like this.
-// message.parentElement.removeChild(message);
-// });
+```js
+document
+  .querySelector('.btn--close-cookie')
+  .addEventListener('click', function () {
+    message.remove(); // remove method is very recent. before this we use remove child element, for that first we have to select parent element then....that would look like this.
+    message.parentElement.removeChild(message);
+  });
+```
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
@@ -1345,3 +1358,7 @@ e.returnValue = '';
 
 // so conclusion:
 // using defer in the head in overall best solution.
+
+```
+
+```
