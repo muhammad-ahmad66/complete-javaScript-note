@@ -1207,87 +1207,115 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
 
 ## TRAVERSING_THE_DOM
 
-// DOM traversing is basically walking through the DOM. which means that we can select an element based on another element.
+**DOM traversing is basically walking through the DOM. which means that we can select an element based on another element.**
 
-// here we'll take h1 element then where we can do donword, upward and also sideways.
+Here we'll take h1 element then where we can do downward, upward and also sideways.
 
+```js
 const h1 = document.querySelector('h1');
+```
 
-// Going Downwords: -Selecting Child
-/\*
-// querrySelector & querrySelectorAll [all elements]
-console.log(h1.querySelectorAll('.highlight')); // it'll select all the elements of calss 'highlight' that are child of h1 element. And that would work no matter how deep these child elements would be inside of the h1 element. (imp)
-// will give node list
+#### Going Downwards: -Selecting Child
 
-// childNodes property. [all nodes -direct child]
-// But some times we need direct children, so for that we use .childNodes
-console.log(h1.childNodes); // here a lot of things, bc we already know that node can be any thing, elements, text, or even comment. (will give a node list)
+**querySelector** & **querySelectorAll** [all elements]
 
-// children property [only direct elements]
-// But often we are interested in simple elements. so, we use .children
+```js
+console.log(h1.querySelectorAll('.highlight'));
+```
+
+**It'll select all the elements of class 'highlight' that are child of h1 element. And that would work no matter how deep these child elements would be inside of the h1 element. And It will give node list.** (imp)
+
+**childNodes property.** [all nodes -direct child]
+But some times we need direct children, so for that we use .childNodes
+
+```js
+console.log(h1.childNodes);
+```
+
+Here a lot of things, bc we already know that node can be any thing, elements, text, or even comment. (will give a node list).
+
+**children property** [only direct elements]
+But often we are interested in simple elements. so, we use .children
+
+```js
 console.log(h1.children); // will give HTML collection -live collection.
+```
 
-// firstElementChild property [only first child]
-// There is also first and last child element
+_There is also first and last child element_
+**firstElementChild property** [only first child]
+
+```js
 console.log(h1.firstElementChild);
 h1.firstElementChild.style.color = 'red';
+```
 
-// lastElementChild property [only last child]
+**lastElementChild property** [only last child]
+
+```js
 console.log(h1.lastElementChild);
 h1.lastElementChild.style.color = 'purple';
-_/
-///////////////////////////////////////////
-/_
-// Going Upword: -Selecting Parent
+```
 
-// direct parent:
-// parentNode property [direct parent nodes]
+#### Going Upward: -Selecting Parents
+
+_direct parent:_
+**parentNode property** [direct parent nodes]
+
+```js
 console.log(h1.parentNode);
+```
 
-// direct parent element only
-// parentElement property [direct parent element]
-console.log(h1.parentElement); // (mosty use)
+_direct parent element only_
+**parentElement property [direct parent element]**
 
-// closest method [any parent element ]
-// Parent elemnt that is not direct. it means a parent, no matter how far away it is. for that we use h1.closest method
-// and the closest method receives a querry string just like a querrySelector and querrySelectorAll.
+```js
+console.log(h1.parentElement); // (mostly use)
+```
+
+**closest method** [any parent element ]
+**Parent element that is not direct. it means a parent, no matter how far away it is. for that we use h1.closest method**
+And the closest method receives a query string just like a querySelector and querySelectorAll.
+
+```js
 console.log(h1.closest('.header')); // will print a header classed element that should be the parent of h1. but-no mater how far it is.
-h1.closest('.header').style.background = 'var(--gradient-secondary)' // here we use css variable. (custom property. ) // (v.important one. oftan used.)
+h1.closest('.header').style.background = 'var(--gradient-secondary)'; // here we use css variable. (custom property. ) // (v.important one. often used.)
+```
 
-// Remember We can say that closest is opposite of querrySelector, b/c querrySelector will select the childern, no matter how deep and closest method finds parent also no matter how far up in the DOM, BUT both receives a strings.
+**Remember We can say that closest is opposite of querySelector, b/c querySelector will select the children, no matter how deep and closest method finds parent also no matter how far up in the DOM, BUT both receives a strings.**
 
-_/
-///////////////////////////////////////////
-/_
-// Going Sideways: -Selecting Siblings
+#### Going Sideways: -Selecting Siblings
 
-// For some reason in javascript we can access only direct siblings. Basically only the previous and next one.
+For some reason in javascript we can access only direct siblings. Basically only the previous and next one.
+**For Elements**
+
+```js
 console.log(h1.previousElementSibling);
 console.log(h1.nextElementSibling);
+```
 
-// for all nodes
+**For all nodes**
+
+```js
 console.log(h1.previousSibling);
 console.log(h1.nextSibling);
+```
 
-// if we want all the sibling then we'll move upto the parent then we can assess all
+**If we want all the sibling then we'll move up to the parent then we can assess all.**
+
+```js
 console.log(h1.parentElement.children);
-// it will print html collection -not an array . but it's still iterable we can implement some method or operators of array
+```
 
+_it will print html collection -not an array . but it's still iterable we can implement some method or operators of array_
+
+```js
 [...h1.parentElement.children].forEach(function (el) {
-//
-if (el !== h1) {
-el.style.transform = 'scale(0.5)';
-}
-})
+  if (el !== h1) {
+    el.style.transform = 'scale(0.5)';
+  }
+});
+```
 
-\*/
-
-/////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
-
-#### lecture #13
-
-// Heading
 // // --- Building a tabbed Component --- //
 
 //////// upper hoga //
