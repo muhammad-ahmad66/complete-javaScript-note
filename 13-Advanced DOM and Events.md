@@ -508,10 +508,6 @@ slider();
 ## Table of Contents
 
 1. [IntroductionToDOM](#IntroductionToDOM)
-
-   1. [INHERITANCE](#INHERITANCE)
-   2. [DocumentNodeType](#DocumentNodeType)
-
 2. [SelectingCreatingUpdatingElements](#SelectingCreatingUpdatingElements)
    1. [SELECTING_ELEMENTS](#SELECTING_ELEMENTS)
    2. [CREATING-ADDING_ELEMENTS](#CREATING-ADDING_ELEMENTS)
@@ -524,6 +520,7 @@ slider();
 5. [EVENTS](#EVENTS)
 6. [EVENT_PROPAGATION_THEORY](#EVENT_PROPAGATION_THEORY)
 7. [EVENT_DELEGATION](#EVENT_DELEGATION)
+8. [TRAVERSING_THE_DOM](#TRAVERSING_THE_DOM)
 
 ---
 
@@ -1160,58 +1157,56 @@ In this case the event handler no longer listen to bubbling events but instead, 
 
 ## EVENT_DELEGATION
 
-// using power of event bubbling, we can implement event delegation.
-// here we are implementing the smooth scrolling effect on navigation menu. We'll discuss two ways to do that:
+Using power of event bubbling, we can implement event delegation.
+Here we are implementing the smooth scrolling effect on navigation menu. We'll discuss two ways to do that:
 
-/\*
-// -- First way without using Delegation -- [not efficient]
+#### First way without using Delegation -- [not-efficient]
 
-// document.querySelectorAll('.nav**link'); // it'll return a node list, so here we will use a forEach method, to attach event hadler to each of the elements.
-document.querySelectorAll('.nav**link').forEach(el => {
-el.addEventListener('click', function (e) {
-// if we provide an id of any element in 'a' tage's href attribute, then we will click on 'a' tag it'll always go to that id. so we need to prevent this first from hapenning.
-e.preventDefault();
+```js
+document.querySelectorAll('.nav__link'); // it'll return a node list, so here we will use a forEach method, to attach event handler to each of the elements.
 
-    // now implement smooth scroling.
-    const id = this.getAttribute(('href'));
-    console.log(id);// we see that this output is exact same as we are selecting any element by id. so
+document.querySelectorAll('.nav__link').forEach((el) => {
+  el.addEventListener('click', function (e) {
+    // if we provide an id of any element in 'a' target's href attribute, then we will click on 'a' tag it'll always go to that id. so we need to prevent this first from happening.
+    e.preventDefault();
+
+    // now implement smooth scrolling.
+    const id = this.getAttribute('href');
+    console.log(id); // we see that this output is exact same as we are selecting any element by id. so
     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
     // very common technique use in nav menu
-    // this working very well BUT not an efficeient way .
-
+  });
 });
+```
+
+**This working very well BUT not an efficient way.**
+
+#### Second way using Event Delegation -- [efficient]
+
+In event delegation we use the fact that events bubble up. We do that by putting the eventListener on a common parent of all the elements, that we are interested in. In our example a container where all the links contain. ('.nav\_\_links')
+
+In event delegation we need two steps:
+
+1. we add the event listener to a common parent element.
+2. Determine what element originated the event.
+
+```js
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  e.preventDefault();
+  // console.log(e.target); // where event is originated.
+
+  // Matching Strategy: (v. important)
+  // b/c when we click on parent it will also call event handler. to avoid that:
+  if (e.target.classList.contains('nav__link')) {
+    // const id = this.querySelector('href'); //here this will not work. b/c this is pointing to the eventHandler element, that's container of links. so we use e.target.
+    const id = e.target.getAttribute('href');
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
 });
-\*/
+```
 
-// -- Second way using Event Delegation -- [efficient]
-/\*
-// In event delegation we use the fact that events bubble up. We do that by putting the eventListener on a common parent of all the elements, that we are interested in. In our example a container where all the links contain. ('.nav\_\_links')
+## TRAVERSING_THE_DOM
 
-// in event delegation we need two steps:
-// 1. we add the event listener to a common parent element.
-// 2. Determine what element originated the event.
-
-document.querySelector('.nav\_\_links').addEventListener('click', function (e) {
-e.preventDefault();
-// console.log(e.target); // where event is originated.
-
-// Matching Strategy: (v. important)
-// b/c when we click on parent it will also call event handler. to avoid that:
-if (e.target.classList.contains('nav\_\_link')) {
-// const id = this.querySelector('href'); //here this will not work. b/c this is pointing to the eventhadler element, that's container of links. so we use e.target.
-const id = e.target.getAttribute('href');
-document.querySelector(id).scrollIntoView({ behavior: 'smooth' })
-}
-});
-
-\*/ // Implementd on nav bar (upper ja)
-
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-
-// Heading
-
-// --- Traversing The DOM ---
 // DOM traversing is basically walking through the DOM. which means that we can select an element based on another element.
 
 // here we'll take h1 element then where we can do donword, upward and also sideways.
