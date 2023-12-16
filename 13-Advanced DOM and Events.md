@@ -519,6 +519,7 @@ slider();
    2. [ATTRIBUTES](#ATTRIBUTES)
    3. [CLASSES](#CLASSES)
 4. [SMOOTH_SCROLLING](#SMOOTH_SCROLLING)
+5. [EVENTS](#EVENTS)
 
 ---
 
@@ -677,6 +678,8 @@ document
   });
 ```
 
+---
+
 ## STYLES_ATTRIBUTES_CLASSES
 
 ### STYLES
@@ -811,82 +814,112 @@ logo.classList.toggle('c');
 
 ```js
 _logo.className = 'me';
-_;
 ```
+
+---
 
 ## SMOOTH_SCROLLING
 
-// There are two ways to doing this. first one is bit more old way to doing this and second one is modern way.
+**There are two ways to doing this.** first one is bit more old way to doing this and second one is modern way.
 
-// here we are going to implement smooth scrolling to 'learn more' button.
+Here we are going to implement smooth scrolling to 'learn more' button.
 
-// first we will take a button and that particular section where we want to link that button
+First we will take a button and that particular section where we want to link that button
+
+```js
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 const section1 = document.querySelector('#section--1');
+btnScrollTo.addEventListener('click', function (e) {});
+```
 
-btnScrollTo.addEventListener('click', function (e) {
+**SOME STUFF SHOULD DONE HERE IN THE EVENT HANDLER FUNCTION**
 
-// SOME STUFF SHOULD NOW:
+- Finding distance b/w element and the sides of current viewport.
+- And also width, height of element itself:
+- We need to get coordinates of the element that we want to scroll to.
 
-// Finding distance b/w element and the sides of current viewport: and also width, height of element itself:
-// we need to get coordinates of the element that we want to scroll to.
-const section1Coords = section1.getBoundingClientRect();
-// console.log(section1Coords); // here we see the top, bottom, left, right, x, y and many more properties. This is a DOM rectogle of element section.
+  ```js
+  const section1Coords = section1.getBoundingClientRect();
+  // console.log(section1Coords); // here we see the top, bottom, left, right, x, y and many more properties. This is a DOM rectangle of element section.
+  ```
 
-// lets exprement more, by getting more elements's DOM rectange:
+  **Lets experiment more, by getting more elements's DOM rectangle:**
 
-// get DOM rectangle of learn More button
-// console.log(btnScrollTo.getBoundingClientRect()); // we can also write, e.target instead of btnScrollTo, bc both are same. like this:
-// console.log(e.target.getBoundingClientRect());
+  **Get DOM rectangle of 'learn More' button**
 
-// Remember that boundingClientRect will aloways relative to the current view port. i-e, value of x, y, top, etc will change a/c to distence from left, top, top of viewport respectively.
+  ```js
+  console.log(btnScrollTo.getBoundingClientRect()); // we can also write, e.target instead of btnScrollTo, bc both are same. like this:
+  console.log(e.target.getBoundingClientRect());
+  ```
 
-// Finding distence b/w current viewport and the top of the page:
-// console.log('current scroll X/Y: ', window.pageXOffset, window.pageYOffset);
-// it'll show current scroll from top of the page to the viewport.
-// Remember : it is relative from top of the page to the viweport. remember that.
-// initially very to both x & y should be zero. then according to scroll-down, the value of y will change, here x will remain 0 b/c, no horizontall scrolling in this page.
+  **Remember that boundingClientRect will always relative to the current view port. i-e, value of x, y, top, etc will change according to distance from left, top, top of viewport respectively.**
 
-// Finding width and height of the current viewport:
-// console.log('Height/Widht of veiewport: ', document.documentElement.clientHeight, document.documentElement.clientWidth);
+  **Finding distance b/w current viewport and the top of the page:**
 
-// OLD WAY OF DOING SMOOTH SCROLLING:
-// We use golobal function scrollTo, it'll take two arguments 1. left position, 2. top position.
-// window.scrollTo(section1Coords.left, section1Coords.top);
-// Remember that this top is always relative to the viewport, so it doesn't work in many situations. BUT the solution of this problem is to simply add the current scroll position to the top, like this...
-// window.scrollTo(section1Coords.left + window.pageXOffset, section1Coords.top + window.pageYOffset);
-// it's current position plus current scroll
+  ```js
+  console.log('current scroll X/Y: ', window.pageXOffset, window.pageYOffset);
+  ```
 
-// Now it's working but not a smooth scrolling.
-// MAKING SMOOTH:
-// we will pass an object instead of one argument.
-/\*
+  It'll show current scroll from top of the page to the viewport.
+  **Remember:** it is relative from top of the page to the viewport. REMEMBER THAT.
+  Initially very to both x & y should be zero. then according to scroll-down, the value of y will change, here x will remain 0 b/c, no horizontal scrolling in this page.
 
+  **Finding width and height of the current viewport:**
+
+  ```js
+  console.log(
+    'Height/Width of viewport: ',
+    document.documentElement.clientHeight,
+    document.documentElement.clientWidth
+  );
+  ```
+
+**OLD WAY OF DOING SMOOTH SCROLLING:**
+We use global function scrollTo, it'll take two arguments 1. left position, 2. top position.
+
+```js
+window.scrollTo(section1Coords.left, section1Coords.top);
+```
+
+**Remember that this top is always relative to the viewport, so it doesn't work in many situations.** BUT the solution of this problem is to simply **add the current scroll position to the top,** like this...
+
+```js
+window.scrollTo(
+  section1Coords.left + window.pageXOffset,
+  section1Coords.top + window.pageYOffset
+);
+```
+
+_It's current position plus current scroll_
+
+_Now it's working but not a smooth scrolling._
+**MAKING SMOOTH:**
+we will pass an object instead of one argument.
+
+```js
 window.scrollTo({
-left: section1Coords.left + window.pageXOffset,
-top: section1Coords.top + window.pageYOffset,
-behavior: 'smooth'
-
-    // remember key and value
-    // This is a finla block to smooth scrolling.
-
+  left: section1Coords.left + window.pageXOffset,
+  top: section1Coords.top + window.pageYOffset,
+  behavior: 'smooth',
+  // remember key and value
+  // This is a final block to smooth scrolling.
 });
+```
 
-// MODERAN WAY TO DINONG THIS (IN ONE LINE)
+// MODERN WAY TO DOING THIS (IN ONE LINE)
 
-// simply use select element where we want to scroll and then .scrollIntoView function, there we'll pass an object with behavior: 'smooth'.
+Simply use select element where we want to scroll and then .scrollIntoView function, there we'll pass an object with behavior: 'smooth'.
+
+```js
 section1.scrollIntoView({
-behavior: 'smooth',
-}); // remember, this is very modern way. may be not support some browsers.
-
+  behavior: 'smooth',
 });
+// remember, this is very modern way. may be not support some browsers.
+```
 
-- /
-  ///////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////
-  /#### lecture #08
+---
 
-// Heading /// - EVENTS - ///
+## EVENTS
 
 // ---- Type of Events and Event Handlers ---- //
 
@@ -1397,6 +1430,10 @@ e.returnValue = '';
 // using defer in the head in overall best solution.
 
 ````
+
+```
+
+```
 
 ```
 
