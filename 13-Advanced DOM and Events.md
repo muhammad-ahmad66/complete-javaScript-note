@@ -514,6 +514,11 @@ slider();
    1. [SELECTING_ELEMENTS](#SELECTING_ELEMENTS)
    2. [CREATING-ADDING_ELEMENTS](#CREATING-ADDING_ELEMENTS)
    3. [DELETING_ELEMENTS](#DELETING_ELEMENTS)
+3. [STYLES_ATTRIBUTES_CLASSES](#STYLES_ATTRIBUTES_CLASSES)
+   1. [STYLES](#STYLES)
+   2. [ATTRIBUTES](#ATTRIBUTES)
+   3. [CLASSES](#CLASSES)
+4. [SMOOTH_SCROLLING](#SMOOTH_SCROLLING)
 
 ---
 
@@ -658,8 +663,6 @@ we'll select our header and then append our message to that element. we already 
    will add sibling but after that element.
    header.after(message);
 
-///////////////////////////
-
 ### DELETING_ELEMENTS
 
 we wants to remove newly created (message) element when we click a button(got it) that is in that element.
@@ -674,110 +677,144 @@ document
   });
 ```
 
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
+## STYLES_ATTRIBUTES_CLASSES
 
-// Heading :
+### STYLES
 
-// --- STYLES, ATTRIBUTES AND CLASSES --- //
-
-// keep working on cookies message.
-
-// Subheading
-
-// --- STYLES --- ///
-// element.style.propertyName = value -basic syntex [ in camelCase ]
-// remember that: these styles are set as inline style.
+element.style.propertyName = value **-basic syntax [ in camelCase ]**
+_Remember that: these styles are set as inline style._
 message.style.backgroundColor = '#37383d';
-// message.style.width = '120%';
+message.style.width = '120%';
 
-// console.log(message.style.height); // nothing!!, because it will print only inline styles. it actually works on only inline styles.
-// console.log(message.style.backgroundColor); // rgb(55, 56, 61)// now printed, it's inline style. -we added noe
+```js
+console.log(message.style.height); // nothing!!, although we've set height in css file, because it will print only inline styles. it actually works on only inline styles.
+console.log(message.style.backgroundColor); // rgb(55, 56, 61)// now printed, it's inline style. -we added noe
+```
 
-// We can still get an external style if we really wnated.
-// using getComputedStyle funtion
-// console.log(getComputedStyle(message)); // which will contain all of the properties with values. it's so huge, so, in paractice we then do, simply take a certain property.
-// console.log(getComputedStyle(message).color); //rgb(187, 187, 187)
-// this is a computed style, which means that is applied on page, even if we not declare it in our CSS file.
+We can still get an external style if we really wanted, using **getComputedStyle** function.
+_console.log(getComputedStyle(message));_ // which will contain all of the properties with values. it's so huge, so, in practice we then do, simply take a certain property.
+_console.log(getComputedStyle(message).color);_ //rgb(187, 187, 187)
+this is a computed style, which means that is applied on page, even if we not declare it in our CSS file.
 
-// console.log(getComputedStyle(message).height); // 43px, we didn't define ourselves, but browser needed to calculate the height.
+_console.log(getComputedStyle(message).height);_ // 43px, we didn't define ourselves, but browser needed to calculate the height.
 
-// lets consider we wants to add some height to cookies message.
-// message.style.height = getComputedStyle(message).height + 40 + 'px';
-// nothign happed b/c result of computedStyle is string
-// console.log(typeof (getComputedStyle(message).height)); // string, So we have to convet it first
+**lets consider we wants to add some height to cookies message.**
 
-message.style.height = Number.parseFloat(getComputedStyle(message).height, 10) + 30 + 'px';
-// here we can't convert into number by using Number function b/c it contain px at the end, so here pasefloat comes to play, which is very handy in this type of situation.
+```js
+message.style.height = getComputedStyle(message).height + 40 + 'px';
+```
 
-// CSS CUSTOM PROPERTIES: Which means CSS variabls.
-// lets change some values from these custom properties (variables)
-// first we will find where these variablesa are define.
-// in this case these are define in root, which is equilent to the document element, (not document, documentElmement)
+_nothing happen b/c result of computedStyle is string._
+console.log(typeof (getComputedStyle(message).height)); // string, So we have to convert it first
 
-// document.documentElement.style.setProperty('--color-primary', 'orangered'); // changed to orangered in every where where this valiable is used.
-// set property will take two parameters first name of property and second value, We can do the same to all other property(build in). like color, margin, padding etc, BUT above one simple and easy to change any built in property's value.
+```js
+message.style.height =
+  Number.parseFloat(getComputedStyle(message).height, 10) + 30 + 'px';
+```
 
-////////////////////
+**here we can't convert into number by using Number() function b/c it contain px at the end, so here parseFloat comes to play, which is very handy in this type of situation.**
 
-// --- ATTRIBUTES --- ///
-// We can access and change different attributes, like src, href, id, class, alt etc.
+**CSS CUSTOM PROPERTIES:** Which means CSS variables.
+lets change some values from these custom properties (variables)
+first we will find where these variables are define.
+In this case these are define in root, which is equivalent to the documentElement, (not document, documentElement)
 
+```js
+document.documentElement.style.setProperty('--color-primary', 'orangered'); // changed to orangered in every where where this variable is used.
+```
+
+setProperty will take two parameters first name of property and second value, We can do the same to all other property(built-in). like color, margin, padding etc, BUT above one is simple and easy way to change any built in property's values.
+
+### ATTRIBUTES
+
+We can access and change different attributes, like src, href, id, class, alt etc.
+
+```JS
 const logo = document.querySelector('.nav\_\_logo');
-// console.log(logo.src);
-// here the source(link) is different than what we have in html. why?
-// here we have a absolute url, but in html there is a relative url(relative to the folder in which index.html located.). if we want to get only url that is in html file then we use getAttribute method
-// console.log(logo.getAttribute('src')); // yes indeed
-// same is true for href attribure.
+console.log(logo.src);
+```
 
-// console.log(logo.alt);
-// console.log(logo.className); // remember className not class
+**here the source(link) is different than what we have in html. why?**
+Here we have a absolute url, but in html there is a relative url(relative to the folder in which index.html located.). **if we want to get only url that is in html file then we use getAttribute method**
 
-// if we add un-standard attribute, then we can't access like this.
-// console.log(logo.desinger); //undefined but in html it's defined / bc of un-standard.
+```js
+console.log(logo.getAttribute('src')); // yes indeed
+```
 
-// there is another way to access unstandard attributes:
-// console.log(logo.getAttribute('designer')); // me, working.
-// we can also use setAttribure to set
+**same is true for href attribute.**
+
+```js
+console.log(logo.alt);
+console.log(logo.className); // remember className not class
+```
+
+**if we add un-standard attribute, then we can't access like this.**
+
+```js
+console.log(logo.designer); // undefined but in html it's defined, / bc of un-standard.
+```
+
+**There is another way to access un-standard attributes:**
+
+```js
+console.log(logo.getAttribute('designer')); // me, working.
+```
+
+**We can also use setAttribute to set**
+
+```js
 logo.setAttribute('company', 'bankist');
-// console.log(logo.getAttribute('company')); // bankest
+console.log(logo.getAttribute('company')); // bankist
+```
 
-// We can also set all of these attributes.
-logo.alt = 'Beautiful minimalist logo';// now check
-// console.log(logo.alt); // changed.
+**We can also set all of these attributes.**
 
-// Remember for links/ source if we want relative url than always use getAttribute('href'/'src') method AND if we want absolute url then use simlply .src OR .href
-const link = document.querySelector('.nav\_\_link');
-// console.log(link.href); // Absolute url
-// console.log(link.getAttribute('href')); // Relative, which is in html
+```js
+logo.alt = 'Beautiful minimalist logo'; // now check
+console.log(logo.alt); // changed.
+```
 
-// Another example
+**_Remember for links/ source if we want relative url than always use getAttribute('href'/'src') method AND if we want absolute url then use simply .src OR .href_**
+
+```js
+const link = document.querySelector('.nav__link');
+console.log(link.href); // Absolute url
+console.log(link.getAttribute('href')); // Relative, which is in html
+```
+
+_Another example_
+
+```js
 const link2 = document.querySelector('.twitter-link');
-// console.log(link2.href);
-// console.log(link2.getAttribute('href'));
+console.log(link2.href);
+console.log(link2.getAttribute('href'));
+```
 
-// Data Attributes:
-// Data attributes are a special kind of the attribute that stat with words data.
-// it has to start with data than dash- than what ever we want.
-// console.log(logo.dataset.versionNumber); // this is very usefull and use alot, it use to store data in our html code.
+**_Data Attributes:_**
+Data attributes are a special kind of the attribute that start with words data.
+It has to start with data than dash- than what ever we want.
 
-////////////
+```js
+console.log(logo.dataset.versionNumber); // this is very useful and use a lot, it use to store data in our html code.
+```
 
-// -- Classes
-logo.classList.add('c', 'j');// can add/remove mulitple classe
+### CLASSES
+
+```js
+logo.classList.add('c', 'j'); // can add/remove multiple classes
 logo.classList.remove('c', 'j');
 logo.classList.contains('c');
 logo.classList.toggle('c');
+```
 
-// don't use this. it will delete all other classses.
-logo.className = 'me';
+**don't use this⤵. it will delete all other classes.**
 
-/\*
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/#### lecture #07
+```js
+_logo.className = 'me';
+_;
+```
 
-// Heading /// - Smooth Scrolling - ///
+## SMOOTH_SCROLLING
 
 // There are two ways to doing this. first one is bit more old way to doing this and second one is modern way.
 
@@ -1359,6 +1396,9 @@ e.returnValue = '';
 // so conclusion:
 // using defer in the head in overall best solution.
 
+````
+
 ```
 
 ```
+````
