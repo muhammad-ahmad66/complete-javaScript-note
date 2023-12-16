@@ -1,508 +1,3 @@
-'use strict';
-
-///////////////////////////////////////
-// Modal window
-
-const modal = document.querySelector('.modal');
-const overlay = document.querySelector('.overlay');
-const btnCloseModal = document.querySelector('.btn--close-modal');
-const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
-
-const openModal = function (e) {
-e.preventDefault();
-modal.classList.remove('hidden');
-overlay.classList.remove('hidden');
-};
-
-const closeModal = function () {
-modal.classList.add('hidden');
-overlay.classList.add('hidden');
-};
-
-// for (let i = 0; i < btnsOpenModal.length; i++)
-// btnsOpenModal[i].addEventListener('click', openModal);
-
-// using forEach instead of for loop.
-btnsOpenModal.forEach(btn => btn.addEventListener('click', openModal));
-
-btnCloseModal.addEventListener('click', closeModal);
-overlay.addEventListener('click', closeModal);
-
-document.addEventListener('keydown', function (e) {
-if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-closeModal();
-}
-});
-
-////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////
-
-#### lecture 07
-
-// scrolling effect on learn more button
-
-const btnScrollTo = document.querySelector('.btn--scroll-to');
-const section1 = document.querySelector('#section--1');
-
-btnScrollTo.addEventListener('click', function (e) {
-
-section1.scrollIntoView({
-behavior: 'smooth',
-});
-
-}); // all of details are below....
-
-//////////////////////////////////////////
-// Scrolling Effect on Navigation Menu links
-
-// using Event Delegation
-// in event delegation we need two steps:
-// 1. we add the event listener to a common parent element.
-// 2. Determine what element originated the event.
-
-document.querySelector('.nav\_\_links').addEventListener('click', function (e) {
-e.preventDefault();
-// console.log(e.target); // where event is originated.
-
-// Matching Strategy: (v. important)
-// b/c when we click on parent it will also call event handler. to avoid that:
-if (e.target.classList.contains('nav\_\_link')) {
-// const id = this.querySelector('href'); //here this will not work. b/c this is pointing to the element where event is happened, that's container of links. so we use e.target.
-const id = e.target.getAttribute('href');
-document.querySelector(id).scrollIntoView({ behavior: 'smooth' })
-}
-});
-
-///////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
-
-// --- Building Tabbed Component --- //
-
-const tabs = document.querySelectorAll('.operations**tab');
-const tabsContainer = document.querySelector('.operations**tab-container');
-const tabsContents = document.querySelectorAll('.operations\_\_content');
-
-/\*
-// ---- First method to do that ----- [not efficient]
-tabs.forEach(t => t.addEventListener('click', function (e) {
-e.preventDefault();
-
-// removing active class from tabs and content
-tabs.forEach(t => t.classList.remove('operations**tab--active'));
-tabsContents.forEach(c => c.classList.remove('operations**content--active'));
-
-// adding active class to both tabs and content
-e.target.closest('.operations**tab').classList.add('operations**tab--active');
-const data = e.target.closest('.operations**tab').dataset.tab;
-document.querySelector(`.operations**content--${data}`).classList.add('operations\_\_content--active');
-// ees working!!
-
-})) // We can do using this method BUT not efficient way.
-\*/
-
-// Second method (effiecient)
-// So we use Delegation.
-
-tabsContainer.addEventListener('click', function (e) {
-
-// Matching Strategy first
-const clicked = e.target.closest('.operations\_\_tab');
-
-// Guard Clause
-if (!clicked) return // if we clicked on parent contaner then there is no class on operations\_\_tap closest to that , so it will give null, and it cause error. so ... if clicked is falsy (null) then return immediatly. -nothing happen.
-// and its called a Guard Clause we can also do
-// if(clicked){ rest of code.}
-
-// removing active class from all and then adding to clicked one
-tabs.forEach(t => t.classList.remove('operations**tab--active'));
-clicked.classList.add('operations**tab--active');
-
-// Removing Active class from Content Area:
-tabsContents.forEach(c => c.classList.remove('operations\_\_content--active'));
-
-// Activing Content area of each coorsponding tab
-
-// the information about which content should display is in the data attribute(see in html).
-// console.log(clicked.dataset.tab);
-document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations\_\_content--active')
-
-})
-
-////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////
-
-#### lecture # 14:
-
-// Hover Effect on Navigation Links ---[menu fade animation]
-// -- how to pass argument to an event handler funtion -- //
-
-const nav = document.querySelector('.nav');
-
-/\* Refactored nyche
-nav.addEventListener('mouseover', function (e) {
-// mathching elemene
-if (e.target.classList.contains('nav\_\_link')) {
-const linkCliked = e.target;
-
-    // selecting all sibling: we will go to the top container there all of these links and logo contains. then will select all child of that.
-    const sibling = linkCliked.closest('.nav').querySelectorAll('.nav__link');
-    const logo = linkCliked.closest('.nav').querySelector('img')
-
-    // now we need to change opacity of all siblings
-    sibling.forEach(el => {
-      if (el !== linkCliked) {
-        el.style.opacity = 0.5;
-      }
-    });
-    logo.style.opacity = 0.5;
-
-};
-});
-// mouseover & mouseenter are same but mouseenter not bubble up. while mouseout and mouseleave are opposite of these respectively.
-// here we need mouseout effect. b/c when realese a mouse from link, it should return to the original style.
-nav.addEventListener('mouseout', function (e) {
-if (e.target.classList.contains('nav\_\_link')) {
-const linkCliked = e.target;
-
-    const sibling = linkCliked.closest('.nav').querySelectorAll('.nav__link');
-    const logo = linkCliked.closest('.nav').querySelector('img');
-
-    sibling.forEach(el => {
-      if (el !== linkCliked) {
-        el.style.opacity = 1;
-      }
-    });
-    logo.style.opacity = 1;
-
-}
-
-});
-\*/
-
-// This code is working but both eventhandler's are almost same. So lets refactor this code.
-// usually to refactor we analysis what's diff, in all functions, then all different will pass as an argument.
-const handleHover = function (e, opacity) {
-if (e.target.classList.contains('nav\_\_link')) {
-const linkCliked = e.target;
-
-    const sibling = linkCliked.closest('.nav').querySelectorAll('.nav__link');
-    const logo = linkCliked.closest('.nav').querySelector('img');
-
-    sibling.forEach(el => {
-      if (el !== linkCliked) {
-        el.style.opacity = this; // remember that we use bind method to pass and argument to a handler function. and also note that any thing we pass in bind method as an argument, this keyword will point there. here we pass a simple value.
-        // console.log(this);
-      }
-    });
-    logo.style.opacity = this;
-
-}
-};
-
-// nav.addEventListener('mouseover', handleHover);
-// nav.addEventListener('mouseout', handleHover);
-// but here the problem is that we wants to pass a values into a function for opacity and event, but we can't call it here as a result we can't pass an argument. How we do that??
-// The solution is, would be still a callback funtion here like in regular eventListener
-/_
-nav.addEventListener('mouseover', function (e) {
-handleHover(e, 0.5)
-});
-nav.addEventListener('mouseout', function (e) {
-handleHover(e, 1);
-});
-_/
-
-// We can do ever better and can remove anonymous callbacks.
-// That's By using Bind method.
-// The bind method creates a copy of the function that it's called on, and it will set the this keyword in this function call to whatever value we pass into bind method.
-
-nav.addEventListener('mouseover', handleHover.bind(0.5));
-nav.addEventListener('mouseout', handleHover.bind(1));
-// here we use the bind method to pass an argument into a hadler function.
-// we always use this keyword to pass multipel arguments to hadler function by using bind method. for single value we just pass it, for multiple value we will pass an array or object.
-
-///////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
-
-#### lecture 15
-
-// --- Implementing Sicky Navigation --- //
-
-// now we use a new event, which is 'scroll' event. and remember that scroll evnet is on window not document.
-
-// this event will happend each time when we scroll
-/\*
-const initialCoords = section1.getBoundingClientRect();
-// console.log(initialCoords);
-// hre we get currnt top value of this section.
-
-window.addEventListener('scroll', function (e) {
-// console.log(window.scrollY); // remember it's, distance b/w top of page and top of viewport, initial should zero- at top page.
-// question: when we add sticky class
-// ans: when reached first section. outside of function krna pry ga . upr dykh
-if (window.scrollY > initialCoords.top) {
-nav.classList.add('sticky');
-} else {
-nav.classList.remove('sticky');
-}
-
-}); // not a good practice!!! 'using scroll event' Better is comming in next lec. which is 'intersection observer API'.
-
-\*/
-////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////
-
-#### lecture 16
-
-// Sticky Navigation - Intersection Observer API
-// Intersection Observer API allows our code to basically observe changes to the way that a certain target element intersects another element, OR The way it intersect the viewport.
-
-// How this API works?
-// -first we need to create new intersection observer
-// -We pass a callback funtion and object of options.
-// -then we use this observer to observe a certain terget.
-// -and pass a target element in observe() function.
-// -in callback need root property: root's value is the element that the target is intersecting
-// and second property we need is threshold: which is the percentage of intersection at which the observer callback will be called,
-// and callback will get called each time that the observed element, or target element is intersecting the root element at the threshold that we defined in options.
-// The callback funtion will receive two arguments, first entries, and observer object itself.
-// entries are the array of threshold.
-/\*
-// the callback function
-const obsCallback = function (entries, observer) {
-entries.forEach(entrie => {
-console.log(entrie);
-})
-}
-
-// the optins object
-const obsOptions = {
-root: null, // null is simple viewport
-// threshold: 0.1, // which is 10%
-threshold: [0, 0.2] // 0% means our callback will trigger each time that the target element moves completely of the view. if we specify 0 then the callback will call when moving into the view ond when out of the view. ON THE OTHER HAND if we specify 1 then the callback will call when the target is completely visible in the view. section1 is not possible 100% in view.
-}
-
-// creating new intersection observer
-const Observer = new IntersectionObserver(obsCallback, obsOptions);
-
-// passing a taget to the observe meethod:
-Observer.observe(section1);
-
-\*/
-// NOW WE ARE IMPLEMENTING STICKY NAV USING ALL OF THESE
-
-// we want to show nav when header is completely out of the view.
-
-const header = document.querySelector('.header');
-
-// calculate nav height
-const navHeight = nav.getBoundingClientRect().height;
-
-const stickyNav = function (entries) { //no need of observer
-// here we have only one threshod so no need of loop..
-const [entry] = entries; // same as entries[0]// destructuring..
-// console.log(entry);
-// We will add a sticky class when header is not intersecting viewport.
-if (!entry.isIntersecting) {
-nav.classList.add('sticky');
-} else {
-nav.classList.remove('sticky');
-}
-}
-
-const headerObserver = new IntersectionObserver(stickyNav, {
-root: null, // interested in viewport
-threshold: 0, // when heder is completely out of viewport.
-rootMargin: `-${navHeight}px`, // for 90 this rootMargin is a box of 90px that will b applied outside of our target element.
-});
-headerObserver.observe(header);
-
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-
-#### lecture 017
-
-// Reveal Element As scroll Close to them :
-// effect of fad-in of a sections from then bottom
-
-// The efeect is coming from the CSS, but will add that class by using intersection observer. i-e when sections are comes into viewport we will add that class.
-
-// What already done in CSS?
-// made a class nammed 'section--hidden', which'll hide the section and pushed down section 9rem. We rection is close to
-
-const allSections = document.querySelectorAll('.section');
-
-const revealSection = function (entries, observer) {
-const [entry] = entries;
-// console.log(entry);
-
-// guard clause
-if (!entry.isIntersecting) return;
-
-entry.target.classList.remove('section--hidden')
-
-// unoberving
-observer.unobserve(entry.target)
-}
-
-const sectionObserver = new IntersectionObserver(revealSection, {
-root: null, // viewport
-threshold: 0.15, // 15%
-})
-
-// allSections.forEach(function (section) {
-// sectionObserver.observe(section);
-// section.classList.add('section--hidden')
-// })
-
-//////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////####
-
-#### lecture 18
-
-// --- LAZY LOADING IMAGE --- [great for performance]
-
-const imgTargets = document.querySelectorAll('img[data-src]'); // selecting all the images, which has data-src property.
-
-const loadImg = function (entries, observer) {
-const [entry] = entries;
-// console.log(entry);
-
-// guard clause
-if (!entry.isIntersecting) return;
-
-// yei yadd rkhna ki js attribure k shuru mei data- ho to usko hum dataset attribure k zeryea access krty hain.
-// replace src attribute to data-src attribure.
-entry.target.src = entry.target.dataset.src;
-
-// entry.target.classList.remove('lazy-img'); // it will create problem so, we use:
-
-// we can add load event to remove class after image is loaded. (simply removing (w/o using event) will remove class before loaded).
-entry.target.addEventListener('load', function () {
-entry.target.classList.remove('lazy-img');
-});
-
-observer.unobserve(entry.target)
-}
-
-const imgObserver = new IntersectionObserver(loadImg, {
-root: null,
-threshold: 0,
-rootMargin: '200px'
-})
-
-imgTargets.forEach(img => imgObserver.observe(img));
-
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-
-#### lecture 29-20
-
-// --- BUILDING A SLIDER COMPONENT --- //
-
-// Now all three slides are in same position we use javascript style attribue to translate all ather than active, that will make other slides out of viewport.
-
-// PUTTING ALL OF THESE IN A FUNCTION
-const slider = function () {
-
-// selecting elements:
-// const slider = document.querySelector('.slider');
-const slides = document.querySelectorAll('.slide');
-const btnRight = document.querySelector('.slider**btn--right')
-const btnLeft = document.querySelector('.slider**btn--left');
-const dotContainer = document.querySelector('.dots');
-let currSlide = 0;
-const maxSlide = slides.length;
-
-// FUNCTIONS
-// Creating dots
-const createDots = function () {
-// we'll build one dot for each slide
-slides.forEach(function (\_, i) {
-dotContainer.insertAdjacentHTML('beforeend', `<button class="dots__dot" data-slide = "${i}"></button>`)
-})
-};
-
-const activeteDots = function (slide) {
-
-    // removing active class form all dots
-    document.querySelectorAll('.dots__dot').forEach(dot => dot.classList.remove('dots__dot--active'));
-
-    // adding to only active dot:
-    document.querySelector(`.dots__dot[data-slide="${slide}"]`).classList.add('dots__dot--active')
-
-};
-
-const gotoSlide = function (slide) {
-slides.forEach((s, i) => {
-s.style.transform = `translateX(${100 * (i - slide)}%)`;
-})
-};
-
-const nextSlide = function () {
-if (currSlide === maxSlide - 1) {
-currSlide = 0;
-} else {
-currSlide++;
-}
-gotoSlide(currSlide);
-activeteDots(currSlide);
-}
-
-const prevSlide = function () {
-if (currSlide === 0) {
-currSlide = maxSlide - 1;
-} else {
-currSlide--;
-};
-gotoSlide(currSlide);
-activeteDots(currSlide);
-}
-
-// INITIALIZAION
-// Functions Calling
-const init = function () {
-createDots();
-activeteDots(0);
-gotoSlide(0);
-};
-init();
-
-// EVENTS
-btnRight.addEventListener('click', nextSlide);
-btnLeft.addEventListener('click', prevSlide);
-
-// ARROW KEY TO LEFT & RIGHT
-// for keyboard event always have to use document.
-document.addEventListener('keydown', function (e) {
-// console.log(e.key);
-
-    // if (e.key === 'ArrowLeft') prevSlide();
-    // if (e.key === 'ArrowRight') nextSlide();
-
-    // also can use short-circuting
-    e.key === 'ArrowLeft' && prevSlide();
-    e.key === 'ArrowRight' && nextSlide();
-
-});
-
-// will use event delegation to attach event
-dotContainer.addEventListener('click', function (e) {
-if (!e.target.classList.contains('dots\_\_dot')) return;
-
-    // const slide = e.target.dataset.slide;
-    // we can also write like this, using destructuring
-    const { slide } = e.target.dataset;
-    gotoSlide(slide);
-    activeteDots(slide);
-
-});
-
-};
-slider();
-
----
-
 # ADVANCED DOM AND EVENTS
 
 ## Table of Contents
@@ -521,6 +16,16 @@ slider();
 6. [EVENT_PROPAGATION_THEORY](#EVENT_PROPAGATION_THEORY)
 7. [EVENT_DELEGATION](#EVENT_DELEGATION)
 8. [TRAVERSING_THE_DOM](#TRAVERSING_THE_DOM)
+9. [BUILDING_TABBED_COMPONENT](#BUILDING_TABBED_COMPONENT)
+10. [MODAL_WINDOW](#MODAL_WINDOW)
+11. [ADDING_HOVER_EFFECT_ON_NAVIGATION](#ADDING_HOVER_EFFECT_ON_NAVIGATION)
+12. [STICKY_NAVIGATION](#STICKY_NAVIGATION)
+13. [INTERSECTION_OBSERVER_API](#INTERSECTION_OBSERVER_API)
+14. [REVEAL_ELEMENTS](#REVEAL_ELEMENTS)
+15. [LAZY_LOADING_IMAGES](#LAZY_LOADING_IMAGES)
+16. [BUILDING_SLIDER](#BUILDING_SLIDER)
+17. [LIFECYCLE_DOM_EVENTS](#LIFECYCLE_DOM_EVENTS)
+18. [EFFICIENT_WAY_TO_LOAD_SCRIPT](#EFFICIENT_WAY_TO_LOAD_SCRIPT)
 
 ---
 
@@ -1286,6 +791,7 @@ h1.closest('.header').style.background = 'var(--gradient-secondary)'; // here we
 #### Going Sideways: -Selecting Siblings
 
 For some reason in javascript we can access only direct siblings. Basically only the previous and next one.
+
 **For Elements**
 
 ```js
@@ -1316,205 +822,685 @@ _it will print html collection -not an array . but it's still iterable we can im
 });
 ```
 
-// // --- Building a tabbed Component --- //
+---
 
-//////// upper hoga //
+## BUILDING_TABBED_COMPONENT
 
-/////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
+```js
+const tabs = document.querySelectorAll('.operations**tab');
+const tabsContainer = document.querySelector('.operations**tab-container');
+const tabsContents = document.querySelectorAll('.operations__content');
+```
 
-#### lecture #14
+**First method to do that** ----- [not efficient]
 
-// Heading
-// // --- Building a Hovere effect on navigation --- //
-// // -- How to pass argument into event hadler function.
+```JS
+tabs.forEach(t => t.addEventListener('click', function (e) {
+e.preventDefault();
 
-//////// upper hoga // tabbed k nyche
+// removing active class from tabs and content
+tabs.forEach(t => t.classList.remove('operations__tab--active'));
+tabsContents.forEach(c => c.classList.remove('operations__content--active'));
 
-///////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
+// adding active class to both tabs and content
+e.target.closest('.operations__tab').classList.add('operations__tab--active');
+const data = e.target.closest('.operations__tab').dataset.tab;
+document.querySelector(`.operations__content--${data}`).classList.add('operations\_\_content--active');
+// ees working!!
 
-#### lecture 15
+}))
+```
 
-// --- Implementing Sicky Navigation --- //
-// also uppar
+_We can do using this method BUT not efficient way._
 
-///////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
+**Second method (effIcient)**
+So we use Delegation.
 
-#### lecture 18
+```JS
 
-// --- Lazy Loading Images --- //
+tabsContainer.addEventListener('click', function (e) {
 
-// - Strategy of image optimization, for better performance.
-// - here we add two images for each image, one is very small in size and another is original one.
-// then we will add the link of compressed image in to data-src attribute, which's a special attribure we can use, this is not a standard html attribute.
+// Matching Strategy first
+const clicked = e.target.closest('.operations__tab');
 
-// -the idea is that as we scroll down then we replace the copressed imge with original one.
-// also we have add a class to blur an image.
+// Guard Clause
+if (!clicked) return
+// if we clicked on parent container then there is no class on operations__tap closest to that,
+// in that case it will give null, and it cause error. so ... if clicked is falsy (null) then return immediately. -nothing happen.
+// and its called a Guard Clause we can also do
+// if(clicked){ rest of code.}
 
-// baqi also uppar
+// removing active class from all and then adding to clicked one
+tabs.forEach(t => t.classList.remove('operations**tab--active'));
+clicked.classList.add('operations**tab--active');
 
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
+// Removing Active class from Content Area:
+tabsContents.forEach(c => c.classList.remove('operations\_\_content--active'));
 
-#### lecture 29-20
+// Activating Content area of each corresponding tab
 
-// Heading
+// the information about which content should display is in the data attribute(see in html).
+// console.log(clicked.dataset.tab);
+document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations\_\_content--active')
 
-// --- BUILDING A SLIDER COMPONENT --- [image slider] //
-
-// first we'll implement the image slider.
-
-// all images are top of each other. so we use style property in js to translate all image other than active image.
-
-// selecting element
-// const imgSlider = document.querySelector('.slider');
-// const imgSlides = document.querySelectorAll('.slide');
-// const btnLeft = document.querySelector('.slider**btn--left');
-// const btnRight = document.querySelector('.slider**btn--right');
-
-// let curSlide = 0;
-// const maxSlide = slides.length;
-
-// // imgSlider.style.transform = 'scale(0.5)';
-// // imgSlider.style.overflow = 'visible';
-
-// // add transform property
-
-// const gotoSlide = function (slide) {
-// imgSlides.forEach((s, i) => {
-// s.style.transform = `translateX(${100 * (i - slide)}%)`;
-// // 1st: -100%, 2nd: 0%, 3rd: 100%, 4th: 200%......
-// });
-// }
-
-// gotoSlide(0)
-
-// // goto next slid.
-// const nextSlide = function () {
-// if (curSlide === maxSlide - 1) {
-// curSlide = 0;
-// } else {
-// curSlide++;
-// }
-// gotoSlide(curSlide);
-// }
-
-// const prevSlide = function () {
-// if (curSlide === 0) {
-// curSlide = maxSlide - 1;
-// } else {
-// curSlide--;
-// }
-// gotoSlide(curSlide);
-// }
-
-// btnRight.addEventListener('click', nextSlide)
-// btnLeft.addEventListener('click', prevSlide);
-
-/////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////
-
-#### lecture 21
-
-// Heading
-
-// --- LIFECYCLE DOM EVENTS --- //
-
-// Lifecycle mean, when the page first loaded, until the user leaves it.
-
-// DOMContentLoaded Event:
-// 'DOMContentLoaded' event: this event fired by the document as soon as the HTML is completely parsed, which means that the HTML has been downloaded and been converted to the DOM tree. Also all script must be downloaded and executed before the 'DOMContentDoaded' event can happen
-
-/\*
-document.addEventListener('DOMContentLoaded', function (e) {
-console.log('HTML parsed and the DOM tree built!', e);
-// just html (not media/images/css etc) and js loaded this event'll happen.
 })
+```
 
-// Load Event:
-// Load event fired by the window As soon as not only the HTML is parsed, but also images, external resources like CSS are loaded.
-// When complete page has finished loading, this event gets fired.
+---
 
-window.addEventListener('load', function (e) {
-console.log('Page fully loaded!', e);
-})
+## MODAL_WINDOW
 
-// beforennload Event:
-// which also get fired on window.
-// this event will created immediately before a user is leave to page. for exampe after clicking close button on browser tab.
+```js
+const modal = document.querySelector('.modal');
+const overlay = document.querySelector('.overlay');
+const btnCloseModal = document.querySelector('.btn--close-modal');
+const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 
-window.addEventListener('beforeunload', function (e) {
-e.preventDefault(); // in some browser we need to preventDefault to call this event
-console.log(e);
+const openModal = function (e) {
+  e.preventDefault();
+  modal.classList.remove('hidden');
+  overlay.classList.remove('hidden');
+};
 
-// in order to display leaving confirmation, we need to set the return value on the event to an emplt string.
-e.returnValue = '';
-// we ask for confirmation in popup window. like 'did you want to leave the page'
+const closeModal = function () {
+  modal.classList.add('hidden');
+  overlay.classList.add('hidden');
+};
+
+// for (let i = 0; i < btnsOpenModal.length; i++)
+// btnsOpenModal[i].addEventListener('click', openModal);
+
+// using forEach instead of for loop.
+btnsOpenModal.forEach((btn) => btn.addEventListener('click', openModal));
+
+btnCloseModal.addEventListener('click', closeModal);
+overlay.addEventListener('click', closeModal);
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+    closeModal();
+  }
 });
-// this'll pretty usefull if user leave the page during fillign any form................................ etc
-\*/
+```
 
-////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////
+## ADDING_HOVER_EFFECT_ON_NAVIGATION
 
-#### lecture 22
+**How to pass argument into eventHandler function**
+Hover Effect on Navigation Links ---[menu fade animation]
 
-// Heading
-// Efficient way to loading script:
+**mouseover** & **mouseenter** are same but mouseenter not bubble up. while **mouseout** and **mouseleave** are opposite of these respectively.
 
-// different way to load javascirpt code into HTML
+**Adding an animation, where all other nav elements should be little bit transparent, except hovering element.**
 
-// REGULAR WAY
-{/_ <script src="script.js"></script> _/ }
+```JS
 
-// USING ASYNC ATTRIBUTE
-{/_ <script async src="script.js" ></script> _/ }
+const nav = document.querySelector('.nav');
 
-// USING DEFER ATTRIBUTE
-{/_ <script defer src="script.js" ></script> _/ }
+nav.addEventListener('mouseover', function (e) {
+// matching element
+if (e.target.classList.contains('nav\_\_link')) {
+const linkClicked = e.target;
 
-// AND also remember we can write script tag in html head and body end: -we'll compre for these two:
+    // selecting all sibling: we will go to the top container there all of these links and logo contains. then will select all child of that.
+    const sibling = linkClicked.closest('.nav').querySelectorAll('.nav__link');
+    const logo = linkClicked.closest('.nav').querySelector('img')
 
-// --- script tag in head [without any attribure]
-// if we write script without any attribure in the head then firt the browser parse html code -parsing meand building dom tree- then at the certain point, it'll find script tag, start to fetch the script then execute it, and all these time the HTML parsing will actually stop, only after fetched and executing the rest of HTML can be parsed.
-// This is not ideal at all b/c waiting a browser for fatching can have huge impact on the pages performance, also in this case, script will be executed before the dom is ready.
-// So, never do this
+    // now we need to change opacity of all siblings
+    sibling.forEach(el => {
+      if (el !== linkClicked) {
+        el.style.opacity = 0.5;
+      }
+    });
+    logo.style.opacity = 0.5;
 
-// --- script tag in body-End [without any attribure]
-// the html is parsed then the script tag is found at the end of the document, then the script is fetched, and finally the script gets executed.
-// this is much better, BUT still not perfect, because the script could have been downloaded befre, while the html was still being parsed
+};
+});
+```
 
-// --- async attribute in head
-// script is loaded at the same time as the html is parsed, in an asynchronous way. HOWEVER the html parsing still stop fot the script execution. so the script is actually downloaded asynchronously, butn then it's executed in a synchrounous way. so html code has to for beign parsed.
+**Now for when mouseout then all the element should return to their original style**
 
-// --- defer attribute in head
-// script is loaded at the same as the html is parsed in an asynchronous way like in async but the execution of the script is defered until the end of the html parsing. script is only executed at the end. so not wait for parsing html. In many time this is very good option.
+Here we need mouseout effect. b/c when release a mouse from link, it should return to the original style.
 
-// In body both are not make any sense. no difference in body and head
+```js
+nav.addEventListener('mouseout', function (e) {
+  if (e.target.classList.contains('nav__link')) {
+    const linkClicked = e.target;
 
-// USE CASES OF ALL THESE STRATEGIES:
+    const sibling = linkClicked.closest('.nav').querySelectorAll('.nav__link');
+    const logo = linkClicked.closest('.nav').querySelector('img');
 
-// - IN Any case don't use regular in head
+    sibling.forEach((el) => {
+      if (el !== linkClicked) {
+        el.style.opacity = 1;
+      }
+    });
+    logo.style.opacity = 1;
+  }
+});
+```
 
-// DOMComtentLoaded event fired when only loaded html code not wait for javascript code in async attribure.
+_This code is working but both eventHandlers are almost same. So lets **refactor** this code._
+usually to refactor we analysis what's diff, in all functions, then all different will pass as an argument.
 
-// and using defer attribute, the DOMContentLoaded event fired after the whole script has been downloaded and executed.
+```js
+const handleHover = function (e, opacity) {
+  if (e.target.classList.contains('nav__link')) {
+    const linkClicked = e.target;
 
-// in async there is no gurentee of the actually execution of code in the order that they are declared
-// in defer there is a gurentee of the actually execution of code in the order that they are declared
+    const sibling = linkClicked.closest('.nav').querySelectorAll('.nav__link');
+    const logo = linkClicked.closest('.nav').querySelector('img');
 
-// so conclusion:
-// using defer in the head in overall best solution.
+    sibling.forEach((el) => {
+      if (el !== linkClicked) {
+        el.style.opacity = this;
+        // Remember that we use bind method to pass and argument to a handler function.
+        // And also note that any thing we pass in bind method as an argument, this keyword will point there.
+        // here we pass a simple value for opacity.
+        // console.log(this);
+      }
+    });
+    logo.style.opacity = this;
+  }
+};
 
-````
+// Not final version, that's calling the hoverHandler.
+nav.addEventListener('mouseover', handleHover);
+nav.addEventListener('mouseout', handleHover);
+```
+
+But here the problem is that we wants to pass a values into a function for opacity and event, but we can't call it here as a result we can't pass an argument. How we do that??
+The solution is, would be still a **callback function** here like in regular eventListener, So
+
+```js
+nav.addEventListener('mouseover', function (e) {
+  handleHover(e, 0.5);
+});
+nav.addEventListener('mouseout', function (e) {
+  handleHover(e, 1);
+});
+```
+
+**We can do ever better and can remove anonymous callbacks.**
+That's By using **Bind** method.
+**The bind method creates a copy of the function that it's called on**, and **it will set the this keyword in this function call to whatever value we pass into bind method.**
+
+```js
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
+```
+
+Here we use the bind method to pass an argument into a handler function.
+
+**We always use this keyword to pass multiple arguments to handler function by using bind method. for single value we just pass it, for multiple value we will pass an array or object.**
+
+---
+
+### Scrolling Effect on Navigation Menu links
+
+```js
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  e.preventDefault();
+  // console.log(e.target); // where event is originated.
+
+  // Matching Strategy: (v. important)
+  // b/c when we click on parent it will also call event handler. to avoid that:
+  if (e.target.classList.contains('nav__link')) {
+    // const id = this.querySelector('href'); //here this will not work. b/c this is pointing to the element where event is happened, that's container of links. so we use e.target.
+    const id = e.target.getAttribute('href');
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
+});
+```
+
+---
+
+## STICKY_NAVIGATION
+
+Now we use a new event, which is **scroll** event. and remember that scroll event is on window not document.
+
+This event will happened each time when we scroll
+**Question**: when we add sticky class?
+**Answer**: when reached first section.
+
+```js
+const initialCoords = section1.getBoundingClientRect();
+// console.log(initialCoords);
+// here we get current top value of this section.
+
+window.addEventListener('scroll', function (e) {
+  // console.log(window.scrollY);
+  // remember it's, distance b/w top of page and top of viewport, initial should zero- at top page.
+
+  if (window.scrollY > initialCoords.top) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+});
+```
+
+_Not a good practice!!! 'using scroll event' Better is coming in next lec. which is 'intersection observer API'._
+
+## INTERSECTION_OBSERVER_API
+
+**Sticky Navigation** - Intersection Observer API
+Intersection Observer API allows our code to basically observe changes to the way that a certain target element intersects another element, OR The way it intersect the viewport.
+
+**How this API works?**
+
+- First we need to create new intersection observer
+- We pass a callback function and object of options.
+- Then we use this observer to observe a certain target.
+- And pass a target element in observe() function.
+- In callback need **root property:** _root's value is the element that the target is intersecting_
+  And second property we need is **threshold:** _which is the percentage of intersection at which the observer callback will be called_
+  And callback will get called each time that the observed element, or target element is intersecting the root element at the threshold that we defined in options.
+- The callback function will receive two arguments, first **entries**, and **observer object** itself.
+  entries are the array of threshold.
+
+```js
+// the callback function
+const obsCallback = function (entries, observer) {
+  entries.forEach((entries) => {
+    console.log(entries);
+  });
+};
+
+// the options object
+const obsOptions = {
+  root: null, // null is simple viewport
+  // threshold: 0.1, // which is 10%
+  threshold: [0, 0.2],
+  // 0% means our callback will trigger each time that the target element moves completely of the view.
+  // if we specify 0 then the callback will call when moving into the view ond when out of the view.
+  // ON THE OTHER HAND if we specify 1 then the callback will call when the target is completely visible in the view. section1 is not possible 100% in view.
+};
+
+// creating new intersection observer
+const Observer = new IntersectionObserver(obsCallback, obsOptions);
+
+// passing a target to the observe method:
+Observer.observe(section1);
+```
+
+**NOW WE ARE IMPLEMENTING STICKY NAV USING ALL OF THESE**
+
+we want to show nav when header is completely out of the view.
+
+```js
+const header = document.querySelector('.header');
+
+// calculate nav height
+const navHeight = nav.getBoundingClientRect().height;
+
+const stickyNav = function (entries) {
+  // no need of observer
+  // here we have only one threshold so no need of loop..
+  const [entry] = entries; // same as entries[0]// destructuring..
+  console.log(entry);
+  // We will add a sticky class when header is not intersecting viewport.
+  if (!entry.isIntersecting) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null, // interested in viewport
+  threshold: 0, // when heder is completely out of viewport.
+  rootMargin: `-${navHeight}px`, // for 90 this rootMargin is a box of 90px that will b applied outside of our target element.
+});
+headerObserver.observe(header);
+```
+
+## REVEAL_ELEMENTS
+
+#### Reveal Element as Scroll close to them:
+
+Effect of fad-in of a sections from then bottom
+
+The effect is coming from the CSS, but will add that class by using intersection observer. i-e when sections are comes into viewport we will add that class.
+
+**What already done in CSS?**
+Made a class named 'section--hidden', which'll hide the section and pushed down section 9rem.
+
+```js
+const allSections = document.querySelectorAll('.section');
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  // console.log(entry);
+
+  // guard clause
+  if (!entry.isIntersecting) return;
+
+  entry.target.classList.remove('section--hidden');
+
+  // unobserving
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null, // viewport
+  threshold: 0.15, // 15%
+});
+
+allSections.forEach(function (section) {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+});
+```
+
+## LAZY_LOADING_IMAGES
+
+- Strategy of image optimization, for better performance.
+- here we add two images for each image, one is very small in size and another is original one.
+- then we will add the link of compressed image in to data-src attribute, which's a special attribute we can use, this is not a standard html attribute.
+- the idea is that as we scroll down then we replace the compressed image with original one.
+- also we have add a class to blur an image.
+
+```js
+'use strict';
+
+const imgTargets = document.querySelectorAll('img[data-src]');
+// selecting all the images, which has data-src property.
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+  // console.log(entry);
+
+  // guard clause
+  if (!entry.isIntersecting) return;
+
+  // replace src attribute to data-src attribute.
+  entry.target.src = entry.target.dataset.src;
+
+  // entry.target.classList.remove('lazy-img'); // it will create problem so, we use:
+
+  // we can add load event to remove class after image is loaded. (simply removing (w/o using event) will remove class before loaded).
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px',
+});
+
+imgTargets.forEach((img) => imgObserver.observe(img));
+```
+
+---
+
+## BUILDING_SLIDER
+
+First we'll implement the image slider.
+
+All images are top of each other. so we use style property in js to translate all image other than active image.
+
+```js
+selecting element
+const imgSlider = document.querySelector('.slider');
+const imgSlides = document.querySelectorAll('.slide');
+const btnLeft = document.querySelector('.slider**btn--left');
+const btnRight = document.querySelector('.slider**btn--right');
+
+let curSlide = 0;
+const maxSlide = slides.length;
+
+imgSlider.style.transform = 'scale(0.5)';
+imgSlider.style.overflow = 'visible';
+// add transform property
+
+const gotoSlide = function (slide) {
+imgSlides.forEach((s, i) => {
+s.style.transform = `translateX(${100 * (i - slide)}%)`;
+// 1st: -100%, 2nd: 0%, 3rd: 100%, 4th: 200%......
+});
+}
+
+gotoSlide(0)
+
+// goto next slid.
+const nextSlide = function () {
+if (curSlide === maxSlide - 1) {
+curSlide = 0;
+} else {
+curSlide++;
+}
+gotoSlide(curSlide);
+}
+
+const prevSlide = function () {
+if (curSlide === 0) {
+curSlide = maxSlide - 1;
+} else {
+curSlide--;
+}
+gotoSlide(curSlide);
+}
+
+btnRight.addEventListener('click', nextSlide)
+btnLeft.addEventListener('click', prevSlide);
+```
+
+**Now Implementing on our testimonial**
+
+Now all three slides are in same position we use javascript style attribute to translate all other than active, that will make other slides out of viewport.
+
+```js
+
+
+// PUTTING ALL OF THESE IN A FUNCTION
+const slider = function () {
+
+// selecting elements:
+const slider = document.querySelector('.slider');
+const slides = document.querySelectorAll('.slide');
+const btnRight = document.querySelector('.slider**btn--right')
+const btnLeft = document.querySelector('.slider**btn--left');
+const dotContainer = document.querySelector('.dots');
+let curSlide = 0;
+const maxSlide = slides.length;
+
+// FUNCTIONS
+// Creating dots
+const createDots = function () {
+// we'll build one dot for each slide
+slides.forEach(function (\_, i) {
+dotContainer.insertAdjacentHTML('beforeend', `<button class="dots__dot" data-slide = "${i}"></button>`)
+})
+};
+
+const activeDots = function (slide) {
+
+    // removing active class form all dots
+    document.querySelectorAll('.dots__dot').forEach(dot => dot.classList.remove('dots__dot--active'));
+
+    // adding to only active dot:
+    document.querySelector(`.dots__dot[data-slide="${slide}"]`).classList.add('dots__dot--active')
+
+};
+
+const gotoSlide = function (slide) {
+slides.forEach((s, i) => {
+s.style.transform = `translateX(${100 * (i - slide)}%)`;
+})
+};
+
+const nextSlide = function () {
+if (curSlide === maxSlide - 1) {
+curSlide = 0;
+} else {
+curSlide++;
+}
+gotoSlide(curSlide);
+activeDots(curSlide);
+}
+
+const prevSlide = function () {
+if (curSlide === 0) {
+curSlide = maxSlide - 1;
+} else {
+curSlide--;
+};
+gotoSlide(curSlide);
+activeDots(curSlide);
+}
+
+// INITIALIZING
+// Functions Calling
+const init = function () {
+createDots();
+activeDots(0);
+gotoSlide(0);
+};
+init();
+
+// EVENTS
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
+
+// ARROW KEY TO LEFT & RIGHT
+// for keyboard event always have to use document.
+document.addEventListener('keydown', function (e) {
+// console.log(e.key);
+
+    // if (e.key === 'ArrowLeft') prevSlide();
+    // if (e.key === 'ArrowRight') nextSlide();
+
+    // also can use short-circuiting
+    e.key === 'ArrowLeft' && prevSlide();
+    e.key === 'ArrowRight' && nextSlide();
+
+});
+
+// will use event delegation to attach event
+dotContainer.addEventListener('click', function (e) {
+if (!e.target.classList.contains('dots__dot')) return;
+
+    // const slide = e.target.dataset.slide;
+    // we can also write like this, using destructuring
+    const { slide } = e.target.dataset;
+    gotoSlide(slide);
+    activeDots(slide);
+
+});
+
+};
+slider();
 
 ```
 
+**For keyboard event always have to use document.**
+
+---
+
+## LIFECYCLE_DOM_EVENTS
+
+_Lifecycle mean, when the page first loaded, until the user leaves it._
+
+**DOMContentLoaded Event:**
+'DOMContentLoaded' event: this event fired by the document as soon as the HTML is completely parsed, which means that the HTML has been downloaded and been converted to the DOM tree. Also all script must be downloaded and executed before the 'DOMContentLoaded' event can happen
+**Just html (not media/images/css etc) and js loaded this event'll happen.**
+
+```js
+document.addEventListener('DOMContentLoaded', function (e) {
+  console.log('HTML parsed and the DOM tree built!', e);
+  // just html (not media/images/css etc) and js loaded this event'll happen.
+});
 ```
 
+**Load Event:**
+Load event fired by the window As soon as not only the HTML is parsed, but also images, external resources like CSS are loaded.
+_When complete page has finished loading, this event gets fired._
+
+```js
+window.addEventListener('load', function (e) {
+  console.log('Page fully loaded!', e);
+});
 ```
 
+**beforeunload Event:**
+which also get fired on window.
+this event will created immediately before a user is leave to page. for example after clicking close button on browser tab.
+
+```js
+window.addEventListener('beforeunload', function (e) {
+  e.preventDefault(); // in some browser we need to preventDefault to call this event
+  console.log(e);
+
+  // in order to display leaving confirmation, we need to set the return value on the event to an empty string.
+  e.returnValue = '';
+  // we ask for confirmation in popup window. like 'did you want to leave the page'
+});
 ```
-````
+
+This'll pretty useful if user leave the page during filling any form............................. etc
+
+---
+
+## EFFICIENT_WAY_TO_LOAD_SCRIPT
+
+**different way to load javascript code into HTML**
+
+**_REGULAR WAY_**
+
+```js
+<script src="script.js"></script>
+```
+
+**_USING ASYNC ATTRIBUTE_**
+
+```js
+<script async src="script.js"></script>
+```
+
+**_USING DEFER ATTRIBUTE_**
+
+```js
+<script defer src="script.js"></script>
+```
+
+**AND also remember we can write script tag in html head and body end:** _-we'll compare for these two:_
+
+##### script tag in head [without any attributes]
+
+if we write script without any attribute in the head then first the browser parse html code -parsing means building dom tree, then at the certain point, it'll find script tag, start to fetch the script then execute it, and all these time the HTML parsing will actually stop, only after fetched and executing the rest of HTML can be parsed.
+This is not ideal at all b/c waiting a browser for fetching can have huge impact on the pages performance, also in this case, script will be executed before the dom is ready.
+
+_So we have_
+
+##### script tag in body-End [without any attribute]
+
+The html is parsed then the script tag is found at the end of the document, then the script is fetched, and finally the script gets executed.
+This is much better, BUT still not perfect, because the script could have been downloaded before, while the html was still being parsed.
+
+##### async attribute in head
+
+Script is loaded at the same time as the html is parsed, in an asynchronous way. HOWEVER the html parsing still stop fot the script execution. so the script is actually downloaded asynchronously, But then it's executed in a synchronous way. so html code has to for being parsed.
+
+##### defer attribute in head
+
+Script is loaded at the same as the html is parsed in an asynchronous way like in async but the execution of the script is deferred until the end of the html parsing. script is only executed at the end. so not wait for parsing html. In many time this is very good option.
+
+In body both are not make any sense. no difference in body and head
+
+### USE CASES OF ALL THESE STRATEGIES:
+
+**In Any case don't use regular in head**
+
+DOMContentLoaded event fired when only loaded html code not wait for javascript code in async attribute.
+
+And using defer attribute, the DOMContentLoaded event fired after the whole script has been downloaded and executed.
+
+In async there is no guarantee of the actually execution of code in the order that they are declared
+In defer there is a grantee of the actually execution of code in the order that they are declared
+
+**SO CONCLUSION:**
+_using defer in the head in overall best solution._
