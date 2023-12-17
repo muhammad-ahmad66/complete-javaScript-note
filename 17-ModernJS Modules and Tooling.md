@@ -538,7 +538,9 @@ States(data) is never modified, instead data(state) is copied and copy is mutate
   We can also use **Object.freeze** to make array immutable.
   **NOTE:** **Object.freeze** will freeze only first level of the object. It's not a deep freeze.
 
-Fix some bad codes
+---
+
+Some Random Codes
 
 ```JS
 const flatted = [
