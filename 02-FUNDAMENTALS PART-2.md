@@ -6,6 +6,10 @@
 2. [FUNCTIONS](#FUNCTIONS)
 3. [ARRAYS](#ARRAYS)
 4. [OBJECTS](#OBJECTS)
+5. [LOOPS](#LOOPS)
+   1. [FOR_LOOP](#FOR_LOOP)
+   2. [CONTINUE_AND_BREAK_STATEMENT](#CONTINUE_AND_BREAK_STATEMENT)
+   3. [WHITE_LOOP](#WHITE_LOOP)
 
 ---
 
@@ -369,172 +373,262 @@ if (friends.includes('Huzaifa')) {
 
 ## OBJECTS
 
-//RACPe FROM ARRAY
-// const myDataArray = [
-// 'Muhammad',
-// 'Ahmad',
-// 2022 - 2000,
-// 'Student',
-// ['Huzaifa', 'Shoaib', 'Rashid', 'Zakir']
-// ];
-// //In array we can't give 'muhammad' to fName, 'ahmad' to lName, BUT HERE CAME OBJECT...
-// // OBJECT IS BASICALLY KEY - VALUE PAIRS.
-// const myData = {
-// firstName: 'Muhammad',
-// lastName: 'Ahmad',
-// age: 2022 - 2000,
-// job: 'student',
-// friends: ['Huzaifa', 'Shoaib', 'Rashid', 'Zakir']
-// }; //Here fistName, age, job, etc are called KEYS and 'Muhammad', 'Student' etc ara called VALUES. (keys are also called properties)
+#### RECAP FROM ARRAY
 
-// //BIG DIFFERENCE B/W ARRAYS AND OBJECT IT THAT, arrays are depends on ORDER, but object not!!!!!!!!!!!!
+```js
+const myDataArray = [
+  'Muhammad',
+  'Ahmad',
+  2022 - 2000,
+  'Student',
+  ['Huzaifa', 'Shoaib', 'Rashid', 'Zakir'],
+];
+```
 
-// console.log(myData);
+**In array we can't give 'muhammad' to fName, 'ahmad' to lName, BUT HERE CAME OBJECT...**<br>
+**OBJECT IS BASICALLY KEY - VALUE PAIRS.**<br>
 
-// // Two ways to getting (Retrieve) a property from an object.
-// // 1-) using dot (.) operator
-// console.log(myData.firstName);
-// console.log(myData.age);
-// // 2-) using square bracket
-// console.log(myData['firstName']);
-// console.log(myData['age']);
-// //difference b/w these two is that in bracket notation we can put any expression in square bracket.
-// const nameKey = 'Name';
-// console.log(myData['first' + nameKey]);
-// console.log(myData['last' + nameKey]); //here name holds value 'Name', and then we cancatenate with first and last. so we see 'first' + namekey is a expression
-// //we can't write same thing with . operator
-// // console.log(myData.'first' + nameKey) //error
+```js
+const myData = {
+  firstName: 'Muhammad',
+  lastName: 'Ahmad',
+  age: 2022 - 2000,
+  job: 'student',
+  friends: ['Huzaifa', 'Shoaib', 'Rashid', 'Zakir'],
+};
+console.log(myData);
+```
 
-// //Another example:
-// const interestedIn = prompt('What do you want to know about me? Choose between firstName, lastName, age, job, friends.');
-// //console.log(myData.interestedIn); //undefined. because myData have no property named interestedIn. Note that!! . opertor olways works on directly property (key). so we have to use braket notation to access.
-// // console.log(myData[interestedIn]); //WoW!! working..
-// //REMEMBER THAT: IF we want to access any property that's not exist in object. it will print UNDEFINDED...USE this to build a logic....let try
-// if (myData[interestedIn]) {
-// console.log(myData[interestedIn]);
-// } else {
-// console.log('Wrong Request! Choose between firstName, lastName, age, job, friends.')
-// }
+Here fistName, age, job, etc are called KEYS and 'Muhammad', 'Student' etc ara called VALUES. (keys are also called properties)<br>
 
-// // ADD NEW PROPERTIES TO THE OBJECT USING DOT AND BRAKET NOTATION
-// myData.location = 'Yougo-Baltistan';
-// myData['mail'] = 'muhammadugv66@gmail.com';
-// console.log(myData);
+**BIG DIFFERENCE B/W ARRAYS AND OBJECT IT THAT, arrays are depends on ORDER, but object not!!!!!!**
 
-// // QUICK CHALLENGE:
-// // PRINT USING DOT AND BRAKET: Muhammad has 4 friends and his best friend is Huzaifa.
-// console.log(`${myData.firstName} has ${myData.friends.length} friends, and his best friend is ${myData.friends[0]}`);
+**_Two ways to getting (Retrieve) a property from an object._**
 
-////OBJECT METHODS
+1. _Using dot (.) operator_
+   ```js
+   console.log(myData.firstName);
+   console.log(myData.age);
+   ```
 
-// const myData = {
-// firstName: 'Muhammad',
-// lastName: 'Ahmad',
-// birthYear: 2000,
-// job: 'student',
-// friends: ['Huzaifa', 'Shoaib', 'Rashid', 'Zakir'],
-// hasDriversLicense: true,
-// // calcAge: function (birthYear) { //it's just regular function expression. Remember that: here we cant't use function declaration. in object we need an expression
-// // return `${2022 - birthYear} years`;
-// // }
+2) _Using square bracket_
 
-// // to use any property within this object we use THIS keyword
-// calcAge: function () {
-// // console.log(this); //prits all key-value from this object where this function is pointing.
-// // return 2022 - this.birthYear;
+   ```
 
-// //one step more further!!!
-// this.age = 2022 - this.birthYear;//if we have to access multiple time this function then every time we need to calculate an age. that will not take a bat effect in this case, but if we have large calculation then this may take large time so avoide of that we made a property that store the resutant value from this function. so age is a new property added in object myData.
-// return this.age;//although we did't need of return statement.
-// },
+     console.log(myData['firstName']);
+     console.log(myData['age']);
+   ```
 
-// // QUICK CAHLLANGE:
-// //create a new method which summrize the person's detail like this.
-// //'Muhammad' is a 22 years old, and he has a driver's license.
-// getSummery: function () {
-// console.log(`${this.firstName} is a ${this.age}-years old, and he has ${this.hasDriversLicense ? 'a ' : 'no '} driving license`);
-// }
-// };
+Difference b/w these two is that **in bracket notation we can put any expression in square bracket.**
 
-// // console.log(myData.calcAge(2000));
-// // console.log(myData['calcAge'](2000));
+```js
+const nameKey = 'Name';
+console.log(myData['first' + nameKey]);
+console.log(myData['last' + nameKey]);
 
-// console.log(myData.calcAge());
-// console.log(myData.age);
-// console.log(myData.getSummery());
 
-//////// LOOPS IN JAVASCRIPT /////////
+// Here name holds value 'Name', and then we concatenate with first and last.
+// so we see 'first' + nameKey is a expression
 
-//for LOOP
+// we can't write same thing with . operator.
+console.log(myData.'first' + nameKey) //error
+```
 
-// const types = [];
-// const myData = [
-// 'Muhammad',
-// 'Ahmad',
-// 2022 - 2000,
-// 'student',
-// ['Huzaifa', 'Shoaib', 'Rashid', 'Zakir', 'Umair']
-// ];
-// for (let i = 0; i < myData.length; i++) {
-// //reading form mydata array
-// console.log(myData[i], typeof myData[i]);
+**Another example:**
 
-// //filling an array types
-// // types[i] = typeof myData[i];
+```js
+const interestedIn = prompt(
+  'What do you want to know about me? Choose between firstName, lastName, age, job, friends.'
+);
+console.log(myData.interestedIn); //undefined.
+// Because myData have no property named interestedIn. Note that!! . operator always works on directly property (key). so we have to use bracket notation to access.
 
-// //another way to fill data using looop
-// types.push(typeof myData[i]);
-// }
+console.log(myData[interestedIn]); //WoW!! working..
+```
 
-// console.log(types);
-// //in above example we made an array types by giving a value of same data-type as myData's elements have, using loop.
+REMEMBER THAT: IF we want to access any property that's not exist in object. it will print undefined...USE this to build a logic....let try
 
-// const years = [1991, 2007, 1969, 2020];
-// const ages = [];
-// for (let i = 0; i < years.length; i++) {
-// // ages[i] = 2022 - years[i];
-// // Another way
-// ages.push(2022 - years[i]);
+```js
+if (myData[interestedIn]) {
+  console.log(myData[interestedIn]);
+} else {
+  console.log(
+    'Wrong Request! Choose between firstName, lastName, age, job, friends.'
+  );
+}
+```
 
-// }
-// console.log(ages);
+**ADD NEW PROPERTIES TO THE OBJECT USING DOT AND BRACKET NOTATION**
 
-// continue AND break statement in loops
-//continue: user to exits the current iteration of the loop and start the next one.
-//Break: use to completely terminates the whole loop.
-// console.log('------Only Strings.');
-// for (let i = 0; i < myData.length; i++) {
-// if (typeof myData[i] !== 'string') continue;//to print only elements which have strings data type
-// console.log(myData[i], typeof myData[i]);
-// }
+```js
+myData.location = 'Yougo-Baltistan';
+myData['mail'] = 'muhammadugv66@gmail.com';
+console.log(myData);
+```
 
-// console.log('------Break with numbers.');
-// for (let i = 0; i < myData.length; i++) {
-// if (typeof myData[i] === 'number') break;//to print only elements which have strings data type
-// console.log(myData[i], typeof myData[i]);
-// }
+**QUICK CHALLENGE:**<br>
+PRINT USING DOT AND BRACKET: Muhammad has 4 friends and his best friend is Huzaifa.
 
-//Access Array from backward (reverse)
-// const types = [];
-// const myData = [
-// 'Muhammad',
-// 'Ahmad',
-// 2022 - 2000,
-// 'student',
-// ['Huzaifa', 'Shoaib', 'Rashid', 'Zakir', 'Umair']
-// ];
+```js
+console.log(
+  `${myData.firstName} has ${myData.friends.length} friends, and his best friend is ${myData.friends[0]}`
+);
+```
 
-// for (let i = myData.length - 1; i >= 0; i--) {
-// // console.log(i, myData[i]);
+---
 
-// }
+### OBJECT METHODS
 
-// ////while LOOP
-// let dice = Math.trunc(Math.random() _ 6) + 1;
-// while (dice !== 6) {
-// console.log(`You rolled a ${dice}`);
-// dice = Math.trunc(Math.random() _ 6) + 1;
-// if (dice === 6) {
-// console.log("Loop is about to end...");
-// }
-// }
+```js
+const myData = {
+  firstName: 'Muhammad',
+  lastName: 'Ahmad',
+  birthYear: 2000,
+  job: 'student',
+  friends: ['Huzaifa', 'Shoaib', 'Rashid', 'Zakir'],
+  hasDriversLicense: true,
+  calcAge: function (birthYear) {
+    //it's just regular function expression.
+    // Remember that: here we cant't use function declaration. in object we need an expression
+    return `${2022 - birthYear} years`;
+  },
+};
+```
+
+To use any property within this object we use **THIS** keyword
+
+```js
+calcAge: function () {
+console.log(this); //prints all key-value from this object where this function is pointing.
+return 2022 - this.birthYear;
+//one step more further!!!
+this.age = 2022 - this.birthYear;
+return this.age;//although we did't need of return statement.
+},
+```
+
+If we have to access multiple time this function(calcAge)⤴ then every time we need to calculate an age. that will not take a bad effect in this case, but if we have large calculation then this may take large time so avoid of that we made a property that store the resultant value from this function. so age is a new property added in object myData.
+
+**QUICK CHALLENGE:**
+create a new method which summarize the person's detail like this.
+_'Muhammad' is a 22 years old, and he has a driver's license._
+
+```js
+
+getSummery: function () {
+console.log(`${this.firstName} is a ${this.age}-years old, and he has ${this.hasDriversLicense ? 'a ' : 'no '} driving license`);
+ }
+
+```
+
+```js
+console.log(myData.calcAge(2000));
+console.log(myData['calcAge'](2000));
+
+console.log(myData.calcAge());
+console.log(myData.age);
+console.log(myData.getSummery());
+```
+
+---
+
+## LOOPS
+
+### FOR_LOOP
+
+```js
+const types = [];
+const myData = [
+  'Muhammad',
+  'Ahmad',
+  2022 - 2000,
+  'student',
+  ['Huzaifa', 'Shoaib', 'Rashid', 'Zakir', 'Umair'],
+];
+
+for (let i = 0; i < myData.length; i++) {
+  //reading form myData array
+  console.log(myData[i], typeof myData[i]);
+
+  //filling an array types
+  types[i] = typeof myData[i];
+
+  //another way to fill data using loop
+  types.push(typeof myData[i]);
+}
+console.log(types);
+```
+
+In above example we made an array types by giving a value of same data-type as myData's elements have, using loop.
+
+```js
+const years = [1991, 2007, 1969, 2020];
+const ages = [];
+for (let i = 0; i < years.length; i++) {
+  // ages[i] = 2022 - years[i];
+  // Another way
+  ages.push(2022 - years[i]);
+}
+console.log(ages);
+```
+
+---
+
+### CONTINUE_AND_BREAK_STATEMENT
+
+**continue** AND **break** statement in loops<br>
+
+**continue:** Use to exit the current iteration of the loop and start the next one.
+**Break:** Use to completely terminates the whole loop.
+
+```js
+console.log('------Only Strings.');
+for (let i = 0; i < myData.length; i++) {
+  if (typeof myData[i] !== 'string') continue; //to print only elements which have strings data type
+  // If there is any 'number' type then, leave it and go to the next iteration.
+  console.log(myData[i], typeof myData[i]);
+}
+```
+
+```js
+console.log('------Break with numbers.');
+for (let i = 0; i < myData.length; i++) {
+  if (typeof myData[i] === 'number') break;
+  // If there is any 'number' type then, terminate the loop
+  console.log(myData[i], typeof myData[i]);
+}
+```
+
+**Access Array from backward (reverse)**
+
+```js
+const types = [];
+const myData = [
+  'Muhammad',
+  'Ahmad',
+  2022 - 2000,
+  'student',
+  ['Huzaifa', 'Shoaib', 'Rashid', 'Zakir', 'Umair'],
+];
+
+for (let i = myData.length - 1; i >= 0; i--) {
+  console.log(i, myData[i]);
+}
+```
+
+---
+
+### WHITE_LOOP
+
+```JS
+let dice = Math.trunc(Math.random() * 6) + 1;
+while (dice !== 6) {
+console.log(`You rolled a ${dice}`);
+dice = Math.trunc(Math.random() * 6) + 1;
+if (dice === 6) {
+console.log("Loop is about to end...");
+}
+}
+```
+
+---
