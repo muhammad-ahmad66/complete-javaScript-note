@@ -5,6 +5,8 @@
 1. [Overview_of_Modern_Javascript](#Overview_of_Modern_Javascript)
 2. [OVERVIEW_OF_MODULES](#OVERVIEW_OF_MODULES)
 3. [EXPORTING_AND_IMPORTING_ES6_MODULES](#EXPORTING_AND_IMPORTING_ES6_MODULES)
+4. [TOP_LEVEL_AWAIT](#TOP_LEVEL_AWAIT)
+5. [MODULE_PATTERN](#MODULE_PATTERN)
 
 ---
 
@@ -61,100 +63,201 @@ How modules imports other modules behind the scene.???? where???
 
 ## EXPORTING_AND_IMPORTING_ES6_MODULES
 
-// ?Simply import a module, without importing any value:
-// -first we have made a file with name of shoppingCard.
-// !Importing Module
-// import './shoppingCard.js';
-// console.log('Importing Module');
+### Exporting Module (ShoppingCart.js file)
 
-// !All the imported statements will parse at the top of the file. so in console Importing Module is printing after Exporting Module. although we change the order. like this
-// console.log('Importing Module');
-// import './shoppingCard.js';
+```js
+const shippingCost = 10;
+export const cart = [];
+```
 
-// ? Importing with value:
-// import { addToCart } from './shoppingCard.js';
+- By default **all top level variables are private to that module**. (scoped to this module only.)
+- If we wants these variable in script.js file also then we would have to exports.
 
-// addToCart('bread', '5');
-// !now we used the function that is defined in shoppingCard module.
+**In ES modules there are two types of exports.**
 
-// !Importing multiple things.
-/_
+1. [Named Export](#Named-Export)
+2. [Default Export](#Default-Exports)
+
+### Named-Export
+
+Named Exports is the simplest way to exporting something from a module. Because all we have to do is to put export in front of anything, that we might want to export.
+
+```js
+export const addToCart = function (product, quantity) {
+  cart.push({ product, quantity });
+  console.log(`${quantity} ${product} added to cart`);
+};
+```
+
+**_Remember export only work in top level code._** it wouldn't work inside any block, like this⤵
+
+```js
+if (true) {
+  export const addToCart = function (product, quantity) {
+    cart.push({ product, quantity });
+    console.log(`${quantity} ${product} added to cart`);
+  };
+}
+```
+
+#### We can also export a multiple things for a module using named export.
+
+And actually that is the main use case of named exports. So, basically when we want to export multiple things at a same time.
+
+```js
+const totalPrice = 237;
+const totalQuantity = 23;
+export { totalPrice, totalQuantity as tq };
+```
+
+##### Importing Named Exports
+
+#### Simply import a module, without importing any value:
+
+First we have made a file with name of shoppingCard.
+Importing Module
+
+```js
+import './shoppingCard.js';
+console.log('Importing Module');
+```
+
+All the imported statements will parse at the top of the file. so in console Importing Module is printing after Exporting Module. although we change the order. like this
+
+```js
+console.log('Importing Module');
+import './shoppingCard.js';
+```
+
+#### Importing with value:
+
+```js
+import { addToCart } from './shoppingCard.js';
+
+addToCart('bread', '5');
+// Now we used the function that is defined in shoppingCard module.
+```
+
+#### Importing multiple things.
+
+```js
 import { addToCart, totalPrice as price, tq } from './shoppingCard.js';
 addToCart('bread', 5);
 console.log(price, tq);
-_/
-// !Also we can change the name of the inputs. like totalPrice to price..Also we can change name in export.
-// ?Code ⬆
+```
 
-// !We can also import all the exports of a module at the same time.
-// import \* as ShoppingCard from './shoppingCard.js';
+**Also we can change the name of the inputs**. like totalPrice to price..Also we can change name in export. Code ⬆
 
-// ?Here we imported all the exported values form module. now it's just like a namespace if you wants any thing from that file we just use our name(ShoppingCard) with dot and then that thing(variable, function etc.). like this.
-// ShoppingCard.addToCart('bread', 12); // working.
+#### We can also import all the exports of a module at the same time.
 
-// ! ------------------------- !
+```js
+import * as ShoppingCard from './shoppingCard.js';
+```
 
-// \*Default Exports:
-// ?Usually, we use default exports when we only want to export one thing per module. there is No name involved at all in exporting module. we are simply exporting any value. then when we import it we can give it any name that we want. here we gave name 'add', we can give any name.
-// import add from './shoppingCard.js';
-// add('pizza', 2);
+⤴ Here we imported all the exported values form module. **Now it's just like a namespace** if you wants any thing from that file we just use our name(ShoppingCard) with dot and then that thing(variable, function etc.). like this.
 
-// !We could even mix all of them(exports) in the same import statement. import may be both named and default at a same time.
-/_
+```js
+ShoppingCard.addToCart('bread', 12);
+```
+
+### Default-Exports
+
+Usually, **we use default exports when we only want to export one thing per module**. there is No name involved at all in exporting module. we are simply exporting any value. then when we import it we can give it any name that we want. Here⤵ we gave name 'add', we can give any name.
+
+We write like this...⤵
+
+```js
+export default function (product, quantity) {
+  cart.push({ product, quantity });
+  console.log(`${quantity} ${product} added to cart`);
+}
+```
+
+Here we see, No name involved at all. we are simply exporting this function as a value. then whe we import it we can give it any name that we want.
+
+##### Importing Named Exports
+
+```js
+import add from './shoppingCard.js';
+add('pizza', 2);
+```
+
+**We could even mix all of them(exports) in the same import statement.** import may be both named and default at a same time.
+
+```js
 import add, { addToCart, totalPrice as price, tq } from './shoppingCard.js';
 add('pizza', 9);
 addToCart('pasta', 2);
 console.log(price, tq);
-_/
-// !However in practice we never mix named and default export in the same module.
+```
 
-// import add, { cart } from './shoppingCard.js';
-// add('pizza', 3);
-// add('apples', 6);
-// add('bread', 97);
+_However in practice we never mix named and default export in the same module._
 
-// console.log(cart);
-// !Remember, Imports are not a copies of the exports, They are instead like a live connection, in any instance we change in export it will automatically change in import file as well. in above code we see this, if we look at export file the cart is basically an empty array in exporting statement, from here we added thing to that array. now if we console the cart in import file all things are added....
+```js
+import add, { cart } from './shoppingCard.js';
+add('pizza', 3);
+add('apples', 6);
+add('bread', 97);
+console.log(cart);
+```
 
-// ! ------------------------------ !
+_Remember,_ **Imports are not a copies of the exports**, They are instead like a live connection, in any instance we change in export it will automatically change in import file as well. in above code we see this, if we look at export file the cart is basically an empty array in exporting statement, from here we added thing to that array. now if we console the cart in import file all things are added....
 
-// Lecture 006
-// *Top level await (ES22)
-// *Top level await means await outside of any async function.
-// ?So starting from this new ES2022 version, we can now use the await keyword outside of async function, at least in the modules.
-// !we can use toplevel await in modules only... to use top level await we should write type attribute set to module in script tag.
+---
 
-// ?simple example
-/_
+## TOP_LEVEL_AWAIT
+
+// Blocking code
+console.log('Start fetching users');
+await fetch('https://jsonplaceholder.typicode.com/users');
+console.log('Finish fetching users');
+
+**Top level await means await outside of any async function.**
+
+So starting from this new **ES2022** version, we can now use the await keyword outside of async function, at least in the modules.
+We can use top level await in modules only. To use top level await we should write type attribute set to module in script tag.
+
+_simple example_
+
+```js
+// Blocking code
 console.log('start fetching ');
 const res = await fetch('https://jsonplaceholder.typicode.com/posts');
 const data = await res.json();
 console.log(data);
 console.log('Something');
-_/
-// !Really really important to understand here is to, this actually blocks the execution of the entire module.
+```
 
-// ?Many times, we have the situations where do have an async function that we want to return some data.
-// const getLastPost = async function () {
-// const res = await fetch('https://jsonplaceholder.typicode.com/posts');
-// const data = await res.json();
-// console.log(data);
-// return { title: data.at(-1).title, text: data.at(-1).body };
-// };
+Really really important to understand here is to, **this⤴ actually blocks the execution of the entire module.**
 
-// const lastPost = getLastPost();
-// console.log(lastPost); //its an object
-// !Remember calling an async function will always return a promise. it'll not return an actual data itself. So
-// Not very clear.
-// lastPost.then(last => console.log(last));
+Many times, we have the situations where do have an async function that we want to return some data.
 
-// So, Here for that we can use top-level await for this.
-// const lastPost2 = await getLastPost();
-// console.log(lastPost2); // working.
+```js
+const getLastPost = async function () {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const data = await res.json();
+  console.log(data);
+  return { title: data.at(-1).title, text: data.at(-1).body };
+};
+const lastPost = getLastPost();
+console.log(lastPost); //its an object
+```
 
-// ?One more important application of top level await. and that is the, that one module imports a module which has a top-level await, then the importing module will wait for the imported module to finish the blocking code.
+**Remember calling an async function will always return a promise.** it'll not return an actual data itself. So
+_lastPost.then(last => console.log(last))_;
 
-// ! ------------------------------ !
+**So, Here for that we can use top-level await for this.**
+
+```js
+const lastPost2 = await getLastPost();
+console.log(lastPost2); // working.
+```
+
+_One more important application of top level await. and that is the, that one module imports a module which has a top-level await, then the importing module will wait for the imported module to finish the blocking code._
+
+---
+
+## MODULE_PATTERN
 
 // Lecture 006
 // _The Module Pattern:
