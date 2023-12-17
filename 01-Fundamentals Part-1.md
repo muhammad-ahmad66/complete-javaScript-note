@@ -14,7 +14,7 @@
 10. [LOGICAL_OPERATORS](#LOGICAL_OPERATORS)
 11. [SWITCH_STATEMENT](#SWITCH_STATEMENT)
 12. [STATEMENT_VS_EXPRESSION](#STATEMENT_VS_EXPRESSION)
-13. [CONDITIONAL[TERNARY]\_OPERATOR](#CONDITIONAL[TERNARY]_OPERATOR)
+13. [CONDITIONAL-TERNARY_OPERATOR](#CONDITIONAL-TERNARY_OPERATOR)
 
 ## STARTING
 
@@ -23,6 +23,8 @@ console.log('Hi!!!!');
 let PI = 3.1415;
 console.log(javascriptIsFun);
 ```
+
+---
 
 ## TYPEOF
 
@@ -59,6 +61,8 @@ console.log(typeof year); //number
 console.log(typeof null); //object!!! this is a bug in javascript.
 ```
 
+---
+
 ## VARIABLES
 
 **THREE DIFFERENT WAYS TO DECLARING VARIABLE IN JS.**
@@ -73,6 +77,8 @@ const dateOfBirth = 2000;   // unchangeable
 ```
 
 **RECOMMENDED: ALWAYS TRY TO USE CONST AS MUCH AS POSSIBLE INSTEAD OF LET. (GOOD PRACTICE)**
+
+---
 
 ## JAVASCRIPT_OPERATORS
 
@@ -121,6 +127,8 @@ console.log(typeof isFullAge); //boolean
 **PRECEDENCE OF OPERATORS.** _check out MDN_
 _GENERALLY : MATH > COMPRESSION_
 
+---
+
 ## STING_AND_TEMPLATE_LATERALS
 
 ```js
@@ -165,6 +173,8 @@ with
 multi-lines.`);
 ```
 
+---
+
 ## DECISION_MAKING
 
 **IF STATEMENT**
@@ -186,6 +196,8 @@ const yearsLeft = 18 - age;
 console.log(`You are too young. Wait another ${yearsLeft} years.`);
 }
 ```
+
+---
 
 ## TYPE_CONVERSION_AND_COERCION
 
@@ -234,6 +246,8 @@ let n = 1 + '1'; //here n=11
 n = n - 1; //11-1=10
 console.log(n); //10 A/C to rule.
 ```
+
+---
 
 ## TRUTHY_AND_FALSY_VALUES:
 
@@ -414,7 +428,7 @@ if (23 < 54) {
 
 ---
 
-## CONDITIONAL[TERNARY]\_OPERATOR
+## CONDITIONAL-TERNARY_OPERATOR
 
 It is also like a _IF-ELSE_ and _SWITCH_ statements to check conditions, BUT it is an **_operator(expression)_** not a statement.<br>
 In if block only one line line of code is allowed and also we have to write mandatory else block after that. which we write separated by colon (:)
