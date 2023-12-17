@@ -1153,6 +1153,7 @@ const headerObserver = new IntersectionObserver(stickyNav, {
 });
 headerObserver.observe(header);
 ```
+[MDN_Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
 
 ## REVEAL_ELEMENTS
 
