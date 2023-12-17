@@ -10,6 +10,9 @@
 6. [CommonJS_Modules](#CommonJS_Modules)
 7. [COMMAND_LINE_INTRO](#COMMAND_LINE_INTRO)
 8. [BUNDLING_WITH_PARCEL_AND_NPM](#BUNDLING_WITH_PARCEL_AND_NPM)
+9. [WRITING_CLEAN_AND_MODERN_JSCODE](#WRITING_CLEAN_AND_MODERN_JSCODE)
+10. [DECLARATIVE_AND_FUNCTIONAL_PROGRAMMING](#DECLARATIVE_AND_FUNCTIONAL_PROGRAMMING)
+11. [FIX_SOME_BAD_CODES](#FIX_SOME_BAD_CODES)
 
 ---
 
@@ -209,11 +212,6 @@ _Remember,_ **Imports are not a copies of the exports**, They are instead like a
 ---
 
 ## TOP_LEVEL_AWAIT
-
-// Blocking code
-console.log('Start fetching users');
-await fetch('https://jsonplaceholder.typicode.com/users');
-console.log('Finish fetching users');
 
 **Top level await means await outside of any async function.**
 
@@ -427,119 +425,146 @@ To add a folder one by one this package.json comes to play.
 
 Lets delete node_modules folder.
 
-There is very easy way to get it back all we have to do is NPM and then **_install_** or i, but just without any package name. then npm will reach into our package.json file look all the dependencies and then install back.
+There is very easy way to get it back all we have to do is NPM and then **_npm install_** or i, but just without any package name. then npm will reach into our package.json file look all the dependencies and then install back.
 
 ---
 
 ## BUNDLING_WITH_PARCEL_AND_NPM
 
-// \*Building with Parcel and NPM Script:
+Module bundler we will use in this course is called **parcel**. It's super fast and easy to use and it works without any configurations.
+**Webpack** is also a most papular bundler and especially in react world, However it's so complex.
 
-// ! Module bundler we will use in this course is called parcel. It's super fast and easy to use and it works without any configurations.
-// ?Webpack is also a most papular bundler and especially in react world, However it's so complex.
+Parcel is just another build tool which is also on NPM, we will use npm to install it.
+**npm i parcel --save-dev** <br>
+**-dev** means it's a dev dependency, dev dependency is a tool we use to develop. not like any other modules.
 
-// Parcel is just another build tool which is also on NPM, we will use npm to install it.
-// !npm i parcel --save-dev
-// -dev means it's a dev dependency, dev dependency is a tool we use to develop. not like any other modules.
+_2 lectures skipped. should watch!_
 
-// ! 2 lectures skipped. should watch!
+## WRITING_CLEAN_AND_MODERN_JSCODE
 
-// !------------------------!
-// ?------------------------?
+Review_Writing Clean and Modern JS
 
-// Lecture 013
-// \*Review_Writing Clean and Modern JS
+- READABLE CODE
 
-// !READABLE CODE
-// We should write readable code. we should write code that others can understand it.
-// Avoid too clever and overcomplicated solutions.
-// Use descriptive variables and functions names.
+  - We should write readable code. we should write code that others can understand it.
+  - Avoid too clever and overcomplicated solutions.
+  - Use descriptive variables and functions names.
 
-// !GENERAL
-// Use DRY(don't repeat yourself) principle (refactor code.)
-// Don't pollute global namespace. it mans don't declare variables in global namespace. Instead encapsulate them into functions, classes or modules.
-// Don't use var. always use const if possible
-// Use strong type checks (=== and !==)
+- GENERAL
 
-// !Functions
-// Generally, Functions should do only one thing.
-// Don't use more than 3 function parameter.
-// Use default parameters whenever possible.
-// Generally, return same datatype as received.
-// Use arrow functions only when they make code more readable like in callback functions in arrays methods.
+  - Use DRY(don't repeat yourself) principle (refactor code.)
+  - Don't pollute global namespace. it mans don't declare variables in global namespace. Instead encapsulate them into functions, classes or modules.
+  - Don't use var. always use const if possible
+  - Use strong type checks (=== and !==)
 
-// !OOP
-// Use ES6 classes
-// Encapsulate data and don't mutate it from outside the class
-// Implement method chaining.
-// Do not use arrow functions as methods in regular objects.
+- FUNCTIONS
 
-// !Avoid Nested Code
-// Use early return (guard clauses)
-// Use ternary or logical operator instead of if
-// Use multiple if instead if/else-if
-// Avoid for loops, Instead use Array methods.
-// Avoid callback-based asynchronous APIs.
+  - Generally, Functions should do only one thing.
+  - Don't use more than 3 function parameter.
+  - Use default parameters whenever possible.
+  - Generally, return same datatype as received.
+  - Use arrow functions only when they make code more readable like in callback functions in arrays methods.
 
-// !Asynchronous Code
-// Consume promise with async/await for best readability.
-// Whenever possible, run promises in parallel(promise.all)
-// Handle errors and promise rejections.
+- OOP
 
-// !--------------------------! //
+  - Use ES6 classes
+  - Encapsulate data and don't mutate it from outside the class
+  - Implement method chaining.
+  - Do not use arrow functions as methods in regular objects.
 
-// Lecture 015
-// !Declarative and Functional Javascript Principles.
-// Two different paradigms of writing javascript code.
-// _1- Imperative code
-// We explain the computer every single step it has to follow to achieve a result.
-const arr = [2, 3, 4, 5];
-const doubled = [];
-for (let i = 0; i < arr.length; i++) doubled[i] = arr[i] _ 2;
+- AVOID NESTED CODES
 
-// _2- Declarative code [modern]
-// programmers tells the computer only What to do
-// we simply describe the way the computer should achieve the result
-const arr1 = [2, 3, 4, 5];
-const doubled1 = arr.map(n => n _ 2);
+  - Use early return (guard clauses)
+  - Use ternary or logical operator instead of if
+  - Use multiple if instead if/else-if
+  - Avoid for loops, Instead use Array methods.
+  - Avoid callback-based asynchronous APIs.
 
-//\* Functional Programming -sub paradigm of declarative
-// Writing program simply by combining multiple pure functions, while avoiding side effects and mutating data.
-// Very modern and papular way writing code in javascript world.
-// ?Side Effects:
-// Modification (mutation) of any data outside of the function (mutating external variables, logging to console, writing to DOM, etc)
-// ?Pure Functions:
-// Functions without any sie effects. Does not depend on external variables. Given the same input always return the same outputs.
-// ?Immutability:
-// States(data) is never modified, instead data(state) is copied and copy is mutated and returned.
+- ASYNCHRONOUS CODE
 
-// !-----------------------!
-// lecture 016
+  - Consume promise with async/await for best readability.
+  - Whenever possible, run promises in parallel(promise.all)
+  - Handle errors and promise rejections.
 
-// \*lETS FIX SOME BAD COE
+---
 
-// \*will make functions immutable.
-const spendingLimits = Object.freeze({
-jonas: 1500,
-muhammad: 100,
-});
-// !now we can't put any new property on it. in this object.
-// we can also use Object.freeze to make array immutable.
-// !NOTE: Object.freeze will freeze only first level of the object. It's not a deep freeze.
+## DECLARATIVE_AND_FUNCTIONAL_PROGRAMMING
 
-// !------ROUGH------! //
-// \*Fix some bad codes
-// const flatted = [
-// [0, 1],
-// [2, 3],
-// [4, 5],
-// ].reduce((acc, value) => {
-// debugger;
-// return acc.concat(value);
-// }, []);
+#### Declarative and Functional Javascript Principles.
 
-// console.log(flatted);
+**Two different paradigms of writing javascript code.**
 
+1. **Imperative code**,<br>
+   We explain the computer every single step it has to follow to achieve a result.
+
+   ```JS
+   const arr = [2, 3, 4, 5];
+   const doubled = [];
+   for (let i = 0; i < arr.length; i++) doubled[i] = arr[i] * 2;
+   ```
+
+2. **Declarative code** [modern]
+   programmers tells the computer only What to do<br>
+   we simply describe the way the computer should achieve the result
+   ```js
+   const arr1 = [2, 3, 4, 5];
+   const doubled1 = arr.map((n) => n * 2);
+   ```
+
+**Functional Programming** -sub paradigm of declarative<br>
+**Writing program simply by combining multiple pure functions, while avoiding side effects and mutating data.**
+Very modern and papular way writing code in javascript world.<br>
+**Side Effects:**<br>
+Modification (mutation) of any data outside of the function (mutating external variables, logging to console, writing to DOM, etc)<br>
+**Pure Functions:**<br>
+Functions without any sie effects. Does not depend on external variables. Given the same input always return the same outputs.
+**Immutability:**<br>
+States(data) is never modified, instead data(state) is copied and copy is mutated and returned.
+
+---
+
+## FIX_SOME_BAD_CODES
+
+- **will make functions immutable.**
+
+  ```JS
+  const spendingLimits = Object.freeze({
+  jonas: 1500,
+  muhammad: 100,
+  });
+  ```
+
+  Now we can't put any new property on it. in this object.
+  We can also use **Object.freeze** to make array immutable.
+  **NOTE:** **Object.freeze** will freeze only first level of the object. It's not a deep freeze.
+
+Fix some bad codes
+
+```JS
+const flatted = [
+[0, 1],
+[2, 3],
+[4, 5],
+].reduce((acc, value) => {
+debugger;
+return acc.concat(value);
+}, []);
+console.log(flatted);
+```
+
+```js
+const numbers = [4, 6, 7, 3, 20];
+const sum = function ([...numbers]) {
+  return numbers.reduce((acc, num) => {
+    return acc + num;
+  }, 0);
+};
+console.log(sum(numbers));
+```
+
+Reverse String 01
+
+```JS
 const str = 'Muhammad Ahmad';
 console.log(str.length);
 const array = [];
@@ -549,30 +574,31 @@ array.push(str[i]);
 }
 
 const reversed = array.join('');
+```
 
-const numbers = [4, 6, 7, 3, 20];
+Reverse String 02
 
-// ?Reverse String 01
-const sum = function ([...numbers]) {
-return numbers.reduce((acc, num) => {
-return acc + num;
-}, 0);
-};
-console.log(sum(numbers));
-
-// ?Reverse String 02
+```js
 const str1 = 'Hello, World!';
-const reversed1 = str.split('').reverse().join('');
-reversed; // "!dlroW ,olleH"
+const reversed1 = str1.split('').reverse().join('');
+reversed1; // "!dlroW ,olleH"
+```
 
-// ?Reverse String 03
+Reverse String 03
+
+```js
 const str2 = 'Hello, World!';
-const reversed2 = [...str].reverse().join('');
-console.log(reversed); // "!dlroW ,olleH"
+const reversed2 = [...str2].reverse().join('');
+console.log(reversed2); // "!dlroW ,olleH"
+```
 
-// Destructor with spread operator.
+Destructor with spread operator.
+
+```js
+const numbers = [4, 6, 7, 3, 20];
 const [first, second, third, ...others] = numbers;
 console.log('first: ', first);
 console.log('second: ', second);
 console.log('third: ', third);
 console.log('others: ', others);
+```
