@@ -7,6 +7,9 @@
 3. [EXPORTING_AND_IMPORTING_ES6_MODULES](#EXPORTING_AND_IMPORTING_ES6_MODULES)
 4. [TOP_LEVEL_AWAIT](#TOP_LEVEL_AWAIT)
 5. [MODULE_PATTERN](#MODULE_PATTERN)
+6. [CommonJS_Modules](#CommonJS_Modules)
+7. [COMMAND_LINE_INTRO](#COMMAND_LINE_INTRO)
+8. [BUNDLING_WITH_PARCEL_AND_NPM](#BUNDLING_WITH_PARCEL_AND_NPM)
 
 ---
 
@@ -259,148 +262,177 @@ _One more important application of top level await. and that is the, that one mo
 
 ## MODULE_PATTERN
 
-// Lecture 006
-// _The Module Pattern:
-// The main goal of the module pattern is encapsulate functionality to have private data, and to expose a public API. The base way to achieving that is by simply using a function, because functions give us private data by default and allow us to return values. which can become our public API.
-// ?Let's see how the module pattern is implemented. Usually we write an IIFE function actually.
-/_
+The main goal of the module pattern is encapsulate functionality to have private data, and to expose a public API. The base way to achieving that is by simply using a function, because functions give us private data by default and allow us to return values. which can become our public API.
+
+Let's see how the module pattern is implemented. Usually we write an **IIFE** function actually.
+
+```js
 const ShoppingCart2 = (function () {
-const cart = [];
-const shippingCost = 10;
-const totalPrice = 237;
-const totalQuantity = 23;
+  const cart = [];
+  const shippingCost = 10;
+  const totalPrice = 237;
+  const totalQuantity = 23;
 
-const addToCart = function (product, quantity) {
-cart.push({ product, quantity });
-console.log(
-`${quantity} ${product} added to cart (shipping cost is ${shippingCost})`
-);
-};
+  const addToCart = function (product, quantity) {
+    cart.push({ product, quantity });
+    console.log(
+      `${quantity} ${product} added to cart (shipping cost is ${shippingCost})`
+    );
+  };
 
-const orderStock = function (product, quantity) {
-console.log(`${quantity} ${product} ordered from supplier`);
-};
-// !Right now all of these data are private because these are inside of the scope of function. Now all we have to do is to return some of this stuff in order to basically return a public API.
-// to do data we simply return an object which contains the stuff that we want to make public.
-return {
-addToCart,
-cart,
-totalPrice,
-totalQuantity,
-}; // !However right now we are not storing these returned object anywhere. To fix this we can simply assign this IIFE to any variable (here to 'ShoppingCart2')
+  const orderStock = function (product, quantity) {
+    console.log(`${quantity} ${product} ordered from supplier`);
+  };
+  // Right now all of these data are private because these are inside of the scope of function.
+  // Now all we have to do is to return some of this stuff in order to basically return a public API.
+  // To do data we simply return an object which contains the stuff that we want to make public.
+  return {
+    addToCart,
+    cart,
+    totalPrice,
+    totalQuantity,
+  };
+  // !However right now we are not storing these returned object anywhere. To fix this we can simply assign this IIFE to any variable (here to 'ShoppingCart2' ⤴)
 })();
-\*/
-// !This function is only created once because the goal of this function not to reuse code by running it multiple times. The Only purpose of this function is to create a new scope and return data just once.
+```
 
-// ShoppingCart2.addToCart('apple', 4);
-// ShoppingCart2.addToCart('pizza', 4);
-// console.log(ShoppingCart2.cart); // !it's public, returning.
-// console.log(ShoppingCart2.shoppingCost); // !undefined, b/c its private.
-// !Why, all of these?
-// ?Because this function(IIFE) will execute once in the beginning and it will returning that object, and assigned it to the variable('ShoppingCart2'), then we are able to use all of these and also manipulate the data that is inside of that function.
-// !In simple words the answer of HOW ALL OF THESE WORKS?? is due to closures, remember allow a function to have access to all the variables that were present at its birthplace.
+This function is only created once because the goal of this function not to reuse code by running it multiple times. The Only purpose of this function is to create a new scope and return data just once.
 
-// !------------------------!
+```js
+// Using the Public API
+ShoppingCart2.addToCart('apple', 4);
+ShoppingCart2.addToCart('pizza', 4);
+console.log(ShoppingCart2.cart); // !it's public, returning.
+console.log(ShoppingCart2.shoppingCost); // !undefined, b/c its private.
+```
 
-// Lecture 008
-// \*CommonJS Modules:
-// Besides native ES modules and modules pattern there are also module systems that have been used by javascript in the past. They relied on some external implementations.
-// !Two examples are AMD Modules and CommonJs Modules.
-// ?CommonJs modules are important for us, because they have been used in Node.js. (ES modules is very recently implemented in node.js)
-// Remember a Node.js is a way of running javascript on a web server outside of a browser.
-// !Almost all the modules in the NPM repository still use the commonJS module system. reason for that npm was originally only intended for node.
+**Why, all of these?**
+Because this function(IIFE) will execute once in the beginning and it will returning that object, and assigned it to the variable('ShoppingCart2'), then we are able to use all of these and also manipulate the data that is inside of that function.
 
-// _Export
-/_
+In simple words the answer of HOW ALL OF THESE WORKS?? is due to **closures**, remember it allow a function to have access to all the variables that were present at its birthplace.
+
+---
+
+## CommonJS_Modules:
+
+Besides native **ES Modules** and **Modules Pattern** there are also module systems that have been used by javascript in the past. They relied on some external implementations.
+
+**Two examples are AMD Modules and CommonJs Modules.**
+
+CommonJs modules are important for us, **because they have been used in Node.js**. (ES modules is very recently implemented in node.js)
+
+Remember a Node.js is a way of running javascript on a web server outside of a browser.
+Almost all the modules in the NPM repository still use the commonJS module system. reason for that npm was originally only intended for node.
+
+#### Export
+
+```js
 export.addToCart = function (product, quantity) {
 cart.push({ product, quantity });
 console.log(
 `${quantity} ${product} added to cart (shipping cost is ${shippingCost})`
 );
 };
-\*/
-// !This is not going to work in the browser but it would work in node.js. this export keyword here is basically an object, that is not defined here in our code also not in the browser. But in node.js it's an important object that is used.
+```
 
-// \*Import
-// const {addToCart} = require('./shoppingCard.js');
-// !here also require is not defined in browser but it's in node.js. because this is past of the commonJS specification.
+**This is not going to work in the browser but it would work in node.js.** This export keyword here is basically an object, that is not defined here in our code also not in the browser. But in node.js it's an important object that is used.
 
-// ! -------------------------- !
-// Lecture 009
-// \*A Brief Introduction to the command line
+#### Import
 
-// ! -------------------------- !
-// Lecture 010
-// \*Introduction to NPM
-// Node Package Manager
-// !It's both a software on our computer and a package repository.
+```js
+const { addToCart } = require('./shoppingCard.js');
+```
 
-// ?Why we need NPM?
-// ?Why we need managing packages and dependencies in our project?
-// Back in a day before we had NPM we use to include an external libraries we write into html, using the script tag. this may lead some problems.
+here also require is not defined in browser but it's in node.js. because this is past of the commonJS specification.
 
-// ! npm -v command
-// to check nodejs is installed or not(it will display version of nodeJS)
+---
 
-// ! In each project where we want to use npm we need to initializing it with nmp init command, then they will ask some question.
-// ? After answering all questions we end up with a new file called package.json
+## COMMAND_LINE_INTRO
 
-// Now we install leaflet library using npm.
-// !npm install leaflet
-// Also we can write !nmp i leaflet, instead of install just i.
-// !After installing we see in package.json file, there is a new field was created for the dependencies. and dependency that we there now is leaflet, with it's version.
-// !Now second thing here is, we have new folder called node_modules, and this folder contains the leaflet folder,
+**A Brief Introduction to the command line**
 
-// ?If we wanted to use this library that wouldn't be easy without a module bundler, That's because this library actually uses the commonJS module system. there we can't directly import it into our code.
-// !For now leave leaflet library.
+#### Introduction to NPM
 
-// ?Instead let's see How we install and import one of the most popular javascript libraries which is Lodash.
-// !Lodash is a collection of ton of useful functions for arrays, objects, functions, dates and more.
-// if we install like npm install lodash, once again that use commonJS. we can't use commonJS module without module bundler. So here is a special version which is called lodash-es, es because fo es module.
-// !npm i lodash-es
-// Here in lodash folder we have one file for each of methods that are available in Lodash.
+**Node Package Manager:** It's both a software on our computer and a package repository.
 
-// ?we will include file for cloning objects. (cloneDeep.js) So, we just import that file.
-// !in file we see there is exporting default, so could give any name.
-// import cloneDeep from './node_modules/lodash-es/cloneDeep.js';
+_Why we need NPM?_
+_Why we need managing packages and dependencies in our project?_
+_Back in a day before we had NPM we use to include an external libraries we write into html, using the script tag. this may lead some problems._
 
-// ?whey i cloneDeep?
-// \*Because it very complex to coping a nested object.
+**npm -v command**
+_To check nodejs is installed or not(it will display version of nodeJS)_
 
-// const state = {
-// cart: [
-// { product: 'bread', quantity: 5 },
-// { product: 'pizza', quantity: 8 },
-// ],
+**npm init command**
+In each project where we want to use npm we need to initializing it with npm init command, then they will ask some question.
+After answering all questions we end up with a new file called package.json
 
-// user: { loggedIn: true },
-// }; // !this is a deeply nested object.
+Now we install leaflet library using npm, just for an example
+_npm install leaflet_
+Also we can write _nmp i leaflet_, instead of install just i.
+After installing we see in package.json file, there is a new field was created for the dependencies. and dependency that we there now is leaflet, with it's version.
+Now second thing here is, we have new folder called node_modules, and this folder contains the leaflet folder,
 
-// \*Code to copy nested object by normal javascript.
-// const stateClone = Object.assign({}, state);
-// console.log(stateClone); // ?It looks exact same as in state object, However see what happen if we change one of the nested objects.
-// state.user.loggedIn = false; // !Now we see in copy it's also false.
+If we wanted to use this library that wouldn't be easy without a module bundler, That's because this library actually uses the commonJS module system. there we can't directly import it into our code.
+For now leave leaflet library.
 
-// !Due to this using of CloneDeep is good idea for deep copy instead of using object.assign.
+Instead let's see How we install and import one of the most popular javascript libraries which is **Lodash**.<br>
+**Lodash** is a collection of ton of useful functions for arrays, objects, functions, dates and more.
+If we install like npm install lodash, once again that use commonJS. **We can't use commonJS module without module bundler.** So here is a special version which is called **lodash-es**, es because fo es module.
+_npm i lodash-es_
+Here in lodash folder we have one file for each of methods that are available in Lodash.
 
-// const stateDeepClone = cloneDeep(state);
+We will include file for cloning objects. (cloneDeep.js) So, we just import that file.
+In file we see there is exporting default, so could give any name.
 
-// console.log(stateDeepClone); // now we will change
-// state.user.loggedIn = false; // !Now it's not changed in DeepClone...
+```js
+import cloneDeep from './node_modules/lodash-es/cloneDeep.js';
+```
 
-// \* Now will talk little bit about package.json file:
-// ?Lets say that we want to move our project to another computer OR also share it with another developer OR even check it into version control like git. In all these scenarios we should never include the node modules folder.
-// ?There is no reason to include this huge node modules folder, because in the real project it will actually be really, really huge.
-// ! To add a folder one by one this package.json comes to play.
+**Why we used cloneDeep?**
+Because it very complex to coping a nested object.
 
-// !Lets delete node_modules folder.
+```js
+const state = {
+  cart: [
+    { product: 'bread', quantity: 5 },
+    { product: 'pizza', quantity: 8 },
+  ],
 
-// ?There is very easy way to get it back all we have to do is NPM and then install or i, but just without any package name. then npm will reach into our package.json file look all the dependencies and then install back.
+  user: { loggedIn: true },
+}; // !this is a deeply nested object.
+```
 
-// ! ----------------------- ! //
-// ? ----------------------- ? //
+#### Code to copy nested object by normal javascript.
 
-// Lecture 011
+```js
+const stateClone = Object.assign({}, state);
+console.log(stateClone); // ?It looks exact same as in state object, However see what happen if we change one of the nested objects.
+state.user.loggedIn = false; // !Now we see in copy it's also false.
+```
+
+**Due to this using of CloneDeep is good idea for deep copy instead of using object.assign.**
+
+```js
+const stateDeepClone = cloneDeep(state);
+
+console.log(stateDeepClone); // now we will change
+state.user.loggedIn = false; // !Now it's not changed in DeepClone...
+```
+
+#### Now will talk little bit about package.json file:
+
+Lets say that we want to move our project to another computer OR also share it with another developer OR even check it into version control like git. In all these scenarios **we should never include the node modules folder.**
+There is no reason to include this huge node modules folder, because in the real project it will actually be really, really huge.
+To add a folder one by one this package.json comes to play.
+
+Lets delete node_modules folder.
+
+There is very easy way to get it back all we have to do is NPM and then **_install_** or i, but just without any package name. then npm will reach into our package.json file look all the dependencies and then install back.
+
+---
+
+## BUNDLING_WITH_PARCEL_AND_NPM
+
 // \*Building with Parcel and NPM Script:
 
 // ! Module bundler we will use in this course is called parcel. It's super fast and easy to use and it works without any configurations.
