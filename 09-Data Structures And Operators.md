@@ -21,6 +21,9 @@
 8. [ENHANCED_OBJECT_LITERALS](#enhanced_object_literals)
 9. [OPTIONAL_CHAINING](#optional_chaining)
 10. [LOOPING_OVER_OBJECTS](#looping_over_objects)
+11. [DATA_STRUCTURE](#data_structure)
+    1. [SET_DATA_STRUCTURE](#set_data_structure)
+    2. [MAP_DATA_STRUCTURE](#map_data_structure)
 
 ---
 
@@ -858,114 +861,187 @@ else console.log('Users Array is Empty!');
 ## LOOPING_OVER_OBJECTS
 
 _We can loop over the property name or values or both of them_  
-**_Subheading Looping over Property names [keys]_**
+**_Looping over Property names [keys]_**
 
-// [ WE use Object.keys(objectName)]
+WE use **Object.keys(objectName)**  
+we still use for of loop but indirect way. **we will not loop directly over object instead we loop over array.** lets check...
 
-// we still use for of loop but indirect way. we't loop directly over object instead we loop over array. lets check
-
+```js
 const property = Object.keys(restaurant.openingHours);
-console.log(property); // By writing this it will print all the properties in openingHours within Array., So acctually it will get all the keys from object and store in array and then we can itreate them by looping.
-// console.log(`We are open on ${property.length} days.`);
+console.log(property);
+```
+
+**By writing this it will print all the properties in openingHours within Array.** So actually it will get all the keys from object and store in array and then we can iterate them by looping.
+
+```js
+const property = Object.keys(restaurant.openingHours);
+console.log(property);
+console.log(`We are open on ${property.length} days.`);
+
 let openStr = `We are open on ${property.length} days.`;
 for (const day of property) {
-openStr += `${day},`
+  openStr += `${day},`;
 }
 console.log(openStr);
 
 for (const day of Object.keys(restaurant.openingHours)) {
-console.log(day);
+  console.log(day);
 }
+```
 
-// Subheading: Looping over property Values:
-// [We use Objectt.values(ObjectName)]
+**_Looping over property Values_**  
+We use **Object.values(ObjectName)**
 
+```js
 const values = Object.values(restaurant.openingHours);
 console.log(values);
+```
 
-// Subheading: Looping over Both [entire object] (keys and values)
-// [We use Object.entries(ObjectName)]
-// It will convert entire object into an array. in key value pair, Each key value pair will also store in array at index 0 key and at index 1 value.
+**_Subheading: Looping over Both [entire object] (keys and values)_**  
+We use **Object.entries(ObjectName)**  
+**It will convert entire object into an array. In key value pair, Each key value pair will also store in array at index 0 key and at index 1 value.**
 
+```js
+const me = {
+  name: 'Muhammad',
+  mail: 'me@gmail.com',
+  job: 'student',
+  friends: ['huzaifa', 'saud', 'shoaib'],
+};
+
+const meEntries = Object.entries(me);
+console.log(meEntries);
+
+// OUTPUT
+[
+  ['name', 'Muhammad'],
+  ['role', 'admin'],
+  ['mail', 'me@gmail.com'],
+  ['job', 'student'],
+  ['roNo', 20],
+  ['friends', ['huzaifa', 'saud', 'shoaib']],
+];
+```
+
+```JS
 const entries = Object.entries(restaurant.openingHours);
 console.log(entries);
-
 for (const [key, { open, close }] of entries) {
 // console.log(`key is: ${x[0]} and value is: ${x[1]}`);
 console.log(`On ${key} we open at ${open} and close at ${close}`);
 }
+```
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//Heading Heading
-/////////////////////////////
-// javascript Datastructures
-/////////////////////////////
+---
 
-// In past there are only two build-in datastructure of javascript (Array and Objects. ) . But in ES6 two more datastructure were intorduced. and that are Sets and Maps.
+## DATA_STRUCTURE
 
-////////////////////////////////////////////////////////////////////////////////
-// Heading
-// Sets Datastructure
+In past there are only two build-in data structure of javascript (**Array** and **Objects**. ) . But in ES6 two more data structure were intrOduced, and that are **Sets** and **Maps**.
 
-// Sets is just a collections of unique values. sets can never have any duplacates value
-const orderSet = new Set(['Pizza', 'Pasta', 'Pizza', 'Risotto', 'Pasta', 'Pizza']) // we define set by using new keyword with set and pass any iterable to the set. and most common iterable is array.
-console.log(orderSet); //Only three are printed. all duplucate values are count as one.
+### SET_DATA_STRUCTURE
 
-//and we see in console that a set is just like an array.
+_**Set** is just a collections of unique values. sets can never have any duplicate value._
+
+```js
+const orderSet = new Set([
+  'Pizza',
+  'Pasta',
+  'Pizza',
+  'Risotto',
+  'Pasta',
+  'Pizza',
+]);
+
+console.log(orderSet); //Only three are printed. all duplicate values are count as one.
+```
+
+we define set by using new keyword with set and pass any iterable to the set. and most common iterable is an array. All duplicates are counted one.
+
+And we see in console that a set is just like an array.
+
+```js
 console.log(new Set('Muhammad'));
+```
 
-//Subheading: size: we use size in set instead of length in array.
-console.log(orderSet.size); // NOTE In set .size use insted of .length
+**_size:_** _we use size in set instead of length in array._
 
-//Subheading: has method: just like a includes method in array
-console.log(orderSet.has('Pizza')) // true// by using .has method we can check pizza is element of orderSet or not?
-console.log(orderSet.has('Pasta')) // true // has method is similar to includes method in array
+```js
+console.log(orderSet.size); // NOTE In set .size use instead of .length
+```
 
-//Subheading: add method; just like push method in aary
-orderSet.add('Koi r');
-orderSet.add('Kuch b');
+**_has method:_** _Just like a **includes** method in array_
+
+```js
+console.log(orderSet.has('Pizza')); // true
+// By using .has method we can check pizza is element of orderSet or not?
+
+console.log(orderSet.has('Pasta')); // true
+// has method is similar to includes method in array
+```
+
+**_add method:_** _Just like **push** method in array_
+
+```js
+orderSet.add('Burger');
+orderSet.add('Chips');
 console.log(orderSet);
+```
 
-//Subheading: delete method: just like pop in array.
-orderSet.delete('Koi r');
-orderSet.delete('Kuch b');
+**_delete method:_** _Just like pop in array._
+
+```js
+orderSet.delete('Burger');
+orderSet.delete('Chips');
 console.log(orderSet);
+```
 
-//Subheading: clear method: to delete all of elemetn from the set.
-// orderSet.clear();
-// console.log(orderSet); //DELETED
+**_clear method:_** _To delete all of elements from the set._
 
-// Subheading
-// How to retrive an element from a sets??????????????????
+```js
+orderSet.clear();
+console.log(orderSet); // DELETED
+```
 
-// Like array it does't works on index number or order of element.
-// There is no way to get elements from the sets.
+_**How to retrieve an element from a sets???**_
 
-/// NOTE : Sets are iterables So, we can loop over it.
+**_Like array it does't works on index number or order of element._**  
+_There is no way to get elements from the sets._
 
+**Sets are iterables So, we can loop over it.**
+
+```js
 for (const order of orderSet) {
-console.log(order);
+  console.log(order);
 }
+```
 
-// sets are use to remove duplecates from the arrays
-// Example OR Application of Sets
+_**Example OR Application of Sets**_  
+**Sets are use to remove duplicates from the Arrays.**
+
+```js
 const staff = ['waiter', 'chef', 'waiter', 'manager', 'chef', 'waiter'];
-// we want to remove all the duplecates so,
+
+// we want to remove all the duplicates so,
 const staffUnique = new Set(staff);
+
 console.log(staffUnique);
-// we wants to put this set into an array so,
-const staffUniqueArray = [...new Set(staff)]; // here spread operator will work b/c set is also an iterable.
+```
+
+Now we wants to put this set into an array so, here spread operator will work b/c set is also an iterable.
+
+```js
+const staffUniqueArray = [...new Set(staff)];
 console.log(staffUniqueArray);
 console.log(staffUnique.size);
+
 console.log(new Set('Muhammad Ahmad').size); // 8 // not included repeated one.
+```
 
-// Sets are a datastructure that holds unique values,
-\*/
-/////////////////////////////////////////////////////////////////////////////////////////////////
+**_Sets are a data structure that holds unique values._**
 
-////////////////////////////
-// Heading
-// Maps Datastructure
+---
+
+### MAP_DATA_STRUCTURE
 
 // Just like an Objects, In Maps data is also store in key value pair. big differecne is that in objects we can have only string type of keys, but in maps we can have different datatypes of keys, it can even be objects, arrays or other maps.
 /\*
