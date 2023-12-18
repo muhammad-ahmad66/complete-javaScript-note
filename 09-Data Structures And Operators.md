@@ -17,6 +17,10 @@
    2. [BY_AND_OPERATOR](#by_and_operator)
 5. [NULLISH_COALESCING_OPERATOR](#nullish_coalescing_operator)
 6. [LOGICAL_ASSIGNMENT_OPERATORS](#logical_assignment_operators)
+7. [FOR_OF_LOOP](#for_of_loop)
+8. [ENHANCED_OBJECT_LITERALS](#enhanced_object_literals)
+9. [OPTIONAL_CHAINING](#optional_chaining)
+10. [LOOPING_OVER_OBJECTS](#looping_over_objects)
 
 ---
 
@@ -604,8 +608,8 @@ const guestCorrect = restaurant.numGuests ?? 10;
 console.log(guestCorrect); // Wow!!! Now it's 0.
 ```
 
-Nullish Coalescing operator works with the ides or with the concept of **nullish values** instead of **falsy values.**  
-**Nullish Values** are: **null** and **undefined** only, (not 0 and '').
+**Nullish Coalescing operator** works with the ides or with the concept of **nullish values** instead of **falsy values.**  
+**Nullish Values** are: **null** and **undefined** only, (not **0** and **''**).
 
 ---
 
@@ -659,192 +663,203 @@ console.log(rest2);
 
 FOR-OF LOOP [ NEWER WAY TO LOOPING OVER ARRAYS ]
 
-// const menu = [...restaurant.starterMenu, ...restaurant.mainMenu];
+```js
+const menu = [...restaurant.starterMenu, ...restaurant.mainMenu];
+```
 
-// for (const item of menu) {
-// console.log(item);
-// };
-// // One problem with for off loop : what we do when need value as well as current index. finding index is pit pain!!!
-// // Currently this problem is solved:
-// // for that we use entries method. let's see
-
-// for (const item of menu.entries()) {
-// console.log(item);
-// };
-// //NOTE: Whenever we use entries method in each itration it will make an array which contain the index of current element of an array and element itself. (so each iteration item is an arry in this example)
-// //Remember: Here item itself is an array which have two elements, at index 0 it hold the index of current element in original array and at index 1 it hold the element itself at that position.
-// for (const item of menu.entries()) {
-// console.log(`${item[0] + 1}: ${item[1]}`); // +1 to start from 1.  
-// };
-
-// // Onde step further:
-// // As an item is an array in each iteration so, we can destructure it and put it in two variables; one will hold the index number and another value itself
-
-// for (const [i, el] of menu.entries()) {
-// console.log(`${i + 1}: ${el}`); // i+1 to start from 1, not from 0
-// }
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-//Heading
-////////////////////////////////////////////
-// ENHANCED OBJECT LITERALS [ NEWER IN ES6 ]
-////////////////////////////////////////////
-
-// Rgularly we use object literals to define any object. here we will disscuss more inhance object literals
-// ES6 introduced three ways, which make easier to write object literals.
-
-// 1-)lets take restaurent example
-
-//Let us consider we have an object outside of any object like this,(openingHours is outside bjecct of restaurant object) and we wants to that outsider object inside the main object.
-// consider we have to take openingHours object inside the restaurant as well. to do that we simply add that object by exact name in it
-
-// 2-) writing methods into an objects.
-// we can write methods without writing function and colon like this addd(){};
-// in restaurant object implemeted in first two methods.
-
-// 3-) we can compute /calculate properties
-//exampel, use weekdays array and compute in object
-// const weekDays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-// const openingHours = {
-// // thu: { //instead of thu we can compute above array and take thu from there like this:
-// [weekDays[3]]: {
-// open: 12,
-// close: 22,
-// },
-// [weekDays[4]]: {
-// open: 11,
-// close: 23,
-// },
-// sat: {
-// open: 0, // Open 24 hours
-// close: 24,
-// },
-// };
-
-// const restaurant = {
-// name: 'Classico Italiano',
-// location: 'Via Angelo Tavanti 23, Firenze, Italy',
-// categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
-// starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
-// mainMenu: ['Pizza', 'Pasta', 'Risotto'],
-// //1.Object literal
-// openingHours, //just wrote outsider object name.
-
-// order(starterIndex, mainIndex) {
-// return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
-// },
-// orderDelivery({ starterIndex = 1, mainIndex = 0, address, time = '12:00' }) { // Destrucuring object into variables in parameter
-// console.log(`Order Received! ${this.starterMenu[starterIndex]} and ${this.mainMenu[mainIndex]} will be delivered to ${address} at ${time}.`);
-// },
-// orderPasta: function (ing1, ing2, ing3) {
-// console.log(`Here is your declicious pasta with ${ing1}, ${ing2} and ${ing3}`);
-// },
-// orderPizza: function (mainIngredient, ...otherIngredients) {
-// console.log(mainIngredient);
-// console.log(otherIngredients);
-// }
-// };
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-//Heading
-////////////////////////////////////////////////////////////////
-// OPTIONAL CHAINING (?) [ NEWER FEATURE OF OBJECT & ARRAY IN ES6 ]
-///////////////////////////////////////////////////////////////
-
-const restaurant = {
-name: 'Classico Italiano',
-location: 'Via Angelo Tavanti 23, Firenze, Italy',
-categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
-starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
-mainMenu: ['Pizza', 'Pasta', 'Risotto'],
-openingHours: {
-thu: {
-open: 12,
-close: 22,
-},
-fri: {
-open: 11,
-close: 23,
-},
-sat: {
-open: 0, // Open 24 hours
-close: 24,
-},
-},
-
-order(starterIndex, mainIndex) {
-return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
-},
-orderDelivery({ starterIndex = 1, mainIndex = 0, address, time = '12:00' }) { // Destrucuring object into variables in parameter
-console.log(`Order Received! ${this.starterMenu[starterIndex]} and ${this.mainMenu[mainIndex]} will be delivered to ${address} at ${time}.`);
-},
-orderPasta: function (ing1, ing2, ing3) {
-console.log(`Here is your declicious pasta with ${ing1}, ${ing2} and ${ing3}`);
-},
-orderPizza: function (mainIngredient, ...otherIngredients) {
-console.log(mainIngredient);
-console.log(otherIngredients);
+```js
+for (const item of menu) {
+  console.log(item);
 }
-};
+```
 
-/\*
-// console.log(restaurant.openingHours.mon); //undefined! b/c mon is not defined in object
-// console.log(restaurant.openingHours.mon.open); //error b/c undefined.something will give error
-// to avoid this kind of error first we check
+**_One problem with for off loop:_** _what we do when need value as well as current index. finding index is pit pain_  
+**Currently this problem is solved:** For that we use **entries method**. let's see
+
+```js
+for (const item of menu.entries()) {
+  console.log(item);
+}
+```
+
+**Whenever we use entries method in each iteration it will make an array which contain the index of current element of an array and element itself**. (so each iteration item is an array in this example).  
+**So Here item itself is an array which have two elements**, at index 0 it hold the index of current element in original array and at index 1 it hold the element itself at that position.
+
+```js
+for (const item of menu.entries()) {
+  console.log(`${item[0] + 1}: ${item[1]}`); // +1 to start from 1.
+}
+```
+
+### One step further
+
+As an item is an array in each iteration so, we can destructure it and put it in two variables; one will hold the index number and another value itself
+
+```js
+for (const [i, el] of menu.entries()) {
+  console.log(`${i + 1}: ${el}`); // i+1 to start from 1, not from 0
+}
+```
+
+---
+
+## ENHANCED_OBJECT_LITERALS
+
+ENHANCED OBJECT LITERALS [ NEWER IN ES6 ]
+
+Regularly we use object literals to define any object. Here we will discuss more enhanced object literals
+
+### ES6 introduced three ways, which make easier to write object literals
+
+1. Lets take restaurant example
+
+   Let us consider we have an object outside of any object like this, (openingHours is outside of restaurant object) and we wants to that outsider object inside the main object.  
+   Consider we have to take openingHours object inside the restaurant as well. To do that we simply add that object by exact name in it
+
+2. Writing methods into an objects.  
+   We can write methods without writing function and colon like this add(){};  
+   In restaurant object implemented in first two methods.
+
+3. We can compute/calculate properties
+   example, use weekdays array and compute in object
+
+   ```js
+   const weekDays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+   const openingHours = {
+     // thu: {  // instead of thu we can compute above array and take thu from there like this:
+     [weekDays[3]]: {
+       open: 12,
+       close: 22,
+     },
+     [weekDays[4]]: {
+       open: 11,
+       close: 23,
+     },
+     sat: {
+       open: 0, // Open 24 hours
+       close: 24,
+     },
+   };
+   const restaurant = {
+     name: 'Classico Italiano',
+     location: 'Via Angelo Tavanti 23, Firenze, Italy',
+     categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
+     starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
+     mainMenu: ['Pizza', 'Pasta', 'Risotto'],
+     // 1.Object literal
+     openingHours, // just wrote outsider object name.
+
+     order(starterIndex, mainIndex) {
+       return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
+     },
+     orderDelivery({
+       starterIndex = 1,
+       mainIndex = 0,
+       address,
+       time = '12:00',
+     }) {
+       console.log(
+         `Order Received! ${this.starterMenu[starterIndex]} and ${this.mainMenu[mainIndex]} will be delivered to ${address} at ${time}.`
+       );
+     },
+     orderPasta: function (ing1, ing2, ing3) {
+       console.log(
+         `Here is your delicious pasta with ${ing1}, ${ing2} and ${ing3}`
+       );
+     },
+     orderPizza: function (mainIngredient, ...otherIngredients) {
+       console.log(mainIngredient);
+       console.log(otherIngredients);
+     },
+   };
+   ```
+
+---
+
+## OPTIONAL_CHAINING
+
+OPTIONAL CHAINING (?) [ NEWER FEATURE OF OBJECT & ARRAY IN ES6 ]  
+_Used restaurant data to test_
+
+```js
+console.log(restaurant.openingHours.mon); //undefined! b/c mon is not defined in object
+console.log(restaurant.openingHours.mon.open); //error b/c undefined.something will give error
+
+// To avoid this kind of error first we check if it exists
+
 if (restaurant.openingHours.mon) {
-console.log(restaurant.openingHours.mon.open)
+  console.log(restaurant.openingHours.mon.open);
 }
-// We can write this king of things very easily with optional chaining.
-// Remember if any certain property does't exist then optional chaining will return undefined immeditely.
-// Above code with optional chaining:
+```
 
-// console.log(restaurant.openingHours.mon.open); //error!!!!!!!!
-console.log(restaurant.openingHours.mon?.open); //undefined. b/c mon is not defined in object.. Only mon exist then print open. otherwise immeditely returns undefined.
-// NOTE: Exist means nullish property(should not null and undefined. )
+**We can write this king of things very easily with optional chaining**  
+I**f any certain property does't exist then optional chaining will return undefined immediately.**  
+_Above code with optional chaining:_
 
-// We can have multiple optional cahining.
+```js
+console.log(restaurant.openingHours.mon.open); //error!!!!!!!!
+console.log(restaurant.openingHours.mon?.open); //undefined. b/c mon is not defined in object..
+// Only if mon exist then print open. otherwise immediately returns undefined.
+```
+
+**Exist means nullish property, should not null and undefined**  
+We can have multiple optional chaining.
+
+```js
 if (restaurant.openingHours && restaurant.openingHours.mon) {
-console.log(restaurant.openingHours.mon.open)
 }
+console.log(restaurant.openingHours?.mon?.open); //undefined.
+```
 
-//rewriting code with multiple optional chaining.
-console.log(restaurant.openingHours?.mon?.open); //undefined. //now undefined.
+Example:
 
-// Example:
+```js
 const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
 for (const day of days) {
-console.log(day);
-const open = restaurant.openingHours[day]?.open ?? 'close'; // Reminder: we use baraket notation in object when we want to use a variable name as a property name. this will be the same as retaurant.openingHours.mon phr tue phr wed..here the day name will come dynamically from the days array.
-console.log(`On day ${day}, we open at ${open}`);
+  console.log(day);
+  const open = restaurant.openingHours[day]?.open ?? 'close';
+  // Reminder: we use bracket notation in object when we want to use a variable name as a property name.
+  // This will be the same as restaurant.openingHours.mon phr tue phr wed..here the day name will come dynamically from the days array.
+  console.log(`On day ${day}, we open at ${open}`);
 }
+```
 
-// On methods:
-// Optional chaining on methods: It also works calling methods. We can check a method is exist or not before calling.
-console.log(restaurant.order?.(0, 1) ?? 'method does\'t exist'); //exist a method named by order
-console.log(restaurant.orderRisotto?.(0, 1) ?? 'method does\'t exist'); //Not exist an method named by orderRisotto
+### On methods
 
-// On Arrays:
-// Optional cahingin also works on arrays. we can use it to check if an array is empty?
-const users = [{ name: 'Jonas', email: 'Hello@jonas.io' }];
-console.log(users[0]?.name ?? 'User array empty!') //jons// it will check user[0] exist or not if exist .name will print and if not exist, print 'user array empty!'.
-// Without optional cahining we may write like this:
-if (users.length > 0) console.log(users[0].name)
-else (console.log('Users Array is Empty!'));
+**_Optional chaining on methods:_** _It also works calling methods. We can check a method is exist or not before calling._
 
-// Remember : Optional chaining operator and nullish coalescing operator are alwas use with each other. They both we use together to do some thing In case we don't get result from the object.
+```javascript
+console.log(restaurant.order?.(0, 1) ?? "method does't exist"); //exist a method named by order
+console.log(restaurant.orderRisotto?.(0, 1) ?? "method does't exist"); //Not exist an method named by orderRisotto
+```
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//Heading
-////////////////////////
-// LOOPING OVER OBJECTS
-////////////////////////
+### On Arrays
 
-// We can loop over the property name or values or both of them
+**_Optional chaining also works on arrays._** _we can use it to check if an array is empty?_
 
-// Subheading Looping over Property names [keys]:
+```js
+const users = [{ name: 'Muhammad', email: 'Hello@me.io' }];
+console.log(users[0]?.name ?? 'User array empty!'); //Muhammad
+// It will check user[0] exist or not if exist .name will print and if not exist, print 'user array empty!'.
+```
+
+Without optional chaining we may write like this
+
+```js
+if (users.length > 0) console.log(users[0].name);
+else console.log('Users Array is Empty!');
+```
+
+**_Optional chaining operator and nullish coalescing operator are always use with each other. They both we use together to do some thing In case we don't get result from the object._**
+
+---
+
+## LOOPING_OVER_OBJECTS
+
+_We can loop over the property name or values or both of them_  
+**_Subheading Looping over Property names [keys]_**
+
 // [ WE use Object.keys(objectName)]
 
 // we still use for of loop but indirect way. we't loop directly over object instead we loop over array. lets check
