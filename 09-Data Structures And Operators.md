@@ -12,6 +12,11 @@
    1. [REST_PATTERN_IN_ARRAY](#rest_pattern_in_array)
    2. [REST_PATTERN_IN_OBJECTS](#rest_pattern_in_objects)
    3. [REST_PARAMETERS](#rest_parameters)
+4. [SHORT_CIRCUITING--AND_OR](#short_circuiting--and_or)
+   1. [BY_OR_OPERATOR](#by_or_operator)
+   2. [BY_AND_OPERATOR](#by_and_operator)
+5. [NULLISH_COALESCING_OPERATOR](#nullish_coalescing_operator)
+6. [LOGICAL_ASSIGNMENT_OPERATORS](#logical_assignment_operators)
 
 ---
 
@@ -499,192 +504,160 @@ let array = [1, 2, 43, 54, 23, 65, 7, 54, 6, 43];
 console.log(max(...array)); // 65
 ```
 
-//////////////////////////////////////////////////////////////////////////////
+---
 
-//Heading
-///////////////////////////////////////////////////////
-//| SHORT CIRCUITING (AND and OR operator) (&&, ||) |//
-///////////////////////////////////////////////////////
+## SHORT_CIRCUITING--AND_OR
 
-// const restaurant = {
-// name: 'Classico Italiano',
-// location: 'Via Angelo Tavanti 23, Firenze, Italy',
-// categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
-// starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
-// mainMenu: ['Pizza', 'Pasta', 'Risotto'],
+Up until this point we used logical operators only to combine Boolean values. But we can do lot more with logical operators.
 
-// openingHours: {
-// thu: {
-// open: 12,
-// close: 22,
-// },
-// fri: {
-// open: 11,
-// close: 23,
-// },
-// sat: {
-// open: 0, // Open 24 hours
-// close: 24,
-// },
-// },
-// order: function (starterIndex, mainIndex) {
-// return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
-// },
-// orderDelivery: function ({ starterIndex = 1, mainIndex = 0, address, time = '12:00' }) { // Destrucuring object into variables in parameter
-// console.log(`Order Received! ${this.starterMenu[starterIndex]} and ${this.mainMenu[mainIndex]} will be delivered to ${address} at ${time}.`);
-// },
-// orderPasta: function (ing1, ing2, ing3) {
-// console.log(`Here is your declicious pasta with ${ing1}, ${ing2} and ${ing3}`);
-// },
-// orderPizza: function (mainIngredient, ...otherIngredients) {
-// console.log(mainIngredient);
-// console.log(otherIngredients);
-// }
-// };
+- logical operator use any datatype not only boolean.
+- They also can return any datatype.
+- And they do short circuiting also called short circuit evaluation.
 
-// Up until this point we used logical operators only to combine Boolean values. But we can do lot more with logical operators.
+```js
+console.log('3' || 'Jonas'); // '3'
+// here we used two values that are not boolean and returns a value that is also not a boolean.
+```
 
-// -logical operator use any datatype not only boolean.
-// -They also can return any datatype.
-// -And they do short circuiting also called short circuit evaluation.
-// console.log('3' || 'Jonas');//here we used two values that are not boolean and returns a value that is also not a boolean.
+### BY_OR_OPERATOR
 
-//Subheading
-// SHORT CIRCUITING by OR OPERATOR: In case of the OR operator short circuiting means it the first value is thuthy value it immediately returns a first value. it not evaluate second value. what exactly that we see in above example.
-// console.log('-----OR Opeator-----');
-// console.log('' || 'Jonas'); // jonas. b/c first is falsy value
-// console.log(true || 0); // true. b/c first was truthy value therefor it not evaluate second
-// console.log(undefined || null); //null. b/c first was falsy.
-// console.log(0 || 'n'); //n. b/c first wa falsy.
-// console.log(null || 0 || undefined || '' || 'Hello' || 23 || NaN); //Hello. b/c hello was first truthy value
+**SHORT CIRCUITING by OR OPERATOR ||**: In case of the OR operator short circuiting means **if the first value is truthy value it immediately returns a first value. It not evaluate second value.** what exactly that we see in above example.
 
-//Practical Example:
-// restaurant.numGuest = 23;
-// const guests1 = restaurant.numGuest ? restaurant.numGuest : 10;// in this example if restaurent.numGuest is exist it will assign that to guests1 and if it not exist we assign guests1 to 10.
-// console.log(guests1);
+```js
+console.log('' || 'Muhammad'); // Muhammad. b/c first is falsy value
+console.log(true || 0); // true. b/c first was truthy value therefor it not evaluate second
+console.log(undefined || null); // null. b/c first was falsy.
+console.log(0 || 'n'); // n. b/c 0 is falsy.
+console.log(null || 0 || undefined || '' || 'Hello' || 23 || NaN); //Hello. b/c hello was first truthy value
+```
 
-// we can do this by using OR short circuiting.
-// const guest2 = restaurant.numGuest || 10;
-// console.log(restaurant.numGuest);//undefined
-// console.log(guest2); //10 b/c not exist so it is falsy value Undefined.if exist it will print that number
+#### Practical Example
 
-//Subheading
-//SHORT CIRCUITING BY AND OPERATOR:
-// And operator short circuting is exact oposite way of or operator.
-// If first value is falsy value it immediatly return first value, without evaluating other values.
-// console.log('----AND Operator----');
-// console.log(0 && 'Jonas'); //0
-// console.log(true && ''); // ''
-// console.log(undefined && null); //'undefined'
-// console.log(4 && 'Jonas'); // jonas// both are true so it will print last one.
-// console.log(23 && 'Hello' && undefined && null && 0 && ''); //undefined. first falsy value.
+```js
+restaurant.numGuest = 23;
+const guests1 = restaurant.numGuest ? restaurant.numGuest : 10;
+// In this example if restaurant.numGuest is exist it will assign that to guests1 and if it not exist we assign guests1 to 10.
+console.log(guests1);
+```
 
-//Practical Example:
-// if (restaurant.orderPizza) {//if order pizza exist
-// restaurant.orderPizza('mushroom', 'spinach')
-// }
-//By using and operator we can do simple way
-// restaurant.orderPizza && restaurant.orderPizza('mushroom', 'spinach');
+We can do this by using OR short circuiting.
 
-///NOTE: In practical applications we can use OR operator to set the default value and we can use the AND operator to execute code in the second operand if the first one is true.
+```js
+const guest2 = restaurant.numGuest || 10;
+console.log(restaurant.numGuest); //undefined
+console.log(guest2); //10 b/c numGuest not exist so it is falsy value Undefined.if exist it will print that number
+```
 
-//Heading
-///////////////////////////////////////////////////////
-//| THE NULLISH COALESCING OPERATOR (??) |//
-///////////////////////////////////////////////////////
-// restaurant.numGuests = 0; //Here if we set with 0 then the short circuting OR will not give correct result, it will always give 10, as 0 is a falsy value so it will always go to the second operand. . There is a solution of this.
-// const guest2 = restaurant.numGuests || 10; //10 // But we assigned 0!!!!!.
-// console.log(guest2);
+---
 
-// // The Solution is: Nullish coalescing operator (very funny name!!!!!!!)
-// // It is almost the same as OR operator, but it'll fix the error
-// const guestCorrect = restaurant.numGuests ?? 10;
-// console.log(guestCorrect); // Wow!!! Now it's 0.
+### BY_AND_OPERATOR
 
-// Nullish Coalescing operator works with the ides or with the concept of nullish values instead of falsy values.
-// Nullish Values are: null and undefined only, (not 0 and '').
+**And** operator short circuiting is **exact opposite** way of **OR** operator.
 
-//////////////////////////////////////////////////////////////////////////////////////////
+**If first value is falsy value it immediately return first value, without evaluating other values.**
 
-//Heading
-///////////////////////////////////////////////////////
-//| LOGICAL ASSIGNMENT OPERATORS (??) |//
-///////////////////////////////////////////////////////
+```js
+console.log(0 && 'Jonas'); //0
+console.log(true && ''); // ''
+console.log(undefined && null); //'undefined'
+console.log(4 && 'Jonas'); // jonas// both are true so it will print last one.
+console.log(23 && 'Hello' && undefined && null && 0 && ''); //undefined. first falsy value.
+```
 
-// const restaurant = {
-// name: 'Classico Italiano',
-// location: 'Via Angelo Tavanti 23, Firenze, Italy',
-// categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
-// starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
-// mainMenu: ['Pizza', 'Pasta', 'Risotto'],
+#### Practical Example
 
-// openingHours: {
-// thu: {
-// open: 12,
-// close: 22,
-// },
-// fri: {
-// open: 11,
-// close: 23,
-// },
-// sat: {
-// open: 0, // Open 24 hours
-// close: 24,
-// },
-// },
-// order: function (starterIndex, mainIndex) {
-// return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
-// },
-// orderDelivery: function ({ starterIndex = 1, mainIndex = 0, address, time = '12:00' }) { // Destrucuring object into variables in parameter
-// console.log(`Order Received! ${this.starterMenu[starterIndex]} and ${this.mainMenu[mainIndex]} will be delivered to ${address} at ${time}.`);
-// },
-// orderPasta: function (ing1, ing2, ing3) {
-// console.log(`Here is your declicious pasta with ${ing1}, ${ing2} and ${ing3}`);
-// },
-// orderPizza: function (mainIngredient, ...otherIngredients) {
-// console.log(mainIngredient);
-// console.log(otherIngredients);
-// }
-// };
+```js
+//if orderPizza exist
+if (restaurant.orderPizza) {
+  restaurant.orderPizza('mushroom', 'spinach');
+}
+```
 
-// const rest1 = {
-// name: 'Capri',
-// numGuest: 20
-// };
+By using and operator we can do simple way
 
-// const rest2 = {
-// name: 'La Piazza',
-// // numGuest: 0,
-// owner: 'Giovanni Rossi',
-// };
+```js
+restaurant.orderPizza && restaurant.orderPizza('mushroom', 'spinach');
+```
 
-// rest1.numGuest = rest1.numGuest || 10;
-// rest2.numGuest = rest2.numGuest || 10;
+**_In practical applications we can use OR operator to set the default value and we can use the AND operator to execute code in the second operand if the first one is true._**
 
-// Subheading LOGICAL OR ASSIGNMENT OPERATOR
-//These are that we learnt in last lecture (OR short circuit)
-// Here we can manimize the code by using logicl or assignment operator.
-// rest1.numGuest ||= 10;
-// rest2.numGuest ||= 10;
-// NOTE Assigns value to variable only if that variable is currently falsy. here second one is falsy so it will hold 10. it will also assign value to variable when we already assigned 0. To solve this here come:
+---
 
-//Subheading LOGICAL NULLISH ASSIGNMENT OPERATOR
-// rest1.numGuest ??= 10;
-// rest2.numGuest ??= 10;
+## NULLISH_COALESCING_OPERATOR
 
-// Subheading LOGICAL AND ASSIGNMENT OPERATOR:
-// rest2.owner = rest2.owner && '<ANONYMOUS>'; //REPLACED the owner to Anonymous if exist; // and operator always first check for falsy value if there exist any falsy value it will return that falsy value whithout evaluating other value,
-// rest2.owner &&= rest2.owner;
+THE NULLISH COALESCING OPERATOR (??)
 
-// console.log(rest1);
-// console.log(rest2);
+```js
+restaurant.numGuests = 0;
+const guest2 = restaurant.numGuests || 10;
+console.log(guest2); //10 But we assigned 0!!!!!.
+```
 
-/////////////////////////////////////////////////////////////////////////////////////////////
+Here if we set with 0 then the short circuiting OR will not give correct result, it will always give 10, **as 0 is a falsy value so it will always go to the second operand**. . There is a solution of this.
 
-//Heading
-///////////////////////////////////////////////////////
-// FOR-OF LOOP [ NEWER WAY TO LOOPING OVER ARRAYS ]
-///////////////////////////////////////////////////////
+The Solution is: Nullish coalescing operator (very funny name!!!!!!!)
+
+**It is almost the same as OR operator**, but it'll fix the error
+
+```js
+const guestCorrect = restaurant.numGuests ?? 10;
+console.log(guestCorrect); // Wow!!! Now it's 0.
+```
+
+Nullish Coalescing operator works with the ides or with the concept of **nullish values** instead of **falsy values.**  
+**Nullish Values** are: **null** and **undefined** only, (not 0 and '').
+
+---
+
+## LOGICAL_ASSIGNMENT_OPERATORS
+
+LOGICAL ASSIGNMENT OPERATORS (??)
+
+```JS
+rest1.numGuest = rest1.numGuest || 10;
+rest2.numGuest = rest2.numGuest || 10;
+```
+
+### LOGICAL OR ASSIGNMENT OPERATOR
+
+These are that we learnt in last lecture (OR short circuit)  
+Here we can minimize the code by using logical OR assignment operator.
+
+```js
+rest1.numGuest ||= 10;
+rest2.numGuest ||= 10;
+```
+
+**_Assigns value to variable only if that variable is currently falsy._** _here second one is falsy so it will hold 10. it will also assign value to variable when we already assigned 0. To solve this here come:_
+
+### LOGICAL NULLISH ASSIGNMENT OPERATOR
+
+```js
+rest1.numGuest ??= 10;
+rest2.numGuest ??= 10;
+```
+
+### LOGICAL AND ASSIGNMENT OPERATOR:
+
+```js
+rest2.owner = rest2.owner && '<ANONYMOUS>';
+```
+
+REPLACED the owner to Anonymous if exist  
+**_And operator always first check for falsy value if there exist any falsy value it will return that falsy value without evaluating other value_**
+
+```js
+rest2.owner &&= rest2.owner;
+
+console.log(rest1);
+console.log(rest2);
+```
+
+---
+
+## FOR_OF_LOOP
+
+FOR-OF LOOP [ NEWER WAY TO LOOPING OVER ARRAYS ]
 
 // const menu = [...restaurant.starterMenu, ...restaurant.mainMenu];
 
