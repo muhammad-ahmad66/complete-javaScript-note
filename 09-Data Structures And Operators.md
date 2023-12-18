@@ -7,7 +7,7 @@
    2. [OBJECT-DESTRUCTURING](#OBJECT-DESTRUCTURING)
 2. [SPREAD_OPERATOR](#SPREAD_OPERATOR)
    1. [SPREAD_OPERATOR_IN_ARRAY](#SPREAD_OPERATOR_IN_ARRAY)
-   2. [SPREAD_OPERATOR_IN_OBJECT](#SPREAD_OPERATOR_IN_OBJECT)
+   2. [SPREAD_OPERATOR_IN_OBJECT](#spread_operator_in_object)
 3. [REST_PATTERN_AND_REST_PARAMETERS](#REST_PATTERN_AND_REST_PARAMETERS)
 
 ---
@@ -394,16 +394,11 @@ console.log(copyRestaurant.name, restaurant.name); // Both are different.
 
 ## REST_PATTERN_AND_REST_PARAMETERS
 
-//| Rest Pattern and Rest Parametres
+### RestPattern In Array
 
-//Subheading
-// Rset Pattern //
+Rest pattern looks exactly same as the spread operator, it has same syntax but it does opposite of the spread operator.
 
-//Subheading
-//Rest Pttern In Array
-
-//Rest pattern looks exactly same as the spread operator, it has same syntex but it does opposite of the spread operator.
-//Remember that we used spread operator to build new arrays or to pass multiple values to a function. In these both cases we used an array into expends its individual elemets. Now the rest pattern uses the exact same syntax however to collect multiple elements and put them into an array. so that's really the oposite of the spread operator.
+Remember that we used spread operator to build new arrays or to pass multiple values to a function. In these both cases we used an array into expends its individual elemets. Now the rest pattern uses the exact same syntax however to collect multiple elements and put them into an array. so that's really the oposite of the spread operator.
 //NOTE spread used to unpack an array and rest use to pack into an array.
 
 // const arr = [1, 2, 3, ...[4, 5, 6]]; //here we using spread opeator
