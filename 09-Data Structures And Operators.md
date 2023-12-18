@@ -2,13 +2,16 @@
 
 ## Table of Contents
 
-1. [DESTRUCTURING](#DESTRUCTURING)
-   1. [ARRAY-DESTRUCTURING](#ARRAY-DESTRUCTURING)
-   2. [OBJECT-DESTRUCTURING](#OBJECT-DESTRUCTURING)
-2. [SPREAD_OPERATOR](#SPREAD_OPERATOR)
-   1. [SPREAD_OPERATOR_IN_ARRAY](#SPREAD_OPERATOR_IN_ARRAY)
+1. [DESTRUCTURING](#destructuring)
+   1. [ARRAY-DESTRUCTURING](#array-destructuring)
+   2. [OBJECT-DESTRUCTURING](#object-destructuring)
+2. [SPREAD_OPERATOR](#spread_operator)
+   1. [SPREAD_OPERATOR_IN_ARRAY](#spread_operator_in_array)
    2. [SPREAD_OPERATOR_IN_OBJECT](#spread_operator_in_object)
-3. [REST_PATTERN_AND_REST_PARAMETERS](#REST_PATTERN_AND_REST_PARAMETERS)
+3. [REST_PATTERN_AND_REST_PARAMETERS](#rest_pattern_and_rest_parameters)
+   1. [REST_PATTERN_IN_ARRAY](#rest_pattern_in_array)
+   2. [REST_PATTERN_IN_OBJECTS](#rest_pattern_in_objects)
+   3. [REST_PARAMETERS](#rest_parameters)
 
 ---
 
@@ -394,110 +397,107 @@ console.log(copyRestaurant.name, restaurant.name); // Both are different.
 
 ## REST_PATTERN_AND_REST_PARAMETERS
 
-### RestPattern In Array
+### REST_PATTERN_IN_ARRAY
 
-Rest pattern looks exactly same as the spread operator, it has same syntax but it does opposite of the spread operator.
+**_Rest pattern looks exactly same as the spread operator, it has same syntax but it does opposite of the spread operator._**
 
-Remember that we used spread operator to build new arrays or to pass multiple values to a function. In these both cases we used an array into expends its individual elemets. Now the rest pattern uses the exact same syntax however to collect multiple elements and put them into an array. so that's really the oposite of the spread operator.
-//NOTE spread used to unpack an array and rest use to pack into an array.
+Remember that we used spread **operator** to build new arrays or to pass multiple values to a function. In these both cases we used an array into expends its individual elements. Now the rest pattern uses the exact same syntax however to collect multiple elements and put them into an array. so that's really the opposite of the spread operator.
 
-// const arr = [1, 2, 3, ...[4, 5, 6]]; //here we using spread opeator
-// //NOTE spread operator use right side of assignment operator while rest pattern use left side of assignment operator.
+**_spread used to unpack an array and rest use to pack into an array._**
 
-// const [a, b, ...others] = [1, 2, 3, 4, 5, 6];
-// console.log(a, b, others); //here a and b are variables (we destructured) and others is an array(using rest pattern)
+```js
+const arr = [1, 2, 3, ...[4, 5, 6]]; //here we using spread operator
+```
 
-// const restaurant = {
-// name: 'Classico Italiano',
-// location: 'Via Angelo Tavanti 23, Firenze, Italy',
-// categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
-// starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
-// mainMenu: ['Pizza', 'Pasta', 'Risotto'],
+**_spread operator use right side of assignment operator while rest pattern use left side of assignment operator._**
 
-// openingHours: {
-// thu: {
-// open: 12,
-// close: 22,
-// },
-// fri: {
-// open: 11,
-// close: 23,
-// },
-// sat: {
-// open: 0, // Open 24 hours
-// close: 24,
-// },
-// },
-// order: function (starterIndex, mainIndex) {
-// return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
-// },
-// orderDelivery: function ({ starterIndex = 1, mainIndex = 0, address, time = '12:00' }) { // Destrucuring object into variables in parameter
-// console.log(`Order Received! ${this.starterMenu[starterIndex]} and ${this.mainMenu[mainIndex]} will be delivered to ${address} at ${time}.`);
-// },
-// orderPasta: function (ing1, ing2, ing3) {
-// console.log(`Here is your declicious pasta with ${ing1}, ${ing2} and ${ing3}`);
-// },
-// orderPizza: function (mainIngredient, ...otherIngredients) {
-// console.log(mainIngredient);
-// console.log(otherIngredients);
-// }
-// };
+```js
+const [a, b, ...others] = [1, 2, 3, 4, 5, 6];
+console.log(a, b, others);
+// Here a and b are variables (we destructured) and others is an array(using rest pattern)
+```
 
-// const [pizza, , risotto, ...otherFoods] = [...restaurant.mainMenu, ...restaurant.starterMenu];
-// console.log(pizza, risotto, otherFoods); //Pizza, Risotto, and an array which contain all others. It collect all the elements after the last variable. in this example after risotto, It does't include any skipped elements. So that's reason rest pattern always must be last in the destructuring assignment. Otherwise how will javascript know until when it should collect the rest of an array. And also should be one rest pattern in any destructuring assignment
-// // examples: (should not do like these)
-// // const [x, y, ...otherNumbers, z] = [1, 2, 3, 4, 5, 6, 7]; //It will give error 'Rest element must be last element'
-// // const [x, y, ...lessThenFive, ...lessThenTen] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; //Also Error. should one rest.
-// NOTE: Rest operator should be last one and also shoul one rest operator.
+_*Data used from above in spread section*_
 
-// // Subheading
-// // Rest Pattern In Objects.
+```js
+const [pizza, , risotto, ...otherFoods] = [
+  ...restaurant.mainMenu,
+  ...restaurant.starterMenu,
+];
 
-// const { sat, ...weekDays } = restaurant.openingHours;
+console.log(pizza, risotto, otherFoods);
+// Pizza, Risotto, and an array which contain all others.
+```
+
+_*It collect all the elements after the last variable. in this example after risotto, It does't include any skipped elements. So that's reason **rest pattern always must be last in the destructuring assignment.** Otherwise how will javascript know until when it should collect the rest of an array. And also **should be one rest pattern** in any destructuring assignment*_
+
+```js
+const [x, y, ...otherNumbers, z] = [1, 2, 3, 4, 5, 6, 7];
+// It will give error 'Rest element must be last element'
+
+const [x, y, ...lessThenFive, ...lessThenTen] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+// Also Error. should one rest.
+```
+
+So, **Rest operator should be last one and also should one rest operator.**
+
+### REST_PATTERN_IN_OBJECTS
+
+```js
+const { sat, ...weekDays } = restaurant.openingHours;
 // console.log(weekDays);
-// //Remember: In this example first we destructuing "sat" object form openingHours and store into sat variable [ Reminder destructuing variable name should be same as property in objec. ] and then storing rest objects into weekDays using rest pattern.
+```
 
-// //Subheading
-// // Rest parameters:
-// // Rest Operator in Functions
+Remember: In this example first we **destructuring** "sat" object form openingHours and store into sat variable [ _Reminder destructuring variable name should be same as property in object._ ] and then storing rest objects into weekDays using rest pattern.
 
-// //We will make a function that eccept any arbitrary amount of arguments.
-// const add = function (...numbers) {
-// console.log(numbers); //It will show all the parameters in array.
-// let sum = 0;
-// for (let i = 0; i < numbers.length; i++) {
-// sum += numbers[i];
-// }
-// console.log(sum);
-// };
-// add(2, 3);
-// add(4, 6, 2, 8);
-// add(3, 9, 8, 2, 3, 5);
+---
 
-// const x = [23, 5, 7];
-// add(...x);
-// // In this example we use rest operator in paremeter to combine all the argumet's values into an array an then we add by looping through array. And in line-351 we make a array and then pass these array's value into add function by using spread operator in argument. Remember Here we see spread use in argument and rest use in parameter.
+### REST_PARAMETERS
 
-// // PRACTICE (MAKING A FUNCTION THAT RETURN A MAX VALUE FROM AN ARRAY OR FROM MULTIPLE ARGUMENTS)
-// const max = function (...numbers) {
-// let max = numbers[0];
-// for (let i = 0; i < numbers.length; i++) {
-// if (numbers[i] > max) {
-// max = numbers[i];
-// }
-// }
-// return max;
-// }
+#### Rest Operator in Functions
 
-// console.log(max(2, 3, 5, 9, 1, 6, 4, 8,)); //9 wow working!!!!!!
-// console.log(max(3, 4, 5, 1, 43, 454, 32, 55, 432, 32, 656, 34, 232)); //656 working!!!!!
-// // now we give an array to return max element from array
-// let array = [1, 2, 43, 54, 23, 65, 7, 54, 6, 43];
-// console.log(max(...array)); //65 //WoW
+**_We can make a function that accept any arbitrary amount of arguments._**
 
-// // lets implement to restorent object
-// restaurant.orderPizza('mushrooms', 'onion', 'olives', 'spinach');
-// restaurant.orderPizza('mushroom'); // we can put onny one orgument.
+```js
+const add = function (...numbers) {
+  console.log(numbers); //It will show all the parameters in array.
+  let sum = 0;
+  for (let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
+  }
+  console.log(sum);
+};
+add(2, 3);
+add(4, 6, 2, 8);
+add(3, 9, 8, 2, 3, 5);
+
+const x = [23, 5, 7];
+add(...x);
+```
+
+In this example we use rest operator in parameter to combine all the argument's value into an array an then we add by looping through array.
+
+At last statement when we calling add function, we make an array and then pass these array value into add function by using spread operator in argument. **_Here we see spread use in argument and rest use in parameter._**
+
+PRACTICE (MAKING A FUNCTION THAT RETURN A MAX VALUE FROM AN ARRAY OR FROM MULTIPLE ARGUMENTS)
+
+```js
+const max = function (...numbers) {
+  let max = numbers[0];
+  for (let i = 0; i < numbers.length; i++) {
+    if (numbers[i] > max) {
+      max = numbers[i];
+    }
+  }
+};
+return max;
+
+console.log(max(2, 3, 5, 9, 1, 6, 4, 8)); //9 wow working!!!!!!
+
+// now we give an array to return max element from array
+let array = [1, 2, 43, 54, 23, 65, 7, 54, 6, 43];
+console.log(max(...array)); // 65
+```
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -878,8 +878,8 @@ else (console.log('Users Array is Empty!'));
 
 const property = Object.keys(restaurant.openingHours);
 console.log(property); // By writing this it will print all the properties in openingHours within Array., So acctually it will get all the keys from object and store in array and then we can itreate them by looping.
-// console.log(`We are open on ${property.length} days. `);
-let openStr = `We are open on ${property.length} days. `;
+// console.log(`We are open on ${property.length} days.`);
+let openStr = `We are open on ${property.length} days.`;
 for (const day of property) {
 openStr += `${day},`
 }
@@ -1185,8 +1185,8 @@ console.log(correctName('HARIs'));
 console.log(correctName('haMmAd')); // Wow, all working!!!!!!
 
 // Comparing Email and Trim Method
-const email = 'hello@jonas.io'; // Valid email
-const loginEmail = ' Hello@Jonas.io \n'; // Remember Backslash n is a replacement of enter key.
+const email = '<hello@jonas.io>'; // Valid email
+const loginEmail = ' <Hello@Jonas.io> \n'; // Remember Backslash n is a replacement of enter key.
 const lowerEmail = loginEmail.toLowerCase();
 const trimmedEmail = lowerEmail.trim(); // trim() will remove white spaces.also we have trimstar() and trimend().
 console.log(trimmedEmail);
