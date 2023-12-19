@@ -26,6 +26,15 @@
     2. [MAP_DATA_STRUCTURE](#map_data_structure)
     3. [WHEN_WHERE_WHICH](#when_where_which)
 12. [STRINGS](#strings)
+    1. [length-Property_indexOf-Method_slice-Method](#length-property_indexof-method_slice-method)
+    2. [toUpperCase_toLoweCase](#touppercase_tolowecase)
+    3. [trim-trimStart-trimEnd_Methods](#trim-trimstart-trimend_methods)
+    4. [replace_Method](#replace_method)
+    5. [includes_startWith_endWith_Methods](#includes_startwith_endwith_methods)
+    6. [split_And_join_Methods](#split_and_join_methods)
+    7. [padStart_And_padEnd_Methods](#padstart_and_padend_methods)
+    8. [repeat_Method](#repeat_method)
+    9. [repeat_Method](#repeat_method)
 
 ---
 
@@ -646,7 +655,7 @@ rest1.numGuest ??= 10;
 rest2.numGuest ??= 10;
 ```
 
-### LOGICAL AND ASSIGNMENT OPERATOR:
+### LOGICAL AND ASSIGNMENT OPERATOR
 
 ```js
 rest2.owner = rest2.owner && '<ANONYMOUS>';
@@ -1107,7 +1116,7 @@ console.log(rest);
 console.log(rest.size);
 ```
 
-**clear method(): Also can clear all the elements from the **Map\*\*.
+**clear method(): Also can clear all the elements from the**Map\*\*.
 
 ```js
 rest.clear();
@@ -1211,7 +1220,7 @@ In key value pair, all those values that are describing, e-g, all those values t
 **_Arrays:_** _Need ordered list of values -might contain duplicates-, and when need manipulate data b/c arrays have ton of methods to manipulate them._  
 **_Sets:_** _When need unique values fo data, and when high performance is really important, also use to remove duplicates from array._
 
-#### Objects Vs Maps:
+#### Objects Vs Maps
 
 **Maps is better then objects:** b/c it has any data types, easy to iterate and easy to compute the size of the map.  
 **Only advantage of object** is that easy to write and get data by simply using dot or bracket operator.  
@@ -1221,262 +1230,373 @@ And if we need functions as values then we should use object. In object these fu
 
 ## STRINGS
 
-//Heading Heading
-/////////////////////////////
-// WORKING WITH STRINGS
-/////////////////////////////
+WORKING WITH STRINGS
 
-// length property, indexOf method, slice method
-/\*
+### length-Property_indexOf-Method_slice-Method
+
+```JS
 const airline = 'PIA Airline Pakistan';
 const plane = 'A320';
+
 console.log(plane[0]); // A
 console.log(plane[1]); // 3
 console.log(plane[2]); // 2
 
 console.log('B71F'[0]); // B
+```
+
+#### length property
+
+```js
 console.log(airline.length); //20
 console.log('B71F'.length); //4
+```
 
-/// As array strings have also methods, some of them are quit similar to the array's methods.
-console.log(airline.indexOf('r')); //6 // as in array
-// It will give first occurrence of that element but we can get last one by using:
+As **Array**, **Strings** have also methods, some of them are quit similar to the array's methods.
+
+#### indexOf() method
+
+```js
+console.log(airline.indexOf('a')); //13
+```
+
+It will give first occurrence of that element but we can get last one by using:  
+**lastIndexOf()** method.
+
+```js
 console.log(airline.lastIndexOf('a')); // 18
-// For entire word
+```
+
+For **entire word**
+
+```js
 console.log(airline.indexOf('Pakistan'));
+```
 
+**If a value not found it will return -1**, which may very useful
+
+```js
 console.log(airline.indexOf('India')); //-1
-// Reminder : if a value not found it will return -1, which may very usefull
+```
 
+#### slice() method
+
+```js
 const slicedStr = airline.slice(4, 11);
-// Remember Slice start from 0 and initiol value will conunt and end value will not. The length of the extracted string will always end minus begin (11 - 4) =7
-console.log(slicedStr.length); // 7
 
-/// Remember: By using any method the resultant string will be a new one, It'll not change it origional one it will remain always same
+console.log(slicedStr.length); // 7 (11 - 4)
+```
 
-// Some soft coding using these methods
+Slice start from 0 and **initial index will count**(in this example 4) and **end index will not**(11). **The length of the extracted string will always end minus begin** (11 - 4) =7
 
-console.log(airline.slice(0, airline.indexOf(' '))); /// PIA // to extract first word from any string
-console.log(airline.slice(airline.lastIndexOf(' ') + 1)); // to print last word. +1 isly naye to space b print hota
+**_By using any method the resultant string will be a new one,_** _It'll not change it original one it will remain always same._
+
+Some soft coding using these methods
+
+```js
+console.log(airline.slice(0, airline.indexOf(' '))); // PIA // to extract first word from any string
+
+console.log(airline.slice(airline.lastIndexOf(' ') + 1)); // to print last word.
+// If we not specify +1 then it will also print space
 
 console.log(airline.slice(-2)); // will start from end
-console.log(airline.slice(1, -1));// all characters except first and last one
+console.log(airline.slice(1, -1)); // all characters except first and last one
+```
 
+```js
 const checkMiddleSeat = function (seat) {
-// usually in plane, last digit denoted the cloumn B and E are middle seats
-const s = seat.slice(-1);
-if (s === 'B' || s === 'E') {
-console.log('You got the middle seat!');
-} else {
-console.log('You got lucky');
-}
-
-}
+  // usually in plane, last digit denoted the column, B and E are middle seats
+  const s = seat.slice(-1);
+  if (s === 'B' || s === 'E') {
+    console.log('You got the middle seat!');
+  } else {
+    console.log('You got lucky');
+  }
+};
 
 checkMiddleSeat('23B');
-checkMiddleSeat('12A')
-checkMiddleSeat('14C')
-checkMiddleSeat('12E')
-\*/
-/////////////////////////////////////////////////////////
+checkMiddleSeat('12A');
+checkMiddleSeat('14C');
+checkMiddleSeat('12E');
+```
 
-/\*
-// toUpperCase & toLoweCase method, trim, trimstart & trimEnd methds, Replace method
+---
 
-// Change cases. toupparcase/ tolowercase
+### toUpperCase_toLoweCase
+
+Change cases. toUpperCase / toLowerCase
+
+```js
 console.log(airline.toUpperCase());
 console.log(airline); // no changes in original one
 console.log(airline.toLowerCase());
 console.log('muhammad'.toUpperCase());
+```
 
-// Fix Captilization in name // Interestion....
-const passenger = 'mUhammAD'; // we wants to convet into Muhammad
+_no changes in original one_  
+Fix Capitalization in name // Intersection....
+
+```js
+const passenger = 'mUhammAD'; // we wants to convert into Muhammad
 const passengerLower = passenger.toLowerCase();
-const passengerCorrect = passengerLower[0].toUpperCase() + passengerLower.slice(1); // slic(1) will print all element except first.
-console.log(passengerCorrect);
+const passengerCorrect =
+  passengerLower[0].toUpperCase() + passengerLower.slice(1);
+// slice(1) will print all element except first.
+console.log(passengerCorrect); // Muhammad
+```
 
-// Assignment. Build these in a function
-// A function for fix capitilization of any name.
+A function for fix capitalization of any name.
+
+```js
 const correctName = function (name) {
-const passengerLower = name.toLowerCase();
-const passengerCorrect = passengerLower[0].toUpperCase() + passengerLower.slice(1);
-return passengerCorrect;
-}
-console.log(correctName('jonAS'));
-console.log(correctName('HARIs'));
-console.log(correctName('haMmAd')); // Wow, all working!!!!!!
+  const passengerLower = name.toLowerCase();
+  const passengerCorrect =
+    passengerLower[0].toUpperCase() + passengerLower.slice(1);
+  return passengerCorrect;
+};
 
-// Comparing Email and Trim Method
-const email = '<hello@jonas.io>'; // Valid email
-const loginEmail = ' <Hello@Jonas.io> \n'; // Remember Backslash n is a replacement of enter key.
+console.log(correctName('muhAmmAd'));
+console.log(correctName('HArIs'));
+console.log(correctName('haMmAd')); // Wow, all working!!!!!!
+```
+
+### trim-trimStart-trimEnd_Methods
+
+#### Comparing Email and Trim Method
+
+trim() will remove white spaces.also we have trimStar() and trimEnd().
+
+```js
+const email = '<hello@ugv.io>'; // Valid email
+const loginEmail = ' <Hello@ugv.io> \n'; // Remember Backslash n is a replacement of enter key.
 const lowerEmail = loginEmail.toLowerCase();
 const trimmedEmail = lowerEmail.trim(); // trim() will remove white spaces.also we have trimstar() and trimend().
 console.log(trimmedEmail);
+```
 
-// doing this 3 steps in one statement
+Doing this 3 steps in one statement
+
+```js
 const normalizeEmail = loginEmail.toLowerCase().trim();
 console.log(normalizeEmail); // just a same
+```
 
-// Replacing
-const priceGB = '288,97PKR' // In Europe comma (,) will written as a dicimal point while in US the dot(.) will written, also here, SO, hare we wants to compute this price to US, (using dot and dollar sign)
+### replace_Method
+
+```js
+const priceGB = '288,97PKR';
+// In Europe comma (,) will written as a decimal point while in US the dot(.) will written.
+// SO, hare we wants to compute this price to US, (using dot and dollar sign)
 const priceUS = priceGB.replace('PKR', '$').replace(',', '.');
 console.log(priceUS);
+```
 
-const announcement = 'All passengers come to boarding door 23. Boarding door 23!';
-console.log(announcement.replace('door', 'gate')); // It will replace only firt occurness of specific word. we use replaceALL()
+```js
+const announcement =
+  'All passengers come to boarding door 23. Boarding door 23!';
+console.log(announcement.replace('door', 'gate')); // It will replace only first occurrence of specific word.
+
+// To replace all instances we use replaceALL()
 console.log(announcement.replaceAll('door', 'gate')); // replaced all
+```
 
-// we have one more soulution to replace all the occurenece of word or letter. here we will use Regular expression (automata wala)
-// In regular expression we write strings in b/w slash
+We have one more solution to replace all the occurrence of word or letter. here we will use **Regular Expression** (automata wala)  
+**In regular expression we write strings in b/w slash**
+
+```js
 console.log(announcement.replace(/door/g, 'gate')); // changed!!
-\*/
-///////////////////////////////////////////
+```
 
-/\*
-// includes method, startsWith method and endsWith method
-// Booleans
-// There are three methods that returns boolean value 1. includes 2.startsWith, 3. endsWith
+---
 
-// const planeNew = 'A320neo';
-// console.log(planeNew.includes('A320')); // true
-// console.log(planeNew.startsWith('A34')); //false
-// console.log(planeNew.startsWith('A32')); //true
-// console.log(planeNew.endsWith('eo')); //true
+### includes_startWith_endWith_Methods
 
+**There are three methods that returns boolean value** 1. **includes** 2. **startsWith**, 3. **endsWith**
+
+```js
+const planeNew = 'A320neo';
+console.log(planeNew.includes('A320')); // true
+console.log(planeNew.startsWith('A34')); //false
+console.log(planeNew.startsWith('A32')); //true
+console.log(planeNew.endsWith('eo')); //true
+```
+
+```js
 const planeNew = 'Airbus A320neo';
 if (planeNew.startsWith('Airbus') && planeNew.endsWith('neo')) {
-console.log('Part of New Airbus family!');
+  console.log('Part of New Airbus family!');
 }
+```
 
-/// Practice Exercise
+#### Practice Exercise
+
+```js
 const checkBaggage = function (items) {
-const baggage = items.toLowerCase(); // NOTE : for any input from user we usually it converts to lower case. it make easy to comparision
-if (baggage.includes('knife') || baggage.includes('gun')) {
-console.log('You are not allowed on board!');
-} else {
-console.log('Wellcome aboard!');
-}
+  const baggage = items.toLowerCase(); // For any input from user we usually it converts to lower case. it make easy to compression.
+
+  if (baggage.includes('knife') || baggage.includes('gun')) {
+    console.log('You are not allowed on board!');
+  } else {
+    console.log('Welcome aboard!');
+  }
 };
 checkBaggage('I have a Laptop, some food and a pocket knife.');
 checkBaggage('Socks and Camera');
 checkBaggage('Got some snacks and a gun for protection.');
+```
 
-//////////////////////////////////////////////////////////////
-\*/
+---
 
-// Split Method // Join Method
+### split_And_join_Methods
 
-/\*
-// split method use to split strings into multiple parts based on divider string.
-console.log('a+vary+nice+string'.split('+')); // it will split this strinb based on + and the result will store into an array.
-console.log('Muhammad Ahmad Shamim Ahmad'.split(' '));
+#### split() Method
 
-// Split method is very usefull and powefull.
-// Split mehod with destructuring.
+**split() method** use to split strings into multiple parts based on divider string.
+
+```js
+console.log('a+vary+nice+string'.split('+'));
+// It will split this strings based on + and the result will store into an array.
+
+console.log('Muhammad Ahmad Shamim Ahmad'.split(' ')); // Array with 4 elements.
+```
+
+_Split method is very useful and powerful._  
+**_Split method with destructuring._**
+
+```js
 const [firstName, lastName] = 'Muhammad Ahmad'.split(' ');
 console.log(firstName, lastName);
+```
 
-//Join method
-const newName = ['Mr.', firstName, lastName.toUpperCase()].join(' ')
-console.log(newName); // it will join all of these with space. offcuse we can put any lettes insted
-const newName2 = ['Mr.', firstName, lastName.toUpperCase()].join('-----')
+#### join() Method
+
+```js
+const newName = ['Mr.', firstName, lastName.toUpperCase()].join(' ');
+console.log(newName); // it will join all of these with space. of course we can put any letters instead
+
+const newName2 = ['Mr.', firstName, lastName.toUpperCase()].join('-----');
 console.log(newName);
 console.log(newName2);
+```
 
-// Remember Join metod and split method is opposite of each other, in joind methd we joind using any string and in split method we split using any string.
-// join method join elements of array to form a string
-// split method split string to an array.
+_**join method** and **split method** is **opposite** of each other, in **join method** we join using any string and in **split method** we split using any string._  
+_join method join elements of array to form a string._  
+_split method split string to an array._
+
+```js
 console.log(['a', 'b', 'c', 'd'].join('-')); //convert that array to string
-console.log('a b c d'.split()); // converts this strin into array.
+console.log('a b c d'.split()); // converts this string into array.
+```
 
-// Practice Exercise
-const captilizeName = function (name) {
-const names = name.split(' ');
-const namesUpper = [];
-for (const n of names) {
-// namesUpper.push(n[0].toUpperCase() + n.slice(1));
-// another way
-namesUpper.push(n.replace(n[0], n[0].toUpperCase()));
+##### Exercise
 
-}
-console.log(namesUpper.join(' '));
-}
+```js
+const capitalizeName = function (name) {
+  const names = name.split(' ');
+  const namesUpper = [];
+  for (const n of names) {
+    // namesUpper.push(n[0].toUpperCase() + n.slice(1));
+    // another way
+    namesUpper.push(n.replace(n[0], n[0].toUpperCase()));
+  }
+  console.log(namesUpper.join(' '));
+};
 
-captilizeName('muhammad ahmad shamim Ahmad');
-captilizeName('jonas schemetman')
-\*/
+capitalizeName('muhammad ahmad shamim Ahmad');
+capitalizeName('yougo baltistan');
+```
 
-///////////////////////////////////////////////////////////////////
+---
 
-/\*
+### padStart_And_padEnd_Methods
 
-// Padding,
-// padStart method, padEnd method
-// padding a string means add a number of characters to the string until the string has a certain desired length.
-// in this method first we will put number of characters after adding this characters and then cheracter itself, that we want to add.
+**padding a string means add a number of characters to the string until the string has a certain desired length.**  
+In these methods first we will put number of characters after adding this characters and then character itself, that we want to add.
 
+```js
 const message = 'Go to gate 23!';
-console.log(message.padStart(25, '#').length); // After adding #, the length of this entire string should be 25.
-console.log(message.padStart(25, '-').padEnd(30, '-')); // At the end there shoud add only 5 -, b/c length is already 25. so 25+5=30
+console.log(message.padStart(25, '#').length);
+// After adding #, the length of this entire string should be 25.
 
-// Practice Example
-// using cods of credit card look like this: **\*\***\***\*\***4323, In this function we will convert numbers to this type.
+console.log(message.padStart(25, '-').padEnd(30, '-')); // At the end there should add only 5 -, b/c length is already 25. so 25+5=30
+```
+
+#### Practice Example
+
+using cods of credit card look like this: **\*\***\***\*\***4323, In this function we will convert numbers to this type.
+
+```js
 const mastCreditCard = function (number) {
-// console.log(typeof number); //number
-// const str = String(number);
-// console.log(typeof str); //string
+  // console.log(typeof number); //number
+  // const str = String(number);
+  // console.log(typeof str); //string
 
-// Another way (easier) to convert number to string:
-const str = number + ''; // b/c by using + sign, when one of the operand is string it will convert others to string.
-const lastFour = str.slice(-4);
-console.log(`A code before masking: ${str}`);
-return lastFour.padStart(str.length, '\*')
-
-}
+  // Another way (easier) to convert number to string:
+  const str = number + '';
+  // b/c by using + sign, when one of the operand is string it will convert others to string.
+  const lastFour = str.slice(-4);
+  console.log(`A code before masking: ${str}`);
+  return lastFour.padStart(str.length, '*');
+};
 
 console.log(`A code after masking: ${mastCreditCard(1343089849384232)}`);
 console.log(`A code after masking:${mastCreditCard('8943893449384232')}`);
 console.log(`A code after masking:${mastCreditCard(4356389849438921)}`);
+```
 
-/////////////////////////////////////////////////////////////////
+---
 
-// Repeat method:
-// Allows to repeat the same string multiple times
-const message2 = 'Bad weather... All Departures Delayes... ';
+### repeat_Method
+
+**Allows to repeat the same string multiple times**
+
+```js
+const message2 = 'Bad weather... All Departures Delays... ';
 console.log(message2.repeat(5)); // it will print a long string, repeating this one message 5 times.
+```
 
-// Practice Exercise:
+#### Practice Exercise:
+
+```js
 const planeInLine = function (n) {
-console.log(`There are ${n} planes in line ${'✈'.repeat(n)}`);
+  console.log(`There are ${n} planes in line ${'✈'.repeat(n)}`);
 };
 
 planeInLine(6); //n = no. of plane in line;
 planeInLine(3);
 planeInLine(12);
+```
 
-\*/
+---
 
-// String Practice
+### String_Practice
 
+```js
 const flights =
-'\_Delayed_Departure;fao93766109;txl2133758440;11:25+\_Arrival;bru0943384722;fao93766109;11:45+\_Delayed_Arrival;hel7439299980;fao93766109;12:05+\_Departure;fao93766109;lis2323639855;12:30';
+  '_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30';
 
-const getCode = str => str.slice(0, 3).toUpperCase();
+const getCode = (str) => str.slice(0, 3).toUpperCase();
 
 for (const flight of flights.split('+')) {
-const [type, from, to, time] = flight.split(';');
+  const [type, from, to, time] = flight.split(';');
 
-const output = `${type.startsWith('_Delayed') ? '🔴' : ''}${type.replaceAll('_', ' ')}, ${getCode(from)} ${getCode(to)}, (${time.replace(':', 'h')})`.padStart(45);
-console.log(output);
+  const output = `${type.startsWith('_Delayed') ? '🔴' : ''}${type.replaceAll(
+    '_',
+    ' '
+  )}, ${getCode(from)} ${getCode(to)}, (${time.replace(':', 'h')})`.padStart(
+    45
+  );
+  console.log(output);
 }
 
 // practice Exercise
 // Find sum of any length of numbers.
 const add = function (...nums) {
-let sum = 0;
-for (const num of nums) {
-sum += num;
-}
-return sum;
+  let sum = 0;
+  for (const num of nums) {
+    sum += num;
+  }
+  return sum;
 };
 console.log(add(4, 2, 4, 11, 1, 3, 7));
+```
