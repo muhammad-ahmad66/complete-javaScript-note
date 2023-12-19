@@ -24,6 +24,8 @@
 11. [DATA_STRUCTURE](#data_structure)
     1. [SET_DATA_STRUCTURE](#set_data_structure)
     2. [MAP_DATA_STRUCTURE](#map_data_structure)
+    3. [WHEN_WHERE_WHICH](#when_where_which)
+12. [STRINGS](#strings)
 
 ---
 
@@ -1043,85 +1045,135 @@ console.log(new Set('Muhammad Ahmad').size); // 8 // not included repeated one.
 
 ### MAP_DATA_STRUCTURE
 
-// Just like an Objects, In Maps data is also store in key value pair. big differecne is that in objects we can have only string type of keys, but in maps we can have different datatypes of keys, it can even be objects, arrays or other maps.
-/\*
-const rest = new Map(); //easiest way to create a map is to first we create an empty map and then fill it with set method.
+**Just like an Objects, In Maps data is also store in key value pair. big difference is that in objects we can have only string type of keys, but in maps we can have different data types of keys, it can even be objects, arrays or other maps.**
 
-rest.set('name', 'Classico Italiano'); //first one is key and second is value. Here set method is same as add method in sets.
+```js
+const rest = new Map();
+//easiest way to create a map is to first we create an empty map and then fill it with set method.
+```
+
+**set Method():** Calling set method not only fill up(add) elements to Maps but also return a Map after adding this number.
+
+```js
+rest.set('name', 'Classico Italiano');
+// First one is key and second is value. Here set method is same as add method in sets.
+
 rest.set(1, 'Firenze Italy');
 // Calling set method not only fill up(add) elements to Maps but also return a Map after adding this number.
 console.log(rest.set(2, 'Lisbon Portugal'));
+```
 
-// We can insert multiple values by caining set method.
-rest.set('categories', ['Italian', 'Pizzeria', 'Vegetarian', 'Organic']).set('open', 11).set('close', 23).set(true, 'We are open!').set(false, 'We are closed!');
+We can insert multiple values by chaining set method.
 
-// To retrive data from the map we use get method.
+```js
+rest
+  .set('categories', ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'])
+  .set('open', 11)
+  .set('close', 23)
+  .set(true, 'We are open!')
+  .set(false, 'We are closed!');
+```
+
+**get Method():** To retrieve data from the map we use get method.
+
+```js
 console.log(rest.get('name'));
 console.log(rest.get(true));
+```
 
-// lets take some advantages of having boolean type as a key (example)
+Lets take some advantages of having boolean type as a key (example)
+
+```js
 const time = 21;
 console.log(rest.get(time > rest.get('open') && time < rest.get('close')));
+```
 
-//Check has a key or not, based upon key
-console.log(rest.has('categories'));//true
+**has method():** Check has a key or not, based upon key
 
-//Delete element from the map, again based upon key
+```js
+console.log(rest.has('categories')); //true
+```
+
+**delete method():** Delete element from the **Map**, again based upon key.
+
+```js
 rest.delete(2);
 console.log(rest);
+```
 
-//Also have size property
-console.log(rest.size)
+**size property**: As **Set**, **Map** also have a size property.
 
-// Also can clear all the elements from the maps
-// rest.clear();
+```js
+console.log(rest.size);
+```
 
-// NOTE We can also set array and objects as a map key
+**clear method(): Also can clear all the elements from the **Map\*\*.
 
-// rest.set([1, 2], 'Test');
+```js
+rest.clear();
+```
 
-// Get value using keys as an array
-// console.log(rest.get([1, 2]));//undefined it will not work
-// To solve that problem we first define an array and store the value in that array and then set that array variable into the maps's key like this
+**_We can also set array and objects as a map key_**
+
+```js
+rest.set([1, 2], 'Test');
+```
+
+Get value using **keys as an array**
+
+```js
+console.log(rest.get([1, 2])); //undefined it will not work
+```
+
+To solve that **problem** we first define an array and store the value in that array and then set that array variable into the Map key like this
+
+```js
 const arr = [1, 2];
 rest.set(arr, 'Test');
 console.log(rest.get(arr));
 
 rest.set(document.querySelector('h1'), 'heading');
 console.log(rest);
-_/
-// Making Quiz App:
-/_
+```
+
+#### Making Quiz App
+
+```js
 const question = new Map([
-['question', 'What is the best programming language in the world? '],
-[1, 'C'],
-[2, 'Java'],
-[3, 'Javascript'],
-['correct', 3],
-[true, 'correct🎉'],
-[false, 'Try again!']
-//Here we passed an array which contain also number of arrays with two elements for each.
+  ['question', 'What is the best programming language in the world? '],
+  [1, 'C'],
+  [2, 'Java'],
+  [3, 'Javascript'],
+  ['correct', 3],
+  [true, 'correct🎉'],
+  [false, 'Try again!'],
+  //Here we passed an array which contain also number of arrays with two elements for each.
 ]);
 console.log(question);
 
 // Convert objects to Maps
 console.log(Object.entries(restaurant.openingHours)); // see console; maps is bit similar to this.
+
 const hoursMap = new Map(Object.entries(restaurant.openingHours));
 console.log(hoursMap);
 
 // Iteration in Maps: it is also iterable.
-console.log(question.get('question')); // we will use get method to retrive data from maps. we simple put key in get then it will give value Remember key will consider always first element and value is second element from insider array.
+console.log(question.get('question'));
+// we will use get method to retrieve data from map.
+// we simple put key in get then it will give value.
+// Remember key will consider always first element and value is second element from insider array.
 for (const [key, value] of question) {
-if (typeof key === 'number') {
-console.log(`Answer ${key}: ${value}`);
-}
+  if (typeof key === 'number') {
+    console.log(`Answer ${key}: ${value}`);
+  }
 }
 
 const answer = 3;
-// const answer = Number(prompt('Your Answer?')); // we are converting into a number because we have to compare with key values of answers(C, java, javascript);
+const answer = Number(prompt('Your Answer?'));
+// we are converting into a number because we have to compare with key values of answers(C, java, javascript);
 console.log(answer);
 
-console.log(question.get(question.get('correct') === answer));// here we first compare and if it true then, it will give us a value from true key value and if it is false it will give valur from false key;
+console.log(question.get(question.get('correct') === answer)); // here we first compare and if it true then, it will give us a value from true key value and if it is false it will give value from false key;
 
 // Convert Maps to Array
 console.log([...question]);
@@ -1130,38 +1182,44 @@ console.log(question.entries());
 console.log(question.keys());
 console.log(question.values());
 
-// we can also put all keys, and value in an array repratly
+// we can also put all keys, and value in an array separately
 console.log([...question.keys()]);
 console.log([...question.values()]);
+```
 
-\*/
+---
 
-// Heading: Wher and where we use datastructure
+### WHEN_WHERE_WHICH
 
-// Remember There are 4 build in datastructures in javascript So,
-// which datastructure we should use.
-// basically if we need just simple list of data then we use Array or Sets, On the other hand if we need key value pairs then we use Objects or Maps.
-// In key value pair, all those values that are describing, e-g, all those values that have some description, (key tells about description of value)
+**When and where we use data structure?**
 
-/// Source of Data: ( From where we get data and store in the datastructures );
-// Usually there may be 3 sources of data:
-// 1- From the program itself. (Data written directly in the source code. ex: status messages )
-// 2- Data input from the user or data written in DOM. (e.g tasks in todo app)
-// 3- From external source: Data fetched from Web API. (data comming from other web pages. )
-// Usually the most common source of data is getting data from web API (Application Programming Interface). Data from web APIs usually comes in special data formets called JASON. JASON can be converted easily into objects and arrays.
+There are 4 build in data structures in **javascript** So,
+Which data structure we should use.  
+Basically **if we need just simple list of data then we use Array or Sets**, On the other hand **if we need key value pairs then we use Objects or Maps.**  
+In key value pair, all those values that are describing, e-g, all those values that have some description, (key tells about description of value).
 
-// Subheading
-// Array VS Sets (When use & where use)
-// Arrays: need ordered list of values -might contain duplicates-, and when need manipulate data b/c arrays have ton of methods to manipulate them.
-// Sets: when need unique values fo data, and when high performance is really important, also use to remove duplicates from array.
+**_Source of Data_** _From where we get data and store in the data structures_
+**Usually there may be 3 sources of data**
 
-// Subheading
-// Objects Vs Maps:
-// Maps is better then objects: b/c it has any datatypes, easy to itrate and easy to compute the size of the map.
-// Only advantage of object is that easy to write and get data by simply using dot or braket operator.
-// and if we need functions as values then we should use object. In object these functions then called methods.
+1. From the **program itself**. (Data written directly in the source code. ex: status messages )
+2. Data **input from the user** or **data written in DOM**. (e.g tasks in todo app)
+3. From **external source:** Data fetched from Web API. (data coming from other web pages. )
+   Usually the most common source of data is getting data from web API (Application Programming Interface). Data from web APIs usually comes in special data formats called **JSON**. **JSON** can be converted easily into objects and arrays.
 
-///////////////////////////////////////////////////////////////////////////////////////////
+#### Array VS Sets (When use & where use)
+
+**_Arrays:_** _Need ordered list of values -might contain duplicates-, and when need manipulate data b/c arrays have ton of methods to manipulate them._  
+**_Sets:_** _When need unique values fo data, and when high performance is really important, also use to remove duplicates from array._
+
+#### Objects Vs Maps:
+
+**Maps is better then objects:** b/c it has any data types, easy to iterate and easy to compute the size of the map.  
+**Only advantage of object** is that easy to write and get data by simply using dot or bracket operator.  
+And if we need functions as values then we should use object. In object these functions then called methods.
+
+---
+
+## STRINGS
 
 //Heading Heading
 /////////////////////////////
