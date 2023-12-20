@@ -4,7 +4,8 @@
 
 1. [DEFAULT_PARAMETERS](#default_parameters)
 2. [PASSING_ARGUMENTS_INTO_FUNCTION](#passing_arguments_into_function)
-3. [FIRST_CLASS_FUNCTIONS](#FIRST_CLASS_FUNCTIONS)
+3. [FIRST_CLASS_FUNCTIONS](#first_class_functions)
+4. [THE_CALL_APPLY_AND_BIND_METHOD](#the_call_apply_and_bind_method)
 
 ---
 
@@ -125,68 +126,86 @@ This enables us to write **Higher Order Functions.**
 
 _**Higher-Order Functions:** Higher order function is either a function that receives another function as an argument or a function returns a new function._
 
-// Examples of a functions that receive another function:
-// addEventListener('click', greet); Here addEventlistener is a higher-order function and greet is a callback function, We usually say a function that's passed in any function is a callback function.;
+### Examples of a functions that receive another function
 
-// We will disscuss about Functions that return any other function (that's more addvanced, and more harder to understand)
+```js
+addEventListener('click', greet);
+```
 
-// Subheading // Higher-Order Function [ A function that receive any other function or return any function ]
+Here⤴ **addEventListener is a higher-order function** and **greet is a callback function**, We usually say **a function that's passed in any function is a callback function.**
 
-// Function Receiving other function
-//
+We will discuss about Functions that return any other function (that's more advanced, and more harder to understand)
 
+### Higher Order Functions
+
+Higher Order Function [ **A function that receive any other function or return any function** ]
+
+#### Function Receiving other function
+
+```js
 const oneWord = function (str) {
-return str.replaceAll(' ', '').toLowerCase();
+  return str.replaceAll(' ', '').toLowerCase();
 };
 
 const upperFirstWord = function (str) {
-const [first, ...others] = str.split(' ');
-return [first.toUpperCase(), ...others].join(' ');
+  const [first, ...others] = str.split(' ');
+  return [first.toUpperCase(), ...others].join(' ');
 };
 
-// higher order function
+// Now using higher order function
+
 const transformer = function (str, fn) {
+  console.log(`Original string: ${str}`);
+  console.log(`Transformed string: ${fn(str)}`);
 
-    console.log(`Original string: ${str}`);
-    console.log(`Transformed string: ${fn(str)}`);
-
-    console.log(`Transformed by: ${fn.name}`);// it will give the name by function. here is upperFirstWord, that we have passed in argument.
-
-}
+  console.log(`Transformed by: ${fn.name}`);
+  // it will give the name by function. here is upperFirstWord, that we have passed in argument.
+};
 
 transformer('Javascript is the best!', upperFirstWord);
 // here transformer is higher-order function and upperFirstWord is a call back function.
 
 // these are just same as addEventLister function
 const high5 = function () {
-console.log('💖💖💘');
+  console.log('💖💖💘');
 };
-
 document.body.addEventListener('click', high5);
+```
 
-// in JS callback function we use so much time.
+In JS callback function we use so much time.
 
-// Functions Returning Functions
+#### Functions Returning Functions
 
+```js
 const greet = function (greeting) {
-return function (name) {
-console.log(`${greeting} ${name}`);
+  return function (name) {
+    console.log(`${greeting} ${name}`);
+  };
 };
-};
+```
 
-// Above functions using Arrow function
-const greetArrow = greeting => name => console.log(`${greeting} ${name}`);
+##### Above functions using Arrow function
 
-const greeterHey = greet('Hey'); // see in above function, it is returning a function so in this variable the insider function will store and this variable is also a functions, b/c it contains return function.
+```js
+const greetArrow = (greeting) => (name) => console.log(`${greeting} ${name}`);
+
+const greeterHey = greet('Hey');
+// see in above function, it is returning a function so in this variable the insider function will store and this variable is also a functions, b/c it contains return function.
 greeterHey('Muhammad');
+```
 
-// this two steps are in one line
-greet('Hey')('Muhammad'); // because the combination greet and first perenthesis is also a function, so we passed another argument to that function.
-greetArrow('Hi,')('Jonas');
+##### This two steps are in one line
 
-////////////////////////////////////////////////////////////////
+```js
+greet('Hey')('Muhammad');
+// because the combination greet and first parenthesis is also a function, so we passed another argument to that function.
+greetArrow('Hi,')('Saud');
+```
 
-// Heading // THE CALL AND APPLY METHOD:
+---
+
+## THE_CALL_APPLY_AND_BIND_METHOD
+
 // How we can set the 'this' keyword manually, and why we want to do that??
 
 const lufthansa = {
