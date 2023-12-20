@@ -2,9 +2,9 @@
 
 ## Table of Contents
 
-1. [THIS_KEYWORD](#THIS_KEYWORD)
-2. [ARGUMENTS_KEYWORD](#ARGUMENTS_KEYWORD)
-3. [PRIMITIVE_AND_REFERENCE_TYPE](#PRIMITIVE_AND_REFERENCE_TYPE)
+1. [THIS_KEYWORD](#this_keyword)
+2. [ARGUMENTS_KEYWORD](#arguments_keyword)
+3. [PRIMITIVE_AND_REFERENCE_TYPE](#primitive_and_reference_type)
 
 ```js
 'use strict';
