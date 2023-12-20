@@ -24,10 +24,10 @@ Before ES6, **2 common ways of assigning default values**
 
 2. **Assigning default values by OR short circuiting**
 
-```js
-numPassengers ||= 1;
-price ||= 199;
-```
+   ```js
+   numPassengers ||= 1;
+   price ||= 199;
+   ```
 
 ```js
 const bookings = [];
