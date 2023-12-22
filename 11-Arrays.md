@@ -26,7 +26,7 @@
 12. [SORTING_ARRAYS](#sorting_arrays)
 13. [WAYS_TO_CREATING_AND_FILLING_ARRAYS](#ways_to_creating_and_filling_arrays)
     1. [FILL_METHOD](#fill_method)
-    2. [Array.from_Function](#Array.from_Function)
+    2. [Array.from_Function](#arraydotfrom_function)
 14. [SUMMARY_OF_ARRAY_METHODS](#summary_of_array_methods)
 15. [ARRAY_EXERCISE](#array_exercise)
 16. [CODING_CHALLENGES](#coding_challenges)
@@ -940,7 +940,7 @@ console.log(arr); // [3, 2, 2, 2, 5, 9]
 
 ---
 
-### Array.from_Function
+### ArrayDotFrom_Function
 
 **What if we want to create any array programmatically?**  
 For that we could use **Array.from()** function.
