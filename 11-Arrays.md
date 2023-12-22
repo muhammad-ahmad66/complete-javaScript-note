@@ -1280,10 +1280,6 @@ If we wanna apply these methods then we've to first convert that nodeList to an 
 **lets see example**  
 Consider we have't values of movements in real array, all movements are stored only on user interface. we do't have some where in our code. But for some how we have to apply some array methods on it............
 
-```js
-
-```
-
 **Array.form** takes two arguments
 
 1. May be length in object or if we are converting then should be any iterable.
@@ -1311,32 +1307,33 @@ console.log(movementsUI2);
 
 ## SUMMARY_OF_ARRAY_METHODS
 
-// Since begining of the cousrse we have studied 23 differenct arrays methods.
+Since beginning of the course we have studied almost 23 different Array methods.  
+**So BIG QUESTION IS THAT, WHICH ONE TO USER WHEN ??????**
 
-// So BIG QUESTION IS THAT, WHICH ONE TO USER WHEN ??????
+To find the answer, first lets ask one more question  
+**What I want to do (operation)????**
 
-// to find the answer, first lets ask one more question
-// What I want to do (operation)????
+_**Q: Do I Want to mutate original?**_
 
-// Q: Do I Want to mutate origina?
+1. **To Add**
 
-// - To Add
-// - push() -at end
-// - unshift() -at begin
+   - push() -at end
+   - unshift() -at begin
 
-// - To remove
-// - pop() -from end
-// - shift() -from begin
-// - splice() -from any where
+2. **To remove**
 
-// - Others
-// - reverse()
-// - sort()
-// - fill()
+   - pop() -from end
+   - shift() -from begin
+   - splice() -from any where
 
-////////////////////////////
+3. **Others**
+   - reverse()
+   - sort()
+   - fill()
 
-// Q: Do I Want a New Array?
+---
+
+**_Q: Do I Want a New Array?_**
 
 // - Compute from original
 // - map()
