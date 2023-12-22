@@ -200,7 +200,7 @@ btnLogin.addEventListener('click', function (e) {
 });
 ```
 
-### Building Money Transformation Functionality.
+### Building Money Transformation Functionality
 
 ```js
 btnTransfer.addEventListener('click', function (e) {
@@ -335,6 +335,8 @@ btnSort.addEventListener('click', function (e) {
 7. [FIND_METHOD](#find_method)
 8. [FIND_INDEX_METHOD](#find_index_method)
 9. [SOME_AND_EVERY_METHODS](#some_and_every_methods)
+10. [Separate_Callback_Function](#separate_callback_function)
+11. [FLAT_AND_FLAT-MAP_METHOD](#flat_and_flat-map_method)
 
 ---
 
@@ -613,9 +615,9 @@ In javascript there are three big and most important array methods that we use a
 These are methods that we use to create new arrays based on transforming data from other arrays.  
 In recent years these tools become very popular and for good reasons
 
-1. MAP
-2. FILTER
-3. REDUCE
+[MAP_METHOD](#map_method)
+[FILTER_METHOD](#filter_method)
+[REDUCE_METHOD](#reduce_method)
 
 ### Brief Intro
 
@@ -904,127 +906,155 @@ Examples are in Bankist application.
 
 Introducing Close Cousin of **INCLUDES Method** | **SOME AND EVERY METHODS** (some(function()), every(function()))
 
-### SOME METHOD
+### SOME_METHOD
 
-USE to check existence of any value in array using conditions. then if the condition is gone true (element found), it'll return true else false.
+Use to check existence of any value in array using conditions. then if the condition is gone true (element found), **it'll return true else false.**
 
+Lets look back at the includes method. It also return true or false.  
+By using include method We can only check for exact same array element (equality ===), in blew it'll check for 'any array element === -30'
+
+```js
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-Lets look back at the includes method.
-// it will return 'true' or 'false'
-// We can only check for exact same array element (equality ===), in blew it'll check for 'any array element === -30'
 console.log(movements.includes(-130));
+```
 
-// What if we want to test a condition instead of equality???
+What if we want to test a **condition** instead of **equality**???
 
-// So here 'some' method comes into
+So here **some method** comes into play!
 
-// we will check is there any positive number in movements array
-const isAnyDeposit = movements.some(mov => mov > 0);
+we will check is there any positive number in movements array
+
+```js
+const isAnyDeposit = movements.some((mov) => mov > 0);
 console.log(isAnyDeposit); // true
 
 const maxDeposit = 5000;
-const AnyDepositAboveMax = movements.some(mov => mov > maxDeposit);
+const AnyDepositAboveMax = movements.some((mov) => mov > maxDeposit);
 console.log(isAnyDeposit); // true
+```
 
-// Remember some points about some method:
-// - we've to pass callback function as....
-// - we can test for any conditional statement
-// - will return true or false.
+#### Remember some points about some method
 
-// Subheading EVERY METHOD:
+- we've to pass callback function as we have doing in....
+- we can test for any conditional statement
+- will return true or false.
 
-// Very similar to some method, difference b/w them is that some method will return true if one element in the array satisfy the condition ON THE OTHER HAD every method will return true if all the array element satisfy the condition.
+---
 
-// In other word: if every element passes the test, in callback function, only then the every method returns true.
+### EVERY_METHOD
 
-console.log(movements.every(mov => mov > 0)); // false
+Very similar to some method, difference b/w them is that **some method** will return true if one element in the array satisfy the condition ON THE OTHER HAD **every method** will return true if all the array element satisfy the condition.
+
+In other word: If every element passes the test, in callback function, only then the every method returns true.
+
+```js
+console.log(movements.every((mov) => mov > 0)); // false
 console.log(account4.movements); // all +ve here.
-console.log(account4.movements.every(mov => mov)); // true
+console.log(account4.movements.every((mov) => mov)); // true
+```
 
-//// ----- Separate Calback Function -----/////
+---
 
-// Remember Remember Remember
+## Separate_Callback_Function
 
-// Upuntill this point we written callback function directly as an argument in all of these array methods. HOWEVER we could also write this function separately then pass the function as a callback.
+Up until this point we written callback function directly as an argument in all of these array methods.  
+HOWEVER we could also write this function separately then pass the function as a callback.
 
-const deposite = mov => mov > 0;
+```js
+const deposit = (mov) => mov > 0;
 
-console.log(movements.every(deposite)); // flase
-console.log(movements.some(deposite)); // true
-console.log(movements.filter(deposite)); // will return +ve.
+console.log(movements.every(deposit)); // false
+console.log(movements.some(deposit)); // true
+console.log(movements.filter(deposit)); // will return +ve.
 
-console.log(account4.movements.every(deposite)); // true
+console.log(account4.movements.every(deposit)); // true
+```
 
-\*/
+---
 
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-/\*
+## FLAT_AND_FLAT-MAP_METHOD
 
-// Heading : -- FLAT AND FLAT-MAP METHOD -- [ES19 -newer]
+[ES19 -newer]
 
-// Subheading --- 1. Flat method
+1. Flat method
 
+```js
 const arr = [[1, 2, 3], [4, 5, 6], 7, 8, 9];
 console.log(arr.flat());
+```
 
-// Very simple and straight forward> It will simply flat a nested array to one array.
-// It means it will return an array that will contain all the array elements by removing nesteds. it will remove only nesteds arrays not nested array elements. from above exampel it will print on whole array whcih conatain nine elements in flat form -no nested- like this. [1, 2, 3, 4, 5, 6, 7, 8, 9] -new array.
-// remove nested array, NOT nested array elements.
+**Very simple and straight forward. It will simply flat a nested array to one array.**  
+It means it will return an array that will contain all the array elements by removing nested. It will remove only nested array not nested array elements. From above example it will print on whole array which contains nine elements in flat form -no nested- like this. [1, 2, 3, 4, 5, 6, 7, 8, 9] -new array. **By remove nested array, NOT nested array elements.**
 
-// very simple and no callback function.
+Very simple and no callback function.
 
+```js
 const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
 console.log(arrDeep.flat());
-// this example will print like this[[1,2] 3, 4, [5, 6], 7,8] it means the flat method goes only one lever deep by default -with no parameter.
+```
 
-// To fix this we will pass a depth as a parameter. by default the depth is 1.
-console.log(arrDeep.flat(1)); // shold remain same as upper
+⤴ This example will print like this[[1,2] 3, 4, [5, 6], 7,8] It means the flat method goes only one level deep by default -with no parameter.  
+**To fix this we will pass a depth as a parameter. by default the depth is 1.**
+
+```js
+console.log(arrDeep.flat(1)); // should remain same as above
 console.log(arrDeep.flat(2)); // will remain in one array -no nested.
+```
 
-// Let's take a practicle example:
-// consider that. in bankist application we have to calculate all the movements (over all, not from one account.)
+**Let's take a practical example**  
+Consider that. in bankist application we have to calculate all the movements (over all, not from one account.)
 
-// first we will take all the movements from objects.
-const accountMovements = accounts.map(acc => acc.movements);
+First we will take all the movements from objects.
+
+```js
+const accountMovements = accounts.map((acc) => acc.movements);
 console.log(accountMovements);
+```
 
-// then we'll use flat method to combine all of then into one array
+Then we'll use flat method to combine all of them into one array
+
+```js
 const allMovements = accountMovements.flat();
 console.log(allMovements);
+```
 
-// Now add them all
+Now add them all to find overall balance
+
+```js
 const overallBalance = allMovements.reduce((acc, mov) => acc + mov, 0);
 console.log(overallBalance); // Yes.....
+```
 
-// all of above steps in one statement by chaining all methods
-const overallBalance2 = accounts.map(acc => acc.movements).flat().reduce((acc, mov) => acc + mov, 0);
+All of above steps in one statement by chaining all methods
+
+```js
+const overallBalance2 = accounts
+  .map((acc) => acc.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov, 0);
 console.log(overallBalance); // working.....
+```
 
-// Subheading --- FLAT MAP --- (flatMap())
+### FLAT_MAP
 
-// Using a map method first and then flating the result of map methos is very common operation in javascript, exactly what we had done here ⤴ .
+Using a map method first and then flating the result of map method is very common operation in javascript, exactly what we had done here ⤴ .
 
-// So here one new method comes in to play. -FLAT-MAP
-// FLAT-MAP methdo combines a map method and flat method into just one method for better performance.
+So here one new method comes in to play. **FLAT-MAP**  
+FLAT-MAP method combines a map method and flat method into just one method for better performance.  
+**flatMap will receive a callback function while flat not.**
 
-// Remember : flatMap will receive a callback function while flat not.
-
-const overallBalance3 = accounts.flatMap(acc => acc.movements).reduce((acc, mov) => acc + mov, 0);
+```js
+const overallBalance3 = accounts
+  .flatMap((acc) => acc.movements)
+  .reduce((acc, mov) => acc + mov, 0);
 console.log(overallBalance3); // also giving correct result.
+```
 
-// Remember : Using flatMap method we only can go to one level deep, if we've to go in more depth we still need flat method and then map method.
+**Remember:** Using flatMap method we only can go to one level deep, if we've to go in more depth we still need flat method and then map method.
 
-\*/
+---
 
-////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////
-// Heading
-
-/\*
-
-// ----- SORTING ARRAYS ----- // [js buit-in method]
+SORTING_ARRAYS
 
 // with Strings
 
