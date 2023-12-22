@@ -1,4 +1,4 @@
-# JS Behind the Scenes
+# Functions In JavaScript
 
 ## Table of Contents
 
