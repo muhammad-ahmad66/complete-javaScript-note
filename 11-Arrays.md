@@ -337,6 +337,8 @@ btnSort.addEventListener('click', function (e) {
 9. [SOME_AND_EVERY_METHODS](#some_and_every_methods)
 10. [Separate_Callback_Function](#separate_callback_function)
 11. [FLAT_AND_FLAT-MAP_METHOD](#flat_and_flat-map_method)
+12. [SORTING_ARRAYS](#sorting_arrays)
+13. [WAYS_TO_CREATING_AND_FILLING_ARRAYS](#ways_to_creating_and_filling_arrays)
 
 ---
 
@@ -1035,6 +1037,8 @@ const overallBalance2 = accounts
 console.log(overallBalance); // working.....
 ```
 
+---
+
 ### FLAT_MAP
 
 Using a map method first and then flating the result of map method is very common operation in javascript, exactly what we had done here ⤴ .
@@ -1054,98 +1058,108 @@ console.log(overallBalance3); // also giving correct result.
 
 ---
 
-SORTING_ARRAYS
+## SORTING_ARRAYS
 
-// with Strings
+### Sort Method With Strings
 
+```js
 const brothers = ['Muhammad', 'Hammad', 'Haris', 'Adeel'];
 console.log(brothers.sort()); // sorted
+```
 
-// Remember : This (sort method) mutates the original array.
+Remember: **This (sort method) mutates the original array.**
 console.log(brothers); // mutated
 
-// with Numbers
+### Sort Method with Numbers
 
+```js
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
 console.log(movements);
+console.log(movements.sort());
+```
 
-// ---- NOT WORKIGN ---- //
-// console.log(movements.sort()); // This time result is not really what we are expecting.. Why????
-// Raeson for this is that sort method does the sorting based on strings -weird-
+**NOT WORKING!!!** This time result is not really what we are expecting.. **Why????**  
+Reason for this is that sort method does the sorting based on strings -weird-  
+If we look at the result it's seems correct if we are working with strings. but we are not working with strings. It sorted with only first digits. like 2, 4, 46, 6, 69, 77...
 
-// if we look at the result it's seems correct if we are working with strings. but we are not working with strings.
+### FIXING
 
-// ---- FIXING ---- //
+**We can fix this by passing in a compare callback function into the sort method.**  
+This callback function will receive two arguments.
 
-// We can fix this by passing in a compare callback function into the sort method.
+1. current value
+2. next value
 
-// This callback function will receive two arguments.
-// 1. current value
-// 2. next value
+Sort Method will call this functions in each iteration and will compare this two numbers in each iteration.
 
-// Sort method will call this functions in each iteration and will compare this two numbers in each iteration.
+### Sorting in Ascending Order
 
-// ---- Sorting in Ascending Order --------- //
-// if we are returnign some negative number then a will be before b and if we are returnign some positive number then b will be before a. that's rule of comparing
-// return < 0 then a, b
-// return > 0 then b, a
+If we are returning some negative number then **a** will be before **b** and if we are returning some positive number then **b** will be before **a**. that's rule of comparing:  
+**return < 0 then a, b**
+**return > 0 then b, a**
 
+```js
 movements.sort((a, b) => {
-if (a > b) {
-return 1; // number here does't meter, should +ve number, that's rule of comparing.
-// It means if a is > b then will exchange.
-};
-if (a < b) {
-return -1; // should any -ve number. No exchange here
-};
+  if (a > b) {
+    return 1; // number here does't meter, should +ve number, that's rule of comparing.
+    // It means if a is > b then will exchange.
+  }
+  if (a < b) {
+    return -1; // should any -ve number. No exchange here
+  }
 });
 console.log(movements); // Now indeed sorted.
+```
 
-// Remember: Returing +ve means switch the order and Returning -ve means keep order.
+_Remember: **Returning +ve means switch the order and Returning -ve means keep order.**_
 
-// NOTE & Remember All of these are sorting in ascending order If we have to sort in descending order, condition will be opposite.
+**NOTE & Remember All of these are sorting in ascending order If we have to sort in descending order, condition will be opposite.**
 
-// Remember: we are working with only numbers then we can simplify this a lot by using some maths.
+Remember: we are working with only numbers then we can simplify this a lot by using some maths.  
+**If 'a' is greater than 'b' then 'a-b' will some +ve value.**  
+**If 'a' is less than 'b' then 'a-b' give some -ve number.**
 
-// If 'a' is greater than 'b' then 'a-b' will some +ve value.
-// Is 'a' is less than 'b' then 'a-b' give some -ve number.
-
+```js
 movements.sort((a, b) => a - b); // that's it
-console.log(movements); // A/c to role if return +ve then will interchange, so if a is greater than b, it gives positive so should switch order, else if return -ve, then should keep their order, so if a is already simaler then b, it will give -ve, negative means there should no interchange.
+console.log(movements);
+```
 
-// ---- Sorting in descending Order --------- //
-// return > 1 then a, b
-// return <1 then b, a
+A/c to rule if return +ve then will interchange, so if a is greater than b, it gives positive so should switch order, **like 2 - 1 = 1**. Else if return -ve, then should keep their order, so if a is already smaller then b, it will give -ve, negative means there should no interchange, **like 2 - 5 = -3**
 
+### Sorting in Descending Order
+
+**return > 1 then a, b**  
+**return <1 then b, a**
+
+```js
 movements.sort((a, b) => {
-if (a > b) {
-return -1;
-};
-if (a < b) {
-return 1;
-};
+  if (a > b) {
+    return -1;
+  }
+  if (a < b) {
+    return 1;
+  }
 });
 console.log(movements); // yes! also working.
+```
 
-// For decending order we will use b minus a. (shorter way!!)
+For Descending order we will use b minus a. (shorter way!!)
+
+```js
 movements.sort((a, b) => b - a);
 console.log(movements); // working.
+```
 
-// Reminder : Sorting functionality are implemented in bakist application in displayMovements function.⬆⬆⬆🔝
+✔ a - b For Ascending Order  
+✔ b - a For Descending Order
 
-\*/
+**Reminder:** Sorting functionality are implemented in bankist application in displayMovements function.⬇⬇⏬
 
-/////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////
+---
 
-/\*
+## WAYS_TO_CREATING_AND_FILLING_ARRAYS
 
-// Heading
-
-// MORE WAYS TO CREATING AND FILLING AN ARRAYS:
-
-// UP UNITL WE USED THIS TWO METHODS TO CREATE AND FILL ARRAY
+// UP UNTIL WE USED THIS TWO METHODS TO CREATE AND FILL ARRAY
 // 1.
 const array1 = [2, 1, 4, 2, 5, 6, 8];
 console.log(array1);
