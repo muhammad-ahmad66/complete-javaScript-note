@@ -339,6 +339,7 @@ btnSort.addEventListener('click', function (e) {
 11. [FLAT_AND_FLAT-MAP_METHOD](#flat_and_flat-map_method)
 12. [SORTING_ARRAYS](#sorting_arrays)
 13. [WAYS_TO_CREATING_AND_FILLING_ARRAYS](#ways_to_creating_and_filling_arrays)
+    1. [FILL_METHOD](#fill_method)
 
 ---
 
@@ -1159,33 +1160,59 @@ console.log(movements); // working.
 
 ## WAYS_TO_CREATING_AND_FILLING_ARRAYS
 
-// UP UNTIL WE USED THIS TWO METHODS TO CREATE AND FILL ARRAY
-// 1.
-const array1 = [2, 1, 4, 2, 5, 6, 8];
-console.log(array1);
-// 2.
-const array2 = new Array(1, 2, 3, 8, 4, 5, 3, 6);
-console.log(array2);
+UP UNTIL WE USED THIS TWO METHODS TO CREATE AND FILL ARRAY
 
-// In these cases we already have data, before creating an array.
+1️⃣
 
-// However we can also generate arrays programmatically, witout having to define all the items manually.
-// There are several way to doing that
+    ```js
+    const array1 = [2, 1, 4, 2, 5, 6, 8];
+    console.log(array1);
+    ```
 
-// Easiest Way. [Array Constructor]
+2️⃣
+
+    ```js
+    const array2 = new Array(1, 2, 3, 8, 4, 5, 3, 6);
+    console.log(array2);
+    ```
+
+**In these cases we already have data, before creating an array.**
+
+However we can also generate arrays programmatically, without having to define all the items manually.  
+There are several way to doing that
+
+1. Easiest Way. [Array Constructor]
+
+```js
 const x = new Array(7);
-console.log(x); // unexpected result. instead of an array with only one element(7), it creats an array of length 7 with empty values.
-// So, Remember whenever we creates an array usign Array function and pass only one argument, it will create an array of that length with empty values. But if we pass more than one arguments it will create and array of that values.
-// const y = new Array(7, 8);
-// console.log(y); // [7, 8]
+console.log(x);
+```
 
-// this not very useful b/c we can't apply any method to this empty array like
+Unexpected result. **Instead of an array with only one element(7), it creates an array of length 7 with empty values**.
+
+**So, Remember** whenever we creates an array using Array function and pass only one argument, it will create an array of that length with empty values. But if we pass more than one arguments it will create an array of that values.
+
+```js
+const y = new Array(7, 8);
+console.log(y); // [7, 8]
+```
+
+This not very useful b/c we can't apply any method to this empty array like
+
+```js
 console.log(x.map((x) => 5)); // not working
-// But only work one method that's fill method.
-// x.fill(4);
-// console.log(x);
+```
 
-// ------- FILL METHOD ------- //
+But only work one method that's **fill method**.
+
+```js
+x.fill(4);
+console.log(x); // [ 4, 4, 4, 4, 4, 4, 4 ]
+```
+
+---
+
+### FILL_METHOD
 
 // Subheading: fill Method will fill entire array with the value that's passed in as argument to fill method.
 // Remember : fill method will mutate original array.
@@ -1624,9 +1651,14 @@ console.log(dogsCopy);
 /// --- khuda khuda kr k khatm hve --- ///
 /// --- Inshallah Before Ramzan it should complete --- //
 
-````
+```
+
+```
 
 ```
 
 ```
-````
+
+```
+
+```
