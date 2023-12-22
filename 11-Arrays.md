@@ -340,6 +340,8 @@ btnSort.addEventListener('click', function (e) {
 12. [SORTING_ARRAYS](#sorting_arrays)
 13. [WAYS_TO_CREATING_AND_FILLING_ARRAYS](#ways_to_creating_and_filling_arrays)
     1. [FILL_METHOD](#fill_method)
+    2. [Array.from_Function](#Array.from_Function)
+14. [SUMMARY_OF_ARRAY_METHODS](#summary_of_array_methods)
 
 ---
 
@@ -1214,80 +1216,100 @@ console.log(x); // [ 4, 4, 4, 4, 4, 4, 4 ]
 
 ### FILL_METHOD
 
-// Subheading: fill Method will fill entire array with the value that's passed in as argument to fill method.
-// Remember : fill method will mutate original array.
+**fill Method** will fill entire array with the value that's passed in as argument to fill method.  
+**Remember:** fill method will mutate original array.
 
-// If we specify one argument then fill method will fill entiere array with that number.
+If we specify one argument then fill method will fill entire array with that number.
+
+```js
 x.fill(2); // it will fill entire array with 2
-console.log(x);
+console.log(x); // [ 2, 2, 2, 2, 2, 2, 2 ]
+```
 
-// and if we specify two argument then first should a value, which we wants to fill and second will be begin index, where we wants to start filling. it'll fill beg to end.. like
-x.fill(3, 2) // it will fill value 2 starting index = 2.
-console.log(x);
+And **if we specify two argument then first should a value, which we wants to fill and second will be begin index, where we wants to start filling.** it'll fill beg to end.. like
 
-// and if we specify three arguments then third will be end index. (ending index will not consider to fill)
-// all is much similar to slice.
+```js
+x.fill(3, 2); // it will fill value 3, from starting index 2 to entire array.
+console.log(x);
+```
+
+And **if we specify three arguments then third will be end index.** (ending index will not consider to fill)  
+All is much similar to slice.
+
+```js
 x.fill(9, 3, 5); // ending index not include
 console.log(x);
+```
 
-// Remember : We can also fill existing filled array, it doesn't have to be an empty array.
+**Remember:** We can also fill existing filled array, it doesn't have to be an empty array.
+
+```js
 const arr = [3, 4, 2, 1, 5, 9];
 arr.fill(2, 1, 4);
 console.log(arr); // [3, 2, 2, 2, 5, 9]
+```
 
-/////////////////////////////////////////
+---
 
-// Subheading: --- Array.from FUNCTION ---
+### Array.from_Function
 
-// What if we want to create any array programmatically?
-// for that we could use Array.from() function
+**What if we want to create any array programmatically?**  
+For that we could use **Array.from()** function.
 
-// Array.from will takes two arguments one will be an object were we specity length as an property and give it value, as a length of an array and the second argument will be a mapping function, it's exactly callback function that we passed in map method. but here we will not specify any argument, only we will give new value for just filly any number but if we need than, can specify curr_el, curr_i, arr like in map method.
+**Array.from** will takes two arguments one will be an object were we specify length as a property and give it value, as a length of an array and the second argument will be a mapping function, it's exactly callback function that we passed in map method. but here we will not specify any argument, only we will give new value for just filly any number but if we need than, can specify cur_el, cur_i, arr like in map method.
 
-const y = Array.from({ length: 7 }, () => 1) // here Array is a function and from is a method.
+```js
+const y = Array.from({ length: 7 }, () => 1);
+// here Array is a function and from is a method.
 // it'll create array with length 7 and put 1 in each index.
 console.log(y); // [1, 1, 1, 1, 1, 1, 1]
+```
 
-const z = Array.from({ length: 7 }, (_, i) => i + 1) // Reminder underscore (_) use to throwaway variable (unneed)
+```js
+const z = Array.from({ length: 7 }, (_, i) => i + 1);
+// Reminder underscore (_) use to throwaway variable.
 console.log(z); // [1, 2, 3, 4, 5, 6, 7]
+```
 
-// Array.from a really made to convert other iterables (Map, sat, string ) to an array. that's whay we it's name is Array.from => (array from others)
+**Array.from** a really made to convert other iterables (Map, sat, string ) to an array. that's why it's name is Array.from => (array from others)
 
-// Remember : Like map, set & strings, result of querrySelectorAll is also an array like structure (iterable).
-// Reminder : querrySelectorAll will return nodelist, which is some thing like an array, which contain all the selected elements. it's not real array so, it doesn't have methods like map(), reduce() etc.
-// if we wanna apply these methods then we've to first convert that nodelist to an array And for that Array.from is perfect.
+**Remember:** Like **Map**, **Set** & **Strings**, result of **querySelectorAll** is also an array like structure (iterable).  
+**Remember:** querySelectorAll will return nodeList, which is some thing like an array, which contain all the selected elements. it's not real array so, it doesn't have methods like map(), reduce() etc.  
+If we wanna apply these methods then we've to first convert that nodeList to an array And for that **Array.from** is perfect.
 
-// lets see example
-// consider we have't values of movements in real array, all movements are stored only on user interface. we do't have some where in our code. But for some how we have to applay some array methods on it............
+**lets see example**  
+Consider we have't values of movements in real array, all movements are stored only on user interface. we do't have some where in our code. But for some how we have to apply some array methods on it............
 
-// Remember
-// Arrary.form => takes two arguments
-// 1. may be length in object or if we are converting then should be any iterable.
-// 2. should be maped callback function.
+```js
 
+```
+
+**Array.form** takes two arguments
+
+1. May be length in object or if we are converting then should be any iterable.
+2. Should be mapped callback function.
+
+```js
 labelBalance.addEventListener('click', function () {
-const movementsUI = Array.from(document.querySelectorAll('.movements\_\_value'), el => Number(el.textContent.replace('€', '')));
-console.log(movementsUI);
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    (el) => Number(el.textContent.replace('€', ''))
+  );
+  console.log(movementsUI);
+});
+```
 
-// -- Another way to conver querrySelectorAll to array --
-// we can also use spread opeator to conver into an array
+Another way to convert querySelectorAll to array.  
+We can also use spread operator to convert into an array.
 
+```js
 const movementsUI2 = [...document.querySelectorAll('.movements__value')];
 console.log(movementsUI2);
-})
+```
 
-\*/
+---
 
-/\*
-////////////////////////////////////////////////////
-///////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
-
-// Heading Heading Heading
-
-// SUMMARY OF ARRAY METHODS
+## SUMMARY_OF_ARRAY_METHODS
 
 // Since begining of the cousrse we have studied 23 differenct arrays methods.
 
