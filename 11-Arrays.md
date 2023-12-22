@@ -1,318 +1,4 @@
-# BANKIST APP
-
-## DATA
-
-```js
-const account1 = {
-  owner: 'Muhammad Ahmad',
-  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-  interestRate: 1.2, // %
-  pin: 1111,
-};
-
-const account2 = {
-  owner: 'Hammad Ahmad',
-  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-  interestRate: 1.5,
-  pin: 2222,
-};
-
-const account3 = {
-  owner: 'Haris Shehbaz',
-  movements: [200, -200, 340, -300, -20, 50, 400, -460],
-  interestRate: 0.7,
-  pin: 3333,
-};
-
-const account4 = {
-  owner: 'Adeel Ahmad',
-  movements: [430, 1000, 700, 50, 90],
-  interestRate: 1,
-  pin: 4444,
-};
-
-const accounts = [account1, account2, account3, account4];
-```
-
-## Elements
-
-```js
-const labelWelcome = document.querySelector('.welcome');
-const labelDate = document.querySelector('.date');
-const labelBalance = document.querySelector('.balance**value');
-const labelSumIn = document.querySelector('.summary**value--in');
-const labelSumOut = document.querySelector('.summary**value--out');
-const labelSumInterest = document.querySelector('.summary**value--interest');
-const labelTimer = document.querySelector('.timer');
-
-const containerApp = document.querySelector('.app');
-const containerMovements = document.querySelector('.movements');
-
-const btnLogin = document.querySelector('.login**btn');
-const btnTransfer = document.querySelector('.form**btn--transfer');
-const btnLoan = document.querySelector('.form**btn--loan');
-const btnClose = document.querySelector('.form**btn--close');
-const btnSort = document.querySelector('.btn--sort');
-
-const inputLoginUsername = document.querySelector('.login**input--user');
-const inputLoginPin = document.querySelector('.login**input--pin');
-const inputTransferTo = document.querySelector('.form**input--to');
-const inputTransferAmount = document.querySelector('.form**input--amount');
-const inputLoanAmount = document.querySelector('.form**input--loan-amount');
-const inputCloseUsername = document.querySelector('.form**input--user');
-const inputClosePin = document.querySelector('.form__input--pin');
-```
-
-### SOME QUICK TIPS
-
-- For any specific functionality always use functions.
-- Always pass variables as an arguments that being use in function instead of directly using.
-- Always write a function for any specific task -good practice.
-
-```js
-const displayMovement = function (movements, sort = false) {
-  // we added second parameter for sorting, by default it should not sort. and when click it will sort and by again clicking it should unsorted....
-
-  containerMovements.innerHTML = '';
-  // This is for empty the existing elements from containerMovements. NOTE: it's common.
-
-  // Here we are not sorting actual array elements in array variable but we wants to only display when click.
-  // Remember sort method will change entire array in sorted form. so...here we use slice method to copy of array.
-  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
-
-  movs.forEach(function (mov, i) {
-    const type = mov > 0 ? 'deposit' : 'withdrawal';
-    const html = `
-    <div class="movements__row">
-      <div class="movements__type   movements__type--${type}">${
-      i + 1
-    } ${type}</div>
-      <div class="movements__value">${mov}€</div>
-    </div>
-    `;
-    // We can directly paste html data in string literal. string literal is v.v useful here
-    containerMovements.insertAdjacentHTML('afterbegin', html);
-  });
-};
-
-displayMovement(account1.movements);
-
-// Now applying reduce method to calculate balance and print total
-const calcDisplayBalance = function (acc) {
-  acc.balance = acc.movements.reduce(function (acc, mov) {
-    return acc + mov;
-  }, 0);
-  labelBalance.textContent = `${acc.balance}€`;
-};
-// calcDisplayBalance(account1.movements);
-```
-
-Implementing array chaining methods to the Application to calculate deposits, withdraws and interest.  
-Again we'll implement in one function. -best practice-
-
-```js
-const calcDisplaySummary = function (acc) {
-const incomes = acc.movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov, 0);
-labelSumIn.textContent = `${incomes}€`;
-
-const out = acc.movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov, 0);
-labelSumOut.textContent = `${Math.abs(out)}€`;
-
-const interest = acc.movements.filter(mov => mov > 0).map(deposit => deposit \* acc.interestRate / 100).filter(deposit => deposit >= 1).reduce((acc, interest) => acc + interest, 0);
-labelSumInterest.textContent = `${interest}€`;
-// second filter is for that: company is paying for only those who's interest is greater that one.
-}
-
-// calcDisplaySummary(account1.movements)
-```
-
-Now we are creating a user name using map method. user-account will contain first letter of each word of name from accounts objects.
-
-```js
-const user = 'Muhammad Ahmad Shamim'; // user name should Muh.
-const createUserNames = function (accs) {
-  accs.forEach(function (accs) {
-    accs.username = accs.owner
-      .toLowerCase()
-      .split(' ')
-      .map(function (name) {
-        return name[0]; // to return only first letter from each element.
-      })
-      .join(''); // join is to convet array to string.
-  });
-};
-createUserNames(accounts);
-// console.log(accounts);
-```
-
-## EVENT HANDLERS
-
-Building log-in functionality.
-
-```js
-let currentAccount;
-const updateUI = function (acc) {
-  // Display Movements
-  displayMovement(acc.movements);
-
-  // Display Balance
-  calcDisplayBalance(acc);
-
-  // Display Summary
-  calcDisplaySummary(acc);
-};
-
-btnLogin.addEventListener('click', function (e) {
-  // Remember : see console, when we click on button LOGIN is appearing in console and then disappearing. it's going b/c, in html when we click button it will reload the page. so it's disappearing....
-  // To prevent from this we will pass an event in parameter and then..
-  e.preventDefault(); // it'll prevent this form from submitting.
-
-  currentAccount = accounts.find(
-    (acc) => acc.username === inputLoginUsername.value
-  );
-  // console.log(currentAccount);
-
-  if (currentAccount?.pin === Number(inputLoginPin.value)) {
-    // If password and username are correct then?
-    // display UI and Welcome message.
-
-    labelWelcome.textContent = `Welcome Back ${
-      currentAccount.owner.split(' ')[0]
-    }`;
-
-    containerApp.style.opacity = 100;
-
-    // Clear Input Fields when successfully logged in
-    inputLoginUsername.value = inputLoginPin.value = '';
-    inputLoginPin.blur(); // to lose it's focus otherwise the cursor will blinking after login.
-
-    // Display Movements
-    // displayMovement(currentAccount.movements);
-
-    // Display Balance
-    // calcDisplayBalance(currentAccount);
-
-    // Display Summary
-    // calcDisplaySummary(currentAccount);
-
-    updateUI(currentAccount); // calling function.
-  }
-});
-```
-
-### Building Money Transformation Functionality
-
-```js
-btnTransfer.addEventListener('click', function (e) {
-  // Preventing Default hehavior of form's btn
-  e.preventDefault(); // v.common, when workin with form
-
-  const amount = Number(inputTransferAmount.value);
-  const receiverAcc = accounts.find(
-    (acc) => acc.username === inputTransferTo.value
-  );
-
-  // clear input fields and focus
-  inputTransferAmount.value = inputTransferTo.value = '';
-  inputTransferAmount.blur();
-
-  if (
-    amount > 0 &&
-    receiverAcc &&
-    amount <= currentAccount.balance &&
-    receiverAcc?.username !== currentAccount.username
-  ) {
-    // adding in receiver a/c and subtracting from sender a/c
-    currentAccount.movements.push(-amount);
-    receiverAcc.movements.push(amount);
-
-    // to update UI
-    updateUI(currentAccount);
-  }
-});
-```
-
-### Use of some method
-
-use to request a loan to a back.
-
-```js
-btnLoan.addEventListener('click', function (e) {
-e.preventDefault();
-
-const amount = Number(inputLoanAmount.value);
-
-// conditions to receive load.
-// loan only take if it have at least one (some) deposit that is greater or equal to the 10% of the loan.
-if (amount > 0 && currentAccount.movements.some(mov => mov >= /_amount_ 10 / 100 OR _/ /\_amount / 10 OR_/ amount\_ 0.1)) {
-
-    // add the movement
-    currentAccount.movements.push(amount);
-
-    // update UI
-    updateUI(currentAccount)
-
-}
-
-// clearing input field
-inputLoanAmount.value = '';
-})
-```
-
-### Use of findIndex method
-
-Here we want to delete the current account, if the user wants wo close his/her account, by using closeAccount button.
-
-To delete any array element we use splice method, So first we have to find current account and then delete it. so to find account we use findIndex method.
-
-```js
-btnClose.addEventListener('click', function (e) {
-  e.preventDefault(); // prevent from default behavior of form submission btn.
-
-  // checking username and pin
-  if (
-    inputCloseUsername.value === currentAccount.username &&
-    Number(inputClosePin.value) === currentAccount.pin
-  ) {
-    const index = accounts.findIndex(
-      (acc) => acc.username === currentAccount.username
-    );
-
-    // Delete Account
-    accounts.splice(index, 1); // will mutates original one.
-
-    // Hide UI
-    containerApp.style.opacity = 0;
-  }
-  // clear input fields and focus
-  inputCloseUsername.value = inputClosePin.value = '';
-  inputClosePin.blur();
-});
-```
-
-### Sorting
-
-```js
-let sorted = false;
-btnSort.addEventListener('click', function (e) {
-  e.preventDefault();
-  // displayMovement(currentAccount.movements, true);
-  displayMovement(currentAccount.movements, !sorted); // same as true. b/c initially sorted is false
-
-  // if click then flip the sorted value
-  sorted = !sorted; // amazing!!!!
-
-  // But here we have to do when ever user click sort button again it should return in normal form (-unsorted form)/
-  // How we do this type of functionality???
-
-  // We will solve this problem by using state variable it will monitor, currently sorted or not.
-  // That variable should define outside of function. b/c we want to preserve that sorted state
-});
-```
-
----
-
-## Arrays In JavaScript
+# Arrays In JavaScript
 
 ## Table of Contents
 
@@ -342,6 +28,9 @@ btnSort.addEventListener('click', function (e) {
     1. [FILL_METHOD](#fill_method)
     2. [Array.from_Function](#Array.from_Function)
 14. [SUMMARY_OF_ARRAY_METHODS](#summary_of_array_methods)
+15. [ARRAY_EXERCISE](#array_exercise)
+16. [CODING_CHALLENGES](#coding_challenges)
+17. [BANKIST_APP](#bankist_app)
 
 ---
 
@@ -1335,233 +1024,303 @@ _**Q: Do I Want to mutate original?**_
 
 **_Q: Do I Want a New Array?_**
 
-// - Compute from original
-// - map()
+1. **Compute from original**
 
-// - Filter using condition
-// - filter()
+   - map()
 
-// - Portion of Original
-// - slice()
+2. **Filter using condition**
 
-// - Adding original to other
-// - concat()
+   - filter()
 
-// - Flattening the original
-// - flat()
-// - flatMap()
+3. **Portion of Original**
 
-////////////////////////////
+   - slice()
 
-// Q: Do I Want Array Index?
+4. **Adding original to other**
 
-// - Index based on Value
-// - indexOf()
+   - concat()
 
-// - Index based on condition
-// - findIndex()
+5. **Flattening the original**
 
-////////////////////////////
+   - flat()
+   - flatMap()
 
-// Q: Do I Retrive Array Element?
+---
 
-// - Array element Based on condition
-// - find()
+**_Q: Do I Want Array Index?_**
 
-////////////////////////////
+1. **Index based on Value**
 
-// Q: Do I Konw If Array includes?
-// ---- true OR false -----
+   - indexOf()
 
-// - Based on value:
-// - includes
+2. **Index based on condition**
+   - findIndex()
 
-// - Based on condition
-// - some()
-// - every()
+---
 
-////////////////////////////
+**_Q: Do I Retrieve Array Element?_**
 
-// Q: Do I Get a new string?
+1. **Array element Based on condition**
+   - find()
 
-// - Transform array to string:
-// - join()
+---
 
-////////////////////////////
+**_Q: Do I Know If Array includes?_**  
+**true** OR **false**
 
-// Q: Do I Transform array to new value?
+1. **Based on value:**
 
-// - Based on accumulator
-// - reduce()
-// Boiled value may be any type like number, string, boolean, object, or even array
+   - includes
 
-////////////////////////////
+2. **Based on condition**
+   - some()
+   - every()
 
-// Q: Do I Simply loop over the Array?
+---
 
-// - Based on callback
-// -forEach()
-// loop over an array Without producing any resultant value
-// Doesn't create any new value.
-// do some operation
+**_Q: Do I Get a new string?_**
 
-////////////////////////////
+1. **Transform array to string:**
+   - join()
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
+---
 
-// Heading
+**_Q: Do I Transform array to new value?_**
 
-// --- ARRAY EXERCISEs --- //
-/\*
+1. **Based on accumulator**
+   - reduce()
+     _Boiled value may be any type like number, string, boolean, object, or even array_
 
-// - Exercise #01
-// Sum of overall deposits in bank (not in one account).
-const bankDepositSum = accounts.flatMap(acc => acc.movements).filter(mov => mov > 0).reduce((accu, deposit) => accu + deposit, 0)
+---
+
+**_Q: Do I Simply loop over the Array?_**
+
+1. **Based on callback**
+   - forEach()
+     _loop over an array Without producing any resultant value_  
+     _Doesn't create any new value._  
+     _Do some operation_
+
+---
+
+## ARRAY_EXERCISE
+
+### Exercise #01
+
+Sum of overall deposits in bank (not in one account).
+
+```js
+const bankDepositSum = accounts
+  .flatMap((acc) => acc.movements)
+  .filter((mov) => mov > 0)
+  .reduce((acc, deposit) => acc + deposit, 0);
 
 console.log(bankDepositSum);
+```
 
-// - Exercise #02
-// count how many deposits in back with at least 1000:
+---
 
-// - method 01 ( using .length propery )
-const numDeposits1000 = accounts.flatMap(acc => acc.movements).filter(deposit => deposit >= 1000).length;
+### Exercise #02
+
+count how many deposits in back with at least 1000:
+
+**Method 01** ( using .length property )
+
+```js
+const numDeposits1000 = accounts
+  .flatMap((acc) => acc.movements)
+  .filter((deposit) => deposit >= 1000).length;
 console.log(numDeposits1000); // 6
+```
 
-// - method 02 ( using .reduce method )
-const numDeposits1000_2 = accounts.flatMap(acc => acc.movements).filter(deposit => deposit >= 1000).reduce((acc) => ++acc, 0);
+**Method 02** ( using .reduce method )
+
+```js
+const numDeposits1000_2 = accounts
+  .flatMap((acc) => acc.movements)
+  .filter((deposit) => deposit >= 1000)
+  .reduce((acc) => ++acc, 0);
 console.log(numDeposits1000_2); // same answer
+```
 
-// - method 03 ( using .reduce method )
-// const numDeposits1000_3 = accounts.flatMap(acc => acc.movements).reduce((count, mov) => mov >= 1000 ? count++ : count, 0);
-const numDeposits1000_3 = accounts.flatMap(acc => acc.movements).reduce((count, mov) => mov >= 1000 ? ++count : count, 0);
+**Method 03** ( using .reduce method )
+
+```js
+const numDeposits1000_3 = accounts
+  .flatMap((acc) => acc.movements)
+  .reduce((count, mov) => (mov >= 1000 ? count++ : count), 0);
+const numDeposits1000_3 = accounts
+  .flatMap((acc) => acc.movements)
+  .reduce((count, mov) => (mov >= 1000 ? ++count : count), 0);
 console.log(numDeposits1000_3); // same answer
+```
 
-// Remember: In last methods If we add ++ after count (count++) instead of ++count, here it's not working. whay??
-// To understand this lets take simple example:
+**NOtTE:** In last methods If we add ++ after count (count++) instead of ++count, here it's not working. why??  
+To understand this lets take simple example:
+
+```js
 let a = 10;
 console.log(a++); // 10 (not incremented) why?
-// Actually the ++ operator does increment the value but it still returns the previous value. if we log a again without ++ it should 11 (incremented);
+```
+
+Actually the ++ operator does increment the value but it still returns the previous value. if we log a again without ++ it should 11 (incremented);
+
+```js
 console.log(a); // 11
-// solution is prefixed increment operator
+```
+
+solution is **prefixed increment operator**
+
+```js
 console.log(++a); // 12
+```
 
-// so conclusion: // Remember Remember
-// If we add increment operator after the variable then, it will return the original value than will add by one. and if we write increment operator before variable than, it will add and after adding will return added value.
+**CONCLUSION:**  
+If we add increment operator after the variable then, it will return the original value than will add by one. and if we write increment operator before variable than, it will add and after adding will return added value.
 
-// - Exercise #03.
-// using reduce method we are going to create a new object (i-e, reduce is returning an object)
-// calculate sum of deposits and withdrawals
+---
 
-const sums = accounts.flatMap(acc => acc.movements).reduce((sums, curr) => {
-curr > 0 ? sums.deposits += curr : sums.withdrawals += Math.abs(curr);
+### Exercise #03
+
+Using reduce method we are going to create a new object (i-e, reduce is returning an object)  
+Calculate sum of deposits and withdrawals
+
+```JS
+const sums = accounts.flatMap(acc => acc.movements).reduce((sums, cur) => {
+cur > 0 ? sums.deposits += cur : sums.withdrawals += Math.abs(cur);
 return sums;
 }, { deposits: 0, withdrawals: 0 });
 
 console.log(sums);
+```
 
-// destructure it
-const { deposits, withdrawals } = accounts.flatMap(acc => acc.movements).reduce((sums, curr) => {
-curr > 0 ? sums.deposits += curr : sums.withdrawals += Math.abs(curr);
-return sums;
-}, { deposits: 0, withdrawals: 0 });
+**Destructure** It
+
+```js
+const { deposits, withdrawals } = accounts
+  .flatMap((acc) => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      cur > 0 ? (sums.deposits += cur) : (sums.withdrawals += Math.abs(cur));
+      return sums;
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
 
 console.log(deposits, withdrawals);
+```
 
-// to access object property, using braket notaion insted of .dot:
-const { depositsBr, withdrawalsBr } = accounts.flatMap(acc => acc.movements).reduce((sums, curr) => {
-sums[curr > 0 ? 'depositsBr' : 'withdrawalsBr'] += curr;
-return sums;
-}, { depositsBr: 0, withdrawalsBr: 0 });
+To access object property, using bracket notation instead of .dot:
+
+```js
+const { depositsBr, withdrawalsBr } = accounts
+  .flatMap((acc) => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      sums[cur > 0 ? 'depositsBr' : 'withdrawalsBr'] += cur;
+      return sums;
+    },
+    { depositsBr: 0, withdrawalsBr: 0 }
+  );
 
 console.log(depositsBr, withdrawalsBr);
+```
 
-// This example BUT this time returning an ARRAY.
+This same example BUT this time returning an ARRAY.
 
-const sums1 = accounts.flatMap(acc => acc.movements).reduce((sums, curr) => {
-curr > 0 ? sums[0] += curr : sums[1] += curr;
-return sums;
-}, [0, 0])
+```js
+const sums1 = accounts
+  .flatMap((acc) => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      cur > 0 ? (sums[0] += cur) : (sums[1] += cur);
+      return sums;
+    },
+    [0, 0]
+  );
 
 console.log(sums1); // Wow Working!!!!
+```
 
-// Now destructuring this Arrays.
-const [deposits, withdrawals] = accounts.flatMap(acc => acc.movements).reduce((sums, curr) => {
-curr > 0 ? sums[0] += curr : sums[1] += curr;
-return sums;
-}, [0, 0]);
+Now destructuring this Arrays.
+
+```js
+const [deposits, withdrawals] = accounts
+  .flatMap((acc) => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      cur > 0 ? (sums[0] += cur) : (sums[1] += cur);
+      return sums;
+    },
+    [0, 0]
+  );
 console.log(deposits, Math.abs(withdrawals));
+```
 
-// - Exercise #04:
+### Exercise #04
 
-// A function to convert any string to title case. title case means capitalize all words from a sentence, except some of them. like... (in this case except a)
-// this is a nice title -> This Is a Nice Title.
+A function to convert any string to title case. **Title case means capitalize all words from a sentence, except some of them.** like... (in this case except a)  
+'this is a nice title' -> This Is a Nice Title.
 
+```js
 const convertTitleCase = function (title) {
+  const capitalize = function (str) {
+    const upperStr = str[0].toUpperCase() + str.slice(1);
+    return upperStr;
+  };
+  const exceptions = ['a', 'an', 'the', 'on', 'and', 'but', 'or', 'in', 'with'];
 
-const capitalize = function (str) {
-const upperStr = str[0].toUpperCase() + str.slice(1);
-return upperStr;
-}
-const exceptions = ['a', 'an', 'the', 'on', 'and', 'but', 'or', 'in', 'with'];
+  const titleCase = title
+    .toLowerCase()
+    .split(' ')
+    .map((word) => (exceptions.includes(word) ? word : capitalize(word)))
+    .join(' ');
 
-const titleCase = title
-.toLowerCase()
-.split(' ')
-.map(word => (exceptions.includes(word) ? word : capitalize(word))).join(' ');
-
-return capitalize(titleCase); // to convert first letter of sentence, if 1st is from any exceptions.
+  return capitalize(titleCase); // to convert first letter of sentence, if 1st is from any exceptions.
 };
 console.log(convertTitleCase('this is a nice title'));
 console.log(convertTitleCase('this is a LONG title but not too long'));
 console.log(convertTitleCase('and here is ANOTHER TITLE with an example'));
+```
 
-\*/
+---
 
-/////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////
+## CODING_CHALLENGES
 
-// CODING CHALENGES
+### CODING CHALLENGE #01
 
-/\*
-
-// CODING CHALLENGE #01;
-
+```js
 const checkDogs = function (dogsJulia, dogsKate) {
-const dogJoliaCorrected = dogsJulia.slice();
+  const dogJoliaCorrected = dogsJulia.slice();
 
-dogJoliaCorrected.splice(0, 1);
-dogJoliaCorrected.splice(-2);
-// console.log(dogJoliaCorrected);
+  dogJoliaCorrected.splice(0, 1);
+  dogJoliaCorrected.splice(-2);
+  // console.log(dogJoliaCorrected);
 
-const dogs = dogJoliaCorrected.concat(dogsKate);
-console.log(dogs);
+  const dogs = dogJoliaCorrected.concat(dogsKate);
+  console.log(dogs);
 
-dogs.forEach(function (dog, i) {
-dog >= 3 ? console.log(`Dog number ${i + 1} is an adult, and is ${dog} years old`) : console.log(`Dog number ${i + 1} is still a puppy 🐶`);
-})
-}
+  dogs.forEach(function (dog, i) {
+    dog >= 3
+      ? console.log(`Dog number ${i + 1} is an adult, and is ${dog} years old`)
+      : console.log(`Dog number ${i + 1} is still a puppy 🐶`);
+  });
+};
 const juliaDog = [3, 5, 2, 12, 7];
 const kateDog = [10, 5, 6, 1, 4];
-checkDogs(juliaDog, kateDog)
-
-\*/
-
-/\*
+checkDogs(juliaDog, kateDog);
 
 const letters = ['a', 'b', 'c', 'd', 'e', 'f'];
 letters.forEach(function (letter, i) {
-console.log(`At Position ${i + 1}: ${letter.toUpperCase()}`);
+  console.log(`At Position ${i + 1}: ${letter.toUpperCase()}`);
 });
+```
 
-\*/
+---
 
-/\*
-///////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
+### Coding Challenge #02 [MAP, FILTER $ REDUCE METHODS]
 
-/// Heading: Coding Challenge #02 [MAP, FILTER $ REDUCE METHODS]
-
+```js
 const caclAverageHumanAge = function (ages) {
 const humagAges = ages.map(function (age, i) {
 if (age <= 2) {
@@ -1598,25 +1357,24 @@ const testData2 = [16, 6, 10, 5, 6, 1, 4];
 
 console.log(caclAverageHumanAge(testData1));
 console.log(caclAverageHumanAge(testData2));
+```
 
-\*/
+---
 
-/\*
+### Coding Challenge #03 [ CHAINING METHODS & ARROW FUNCTION ]
 
-/// Heading: Coding Challenge #03 [ CHAINING METHODS & ARROW FUNCTION ]
-
+```js
 const caclAverageHumanAge = ages => ages.map(age => age <= 2 ? 2 _age : 16 + age_ 4).filter(humanAge => humanAge > 18).reduce((acc, age, i, arr) => acc + age / arr.length, 0);
 
 console.log(caclAverageHumanAge([5, 2, 4, 1, 15, 8, 3]));
 console.log(caclAverageHumanAge([16, 6, 10, 5, 6, 1, 4]));
+```
 
-\*/
+---
 
-////////////////////////////////////////////////////
-///////////////////////////////////////////////////
+### CODING CHALLENGE # 04 (FINAL)
 
-// Heading : --- CODING CHALLENGE # 04 (FINAL) ---
-
+```js
 // 1.
 const dogs = [
 { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
@@ -1664,20 +1422,322 @@ return a.recommendedFood - b.recommendedFood;
 
 });
 console.log(dogsCopy);
-
-///////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
-/// --- khuda khuda kr k khatm hve --- ///
-/// --- Inshallah Before Ramzan it should complete --- //
-
 ```
 
+---
+
+---
+
+## BANKIST_APP
+
+### DATA
+
+```js
+const account1 = {
+  owner: 'Muhammad Ahmad',
+  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+  interestRate: 1.2, // %
+  pin: 1111,
+};
+
+const account2 = {
+  owner: 'Hammad Ahmad',
+  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+  interestRate: 1.5,
+  pin: 2222,
+};
+
+const account3 = {
+  owner: 'Haris Shehbaz',
+  movements: [200, -200, 340, -300, -20, 50, 400, -460],
+  interestRate: 0.7,
+  pin: 3333,
+};
+
+const account4 = {
+  owner: 'Adeel Ahmad',
+  movements: [430, 1000, 700, 50, 90],
+  interestRate: 1,
+  pin: 4444,
+};
+
+const accounts = [account1, account2, account3, account4];
 ```
 
+### Elements
+
+```js
+const labelWelcome = document.querySelector('.welcome');
+const labelDate = document.querySelector('.date');
+const labelBalance = document.querySelector('.balance**value');
+const labelSumIn = document.querySelector('.summary**value--in');
+const labelSumOut = document.querySelector('.summary**value--out');
+const labelSumInterest = document.querySelector('.summary**value--interest');
+const labelTimer = document.querySelector('.timer');
+
+const containerApp = document.querySelector('.app');
+const containerMovements = document.querySelector('.movements');
+
+const btnLogin = document.querySelector('.login**btn');
+const btnTransfer = document.querySelector('.form**btn--transfer');
+const btnLoan = document.querySelector('.form**btn--loan');
+const btnClose = document.querySelector('.form**btn--close');
+const btnSort = document.querySelector('.btn--sort');
+
+const inputLoginUsername = document.querySelector('.login**input--user');
+const inputLoginPin = document.querySelector('.login**input--pin');
+const inputTransferTo = document.querySelector('.form**input--to');
+const inputTransferAmount = document.querySelector('.form**input--amount');
+const inputLoanAmount = document.querySelector('.form**input--loan-amount');
+const inputCloseUsername = document.querySelector('.form**input--user');
+const inputClosePin = document.querySelector('.form__input--pin');
 ```
 
+### SOME QUICK TIPS
+
+- For any specific functionality always use functions.
+- Always pass variables as an arguments that being use in function instead of directly using.
+- Always write a function for any specific task -good practice.
+
+```js
+const displayMovement = function (movements, sort = false) {
+  // we added second parameter for sorting, by default it should not sort. and when click it will sort and by again clicking it should unsorted....
+
+  containerMovements.innerHTML = '';
+  // This is for empty the existing elements from containerMovements. NOTE: it's common.
+
+  // Here we are not sorting actual array elements in array variable but we wants to only display when click.
+  // Remember sort method will change entire array in sorted form. so...here we use slice method to copy of array.
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+    const html = `
+    <div class="movements__row">
+      <div class="movements__type   movements__type--${type}">${
+      i + 1
+    } ${type}</div>
+      <div class="movements__value">${mov}€</div>
+    </div>
+    `;
+    // We can directly paste html data in string literal. string literal is v.v useful here
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+
+displayMovement(account1.movements);
+
+// Now applying reduce method to calculate balance and print total
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce(function (acc, mov) {
+    return acc + mov;
+  }, 0);
+  labelBalance.textContent = `${acc.balance}€`;
+};
+// calcDisplayBalance(account1.movements);
 ```
 
+Implementing array chaining methods to the Application to calculate deposits, withdraws and interest.  
+Again we'll implement in one function. -best practice-
+
+```js
+const calcDisplaySummary = function (acc) {
+const incomes = acc.movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov, 0);
+labelSumIn.textContent = `${incomes}€`;
+
+const out = acc.movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov, 0);
+labelSumOut.textContent = `${Math.abs(out)}€`;
+
+const interest = acc.movements.filter(mov => mov > 0).map(deposit => deposit \* acc.interestRate / 100).filter(deposit => deposit >= 1).reduce((acc, interest) => acc + interest, 0);
+labelSumInterest.textContent = `${interest}€`;
+// second filter is for that: company is paying for only those who's interest is greater that one.
+}
+
+// calcDisplaySummary(account1.movements)
 ```
 
+Now we are creating a user name using map method. user-account will contain first letter of each word of name from accounts objects.
+
+```js
+const user = 'Muhammad Ahmad Shamim'; // user name should Muh.
+const createUserNames = function (accs) {
+  accs.forEach(function (accs) {
+    accs.username = accs.owner
+      .toLowerCase()
+      .split(' ')
+      .map(function (name) {
+        return name[0]; // to return only first letter from each element.
+      })
+      .join(''); // join is to convet array to string.
+  });
+};
+createUserNames(accounts);
+// console.log(accounts);
 ```
+
+### EVENT HANDLERS
+
+Building log-in functionality.
+
+```js
+let currentAccount;
+const updateUI = function (acc) {
+  // Display Movements
+  displayMovement(acc.movements);
+
+  // Display Balance
+  calcDisplayBalance(acc);
+
+  // Display Summary
+  calcDisplaySummary(acc);
+};
+
+btnLogin.addEventListener('click', function (e) {
+  // Remember : see console, when we click on button LOGIN is appearing in console and then disappearing. it's going b/c, in html when we click button it will reload the page. so it's disappearing....
+  // To prevent from this we will pass an event in parameter and then..
+  e.preventDefault(); // it'll prevent this form from submitting.
+
+  currentAccount = accounts.find(
+    (acc) => acc.username === inputLoginUsername.value
+  );
+  // console.log(currentAccount);
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // If password and username are correct then?
+    // display UI and Welcome message.
+
+    labelWelcome.textContent = `Welcome Back ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+
+    containerApp.style.opacity = 100;
+
+    // Clear Input Fields when successfully logged in
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur(); // to lose it's focus otherwise the cursor will blinking after login.
+
+    // Display Movements
+    // displayMovement(currentAccount.movements);
+
+    // Display Balance
+    // calcDisplayBalance(currentAccount);
+
+    // Display Summary
+    // calcDisplaySummary(currentAccount);
+
+    updateUI(currentAccount); // calling function.
+  }
+});
+```
+
+### Building Money Transformation Functionality
+
+```js
+btnTransfer.addEventListener('click', function (e) {
+  // Preventing Default hehavior of form's btn
+  e.preventDefault(); // v.common, when workin with form
+
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    (acc) => acc.username === inputTransferTo.value
+  );
+
+  // clear input fields and focus
+  inputTransferAmount.value = inputTransferTo.value = '';
+  inputTransferAmount.blur();
+
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    amount <= currentAccount.balance &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    // adding in receiver a/c and subtracting from sender a/c
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+
+    // to update UI
+    updateUI(currentAccount);
+  }
+});
+```
+
+### Use of some method
+
+use to request a loan to a back.
+
+```js
+btnLoan.addEventListener('click', function (e) {
+e.preventDefault();
+
+const amount = Number(inputLoanAmount.value);
+
+// conditions to receive load.
+// loan only take if it have at least one (some) deposit that is greater or equal to the 10% of the loan.
+if (amount > 0 && currentAccount.movements.some(mov => mov >= /_amount_ 10 / 100 OR _/ /\_amount / 10 OR_/ amount\_ 0.1)) {
+
+    // add the movement
+    currentAccount.movements.push(amount);
+
+    // update UI
+    updateUI(currentAccount)
+
+}
+
+// clearing input field
+inputLoanAmount.value = '';
+})
+```
+
+### Use of findIndex method
+
+Here we want to delete the current account, if the user wants wo close his/her account, by using closeAccount button.
+
+To delete any array element we use splice method, So first we have to find current account and then delete it. so to find account we use findIndex method.
+
+```js
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault(); // prevent from default behavior of form submission btn.
+
+  // checking username and pin
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      (acc) => acc.username === currentAccount.username
+    );
+
+    // Delete Account
+    accounts.splice(index, 1); // will mutates original one.
+
+    // Hide UI
+    containerApp.style.opacity = 0;
+  }
+  // clear input fields and focus
+  inputCloseUsername.value = inputClosePin.value = '';
+  inputClosePin.blur();
+});
+```
+
+### Sorting
+
+```js
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  // displayMovement(currentAccount.movements, true);
+  displayMovement(currentAccount.movements, !sorted); // same as true. b/c initially sorted is false
+
+  // if click then flip the sorted value
+  sorted = !sorted; // amazing!!!!
+
+  // But here we have to do when ever user click sort button again it should return in normal form (-unsorted form)/
+  // How we do this type of functionality???
+
+  // We will solve this problem by using state variable it will monitor, currently sorted or not.
+  // That variable should define outside of function. b/c we want to preserve that sorted state
+});
+```
+
+---
