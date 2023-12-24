@@ -5,6 +5,10 @@
 1. [OOP_Introduction](#oop_introduction)
 2. [OOP_IN_JAVASCRIPT](#oop_in_javascript)
 3. [CONSTRUCTOR_FUNCTION](#constructor_function)
+4. [PROTOTYPES](#prototypes)
+5. [Prototype_Inheritance_And_Prototype_Chain](#prototype_inheritance_and_prototype_chain)
+6. [ES6_CLASSES](#es6_classes)
+7. [Getters_And_Setters](#getters_and_setters)
 
 ## OOP_Introduction
 
@@ -77,268 +81,348 @@ However, it's not as used as the other two methods.
 
 ## CONSTRUCTOR_FUNCTION
 
-// ONLY difference between regular and constructor function is that we call a constructor function with the new operator.
+ONLY difference between regular and constructor function is that we call a constructor function with the **new** operator.
 
-// In OOP usually the constructor function starts with a capital letter, as a convention. we'll follow this. Infact other built in constructors are also follow this. like Array, Map, etc.
-// const arr = new Array(3, 4, 5, 2, 1, 9);
-// console.log(arr);
+**In OOP usually the constructor function starts with a capital letter, as a convention.** We'll follow this. In fact other built in constructors are also follow this. like Array, Map, etc ⤵.
 
-// function expression and declaration are work as constructor function but not an arrow function bc in arrow function 'this' keyword doesn't work.
+```js
+const arr = new Array(3, 4, 5, 2, 1, 9);
+console.log(arr);
+```
 
-/\*
+**Function Expression** and **Declaration** are work as constructor function but not an arrow function because in arrow function **this** keyword doesn't work.
 
+```js
 const Person = function (firstName, birthYear) {
+  // Instance Property
+  this.firstName = firstName;
+  this.birthYear = birthYear;
+  console.log(this); // this will change a/c to which one is calling.
 
-    // Instance Property
-    this.firstName = firstName;
-    this.birthYear = birthYear;
-    // console.log(this); // this will change a/c to which one is calling.
+  // v.bad practice:
+  this.calcAge = function () {
+    return 2023 - this.birthYear;
+  };
+};
+```
 
-    // v.bad practice:
-    // we should never create a method inside a constructor function. bascally we want to add methods to a prototype, not on every instence.
-    // this.calcAge = function () {
-    //     return 2023 - this.birthYear
-    // }
+**V.bad practice:** we should never create a method inside a constructor function. basically we want to add methods to a prototype, not on every instance.
 
-}
+This function ⤴ is just like a regular function, But the only different is that when calling we use **new keyword**.
 
-// only diff..
+```js
 const me = new Person('Muhammad', 2000);
 console.log(me);
-// this new operator will call this function here but it does lot more than that. Behind the scenes, there happen four steps:
-// 1. New empty object is created
-// 2. Function is called, in this function call the this keyword will be set to this newly created object.
-// 3. Newly created object is linked to a prototype.
-// 4. Newly created object is automatically returned from the constructor function.
+```
+
+This **new operator** will call this function here but it does lot more than that. Behind the scenes, **there happen four steps:**
+
+1. **New empty object is created**
+2. **Function is called**, in this function call the **this keyword will be set to this newly created object.**
+3. Newly created object is **linked to a prototype.**
+4. Newly created object is automatically **returned from the constructor function.**
+
+```js
 const you = new Person('Jonas', 1991);
 console.log(you);
+```
 
-// Remember Javascript doesn't really have classes in the sense of traditional OOP. HOWEVER we did create and object from a constructor function. here 'me' and 'you' are object, create from Person constructor function.
-// We discussed that:
-// An object created form a class is aslo called an instance, so 'me' and 'you' also called instance of Person.
+**Remember:** JavaScript doesn't really have classes in the sense of traditional OOP. HOWEVER we did create an object from a constructor function. here 'me' and 'you' are object, create from Person constructor function.  
+We discussed that: An object created form a class is also called an **instance**, so 'me' and 'you' also called instance of Person.
 
+```js
 const name = 'Muhammad';
-// we can check for either insance or not. like this
-console.log(me instanceof Person); // true.
-console.log(you instanceof Person); //true.
-console.log(name instanceof Person); //false
 
-// All the properties and methods in constructor function should be the property of all their instances.
+// we can check for either instance or not. like this
+console.log(me instanceof Person); // true.
+console.log(you instanceof Person); // true.
+console.log(name instanceof Person); // false
+```
+
+All the **properties** and **methods** in constructor function should be the property of all their instances.
+
+```js
 console.log(me.birthYear);
 console.log(me.firstName);
-// console.log(me.calcAge());
+console.log(me.calcAge());
+```
 
-\*/
+---
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-// Lecture 06
-// Heading
-/\*
-// --- PROTOTYPES --- //
+## PROTOTYPES
 
+```js
 const Person = function (firstName, birthYear) {
-this.firstName = firstName;
-this.birthYear = birthYear;
-}
+  this.firstName = firstName;
+  this.birthYear = birthYear;
+};
 
 const me = new Person('Muhammad', 2000);
 const you = new Person('Jonas', 1991);
+```
 
-// Each function in javascript has automatically has a property called prototype, that includes constructor function.
-// Every object that's created by a certain constructor function will get access to all the methods and properties that we define on the constructor prototype property.
-// in this example
+**Each function in javascript has automatically has a property called prototype**, that includes constructor function.  
+Every object that's created by a certain constructor function will get access to all the methods and properties that we define on the constructor prototype property.
+
+In this example
+
+```js
 console.log(Person.prototype);
 Person.prototype.calcAge = function () {
-return 2023 - this.birthYear
+  return 2023 - this.birthYear;
 };
-// Remember Each object created by this constructor function(Person) will now get access to all the methods of this prototype property. So we can do:
+```
+
+Remember Each object created by this constructor function(Person) will now get access to all the methods of this prototype property. So we can do:
+
+```js
 const myAge = me.calcAge();
 console.log(myAge); // 23
-// here we get correct age, although we have not write calcAge function in constructor function, but we added in prototype object.
+
 console.log(you.calcAge()); // 32
+```
 
-// upr jo bad practice likea tha uska good alternative ha yea. phly methods to prototype k 7th link krin gy phr zarorat k hisab sei functions ko call krin gy..
+Here we get correct age, although we have not write calcAge function in constructor function, but we added in prototype object.
 
-// How and Way it works?
-// It works because any object always has access to the methods and properties from its prototype, And the prototype of 'me' and 'you' is person.prototype.
-// we can actually confirm that because each object has a special property, called underscore underscore proto underscrore underscore[__proto__]
-console.log(me.**proto**);
-// prototype of the me object is the prototype property of the constructor function.
+Upr jo bad practice likea tha uska good alternative ha yea. phly methods to prototype k 7th link krin gy phr zarorat k hisab sei functions ko call krin gy.
+
+### How and Way it works?
+
+It works because any **object** always has access to the **methods** and **properties** from its **prototype**, And the **prototype** of 'me' and 'you' is **person.prototype**.  
+we can actually confirm that because each object has a special property, called underscore underscore proto underscore underscore[**proto**]
+
+```js
+console.log(me.__proto__);
+```
+
+Prototype of the me object is the prototype property of the constructor function.
+
+```js
 console.log(Person.prototype);
-console.log(me.**proto** === Person.prototype); //true
-console.log(Person.prototype.isPrototypeOf(me));//true
-console.log(Person.prototype.isPrototypeOf(you));//true
-// BUT
-console.log(Person.prototype.isPrototypeOf(Person));//false
+console.log(me.__proto__ === Person.prototype); //true
+console.log(Person.prototype.isPrototypeOf(me)); //true
+console.log(Person.prototype.isPrototypeOf(you)); //true
+```
 
-// Why all of these??
-// person.prototype property means not a prototype of person, but it means prototype of all objects of that constructor function(Person)
+**_BUT_**
 
-// we can also set a properties on the prototype, not just methods.
+```js
+console.log(Person.prototype.isPrototypeOf(Person)); //false
+```
+
+**Why all of these??**  
+**Person.prototype property means not a prototype of Person**, but it means prototype of all objects of that constructor function(Person)
+
+We can also set a properties on the prototype, not just methods.
+
+```js
 Person.prototype.gender = 'male';
 console.log(me.gender, '|', you.gender);
+```
 
-// however this property is not directly in object.
-console.log(me); // only firstName & birtYear.
+However this property is not directly in object.
 
-// own properties are only those that are declared directly on the object itself, not including inherited properties from prototype. lets check..:
-console.log(me.hasOwnProperty('firstName')); // ture
-console.log(you.hasOwnProperty('birthYear')); // ture
+```js
+console.log(me); // only firstName & birthYear.
+```
+
+Own properties are only those that are declared directly on the object itself, not including inherited properties from prototype. lets check...
+
+```js
+console.log(me.hasOwnProperty('firstName')); // true
+console.log(you.hasOwnProperty('birthYear')); // true
 console.log(me.hasOwnProperty('gender')); // false
+```
 
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-// Lecture 07
-// Heading
+---
 
-// -- Prototype Inheritance and The Prototype Chain --
+## Prototype_Inheritance_And_Prototype_Chain
 
+```js
 console.log(Person.prototype);
-// person.prototype is also an abject and all object in js has a prototype. so person.prototype must have a prototype. the prototype of person.prototype is object.prototype
-// this link is called Prototype Chain.
+```
 
-console.log(Person.prototype === you.**proto**);
+Person.prototype is also an abject and all object in js has a prototype. so Person.prototype must have a prototype. the prototype of person.prototype is object.prototype  
+This link is called Prototype Chain.
 
-// prototype chain is pretty similar to the scope chain, in scope chain whenever js find a certain variable in a scope chain it looks up into the next scope and a scope chain and tries to find the variable there. On the other had the prototype chain whenever javascript can find a certain property or method in a certain object it's gonna look up into the next prototype in the prototype chain, until it find, because top of the scope chain is Object.prototype and we go up to Object.prototype, then it will display null. (remember this null -will display if not found any method or property of any object.)
+```js
+console.log(Person.prototype === you.__proto__);
+```
 
-/////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
-// Lecture 08
-// Heading
+**Prototype chain** is pretty similar to the scope chain, in **scope chain** whenever js find a certain variable in a scope chain it looks up into the next scope and a scope chain and tries to find the variable there. On the other had the **prototype chain** whenever javascript can find a certain property or method in a certain object it's gonna look up into the next prototype in the prototype chain, until it find, because top of the scope chain is **Object.prototype** and we go up to Object.prototype, then it will display null. (remember this **null -will display if not found any method or property of any object.**)
 
-// -- Prototypal Inheritance on Build in Objects --
+### Prototypal Inheritance on Build in Objects
 
-// check prtotypal inheritance on buit in objects such as Arrays.
+check prototypal Inheritance on built in objects such as Arrays.
 
-console.log(me.**proto**);
+```js
+console.log(me.__proto__);
 console.log(Person.prototype); // both are exact same
+```
 
-// lets check prototype of me's prototype
-console.log(me.**proto**.**proto**); // it's prototype propety of Object.
-console.log(Object.prototype); // same as upper
-console.log(me.**proto**.**proto** === Object.prototype); // true.
+Lets check prototype of me's prototype
 
-// NOTE: usually Object.prototype is the top of the scope chain.
-// Now check
-console.log(me.**proto**.**proto**.**proto**); // null. bc there is no prototype top of the Object.prototype.
+```js
+console.log(me.__proto__.__proto__); // it's prototype property of Object.
+console.log(Object.prototype); // Both are exact same
 
-// Remember
+console.log(me.__proto__.__proto__ === Object.prototype); // true.
+```
+
+**NOTE:** Usually Object.prototype is the top of the scope chain.
+
+```js
+console.log(me.__proto__.__proto__.__proto__); // null. bc there is no prototype top of the Object.prototype.
+```
+
+**REMEMBER**
+
+```JS
 console.log(Person.prototype.constructor); //pointing back to the person constructor function.
-console.log(Person === Person.prototype.constructor); // ture. b/c person.prototype is prototype of the object/instence of that constructor function. so here me.constructor
-console.log(Person === me.constructor); // ture.
+console.log(Person === Person.prototype.constructor); // true. b/c person.prototype is prototype of the object/instance of that constructor function. so here me.constructor
+console.log(Person === me.constructor); // true.
+```
 
-// --- PROTOTYPE OF ARRAYS --- //
-// Arrays are also an object, so it has also a prototype.
+### PROTOTYPE OF ARRAYS
+
+**Arrays are also an object**, so it has also a prototype.
+
+```js
 const arr = [3, 4, 3, 6, 3, 2, 5, 2, 6, 7, 9];
-console.log(arr.**proto**); // here we have all the methods of an array that we already know.
-// this is a reason all the arrays get access to all of these methods. Each array not conatain all of these methods but instead each array will inherit these methods from it's prototype.
-console.log(arr.**proto** == Array.prototype); // ture
-// remember prototype of the any object is always equal to the protopype property of consturctor function. here Array is a constructor function.
+console.log(arr.__proto__); // here we have all the methods of an array that we already know.
+```
+
+**_REMEMBER_**  
+**_This is a reason all the arrays get access to all of these methods. Each array not contains all of these methods but instead each array will inherit these methods from it's prototype._**
+
+```js
+console.log(arr.**proto** == Array.prototype); // true
+```
+
+**Remember** prototype of the any object is always equal to the prototype property of constructor function. here **Array is a constructor function.**
+
+```js
 console.log(arr.constructor); // Array
+new Array() === [];
+```
 
-// new Array === [];
+now check
 
-// now check
-console.log(arr.**proto**.**proto**); // Now we are back to the Object.prototype.
-console.log(Object.prototype === arr.**proto**.**proto**); // ture
+```js
+console.log(arr.__proto__.__proto__); // Now we are back to the Object.prototype.
 
-// At this point we know that any Array inherits all their methods from its prototype, We can use this knowledge ko make own methods form array.
+console.log(Object.prototype === arr.__proto__.__proto__); // ture
+```
+
+At this point we know that any Array inherits all their methods from its prototype, We can use this knowledge ko make own methods for array.
+
+```js
 Array.prototype.unique = function () {
-// console.log(this);
-return [...new Set(this)]
+  console.log(this);
+  return [...new Set(this)];
 };
-console.log(arr.unique()); // working...
-// this is not a goot idea to do.
-// Reasons whay it's bat?
-// 1. Next version of javascript might add a method with a same name and might work in different way.
-// 2. When we work on a team than it might create some problem.
 
-// --- PROTOTYPE OF DOM ELEMENTS --- //
-// we know that all the DOM elements are behind the scenes objects.
+console.log(arr.unique()); // working...
+```
+
+**This is not a good Idea to do.**  
+**Reasons why it's bat?**
+
+1. Next version of javascript might add a method with a same name and might work in different way.
+2. When we work on a team than it might create some problem.
+
+### PROTOTYPE OF DOM ELEMENTS
+
+We know that all the **DOM elements are behind the scenes objects**.
+
+```js
 const h1 = document.querySelector('h1');
 console.dir(h1); // see in cl very huge prototype chain.
+```
 
-// --- PROTOTYPE OF FUNCTION ----
-// lets now check a prototype of fucntion
-// Any function is also an object. so, it has also protptype.
+### PROTOTYPE OF FUNCTION
 
-console.dir(x => x + 1);
+Let's now check a prototype of function  
+**Any function is also an object**. so, it has also prototype.
 
-\*/
+```js
+console.dir((x) => x + 1);
+```
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-// Lecture #10
-// Heading
-/\*
-// -- ES6 Classes -- //
+---
 
-// Doing exact same thing but using nicer and more modern syntax.
+## ES6_CLASSES
 
-// Although we use class keyword but Behind the scenes, classes are still special kind of function, there for we have class expressions and class decclarations.
-// "I prefer class declaration" -Jonas
+Doing exact same thing but using nicer and more modern syntax.
 
-// Class Expression:
-// const Person = class {
+Although we use class keyword but Behind the scenes, classes are still special kind of function, there for we have class expressions and class declaration.  
+_"I prefer class declaration"_
 
-// }
+Class Expression:
 
-// Class Declaration:
+```js
+const Person = class {};
+```
+
+Class Declaration:
+
+```js
 class PersonCl {
+  // constructor method:
+  // name should constructor
+  constructor(firstName, birthYear) {
+    this.fName = firstName;
+    this.bYear = birthYear;
+  }
 
-    // constructor method:
-    //  -name should constructor
-    //
-    constructor(firstName, birthYear) {
-        this.fName = firstName;
-        this.bYear = birthYear;
-    }
+  // Methods
+  // Methods will be added to .prototype property.
+  calcAge() {
+    console.log(2022 - this.bYear);
+  }
 
-    // Methods
-    // methods will be added to .prototype property.
-    calcAge() {
-        console.log(2022 - this.bYear);
-    }
-    // All of these methods that we write inside the class(outside of the constructor) will be on the prototype of the objects, not on the object themselves. like we added in constructor function.
-    greet() {
-        console.log(`Hey ${this.fName}!`);
-    }
-
+  greet() {
+    console.log(`Hey ${this.fName}!`);
+  }
 }
+```
 
-/// and in constructor funtion, here we also call class using new keyword. that new operator will call constructor automatically. Also this keyword also be set to the newly created empty object.
+**REMEMBER:** All of these methods that we write inside the class(outside of the constructor) will be on the prototype of the objects, not on the object themselves. Like we added in constructor function.
+
+And in constructor function, here we also call class using **new keyword**. That **new operator** will **call constructor** automatically. Also **this keyword** also be set to the newly created empty object.
+
+```js
 const me = new PersonCl('Muhammad', 2000);
 console.log(me);
 me.calcAge();
-console.log(me.**proto** === PersonCl.prototype); // ture.
+console.log(me.__proto__ === PersonCl.prototype); // true.
+```
 
-// We can also add method manually to the prototype like we did in constructor function.
-// PersonCl.prototype.greet = function () {
-// console.log(`Welcome ${this.fName}!!!`);
-// }
+We can also add method manually to the prototype like we did in constructor function.
+
+```js
+PersonCl.prototype.greet = function () {
+  console.log(`Welcome ${this.fName}!!!`);
+};
 me.greet();
+```
 
-// function declaration are hoisted, we can use them before declar in the code. (calling upr ho function nyche declar hva ho)
-// Remember
-// Couple of thing regarding Classes:
-// 1- Classes are not hoisted.
-// 2- Classes are first-class citizens. it means we can pass them into a functions and also return them from functions. b/c class is kind of function. behind he scense
-// 3- The body of a class is always executed in strict mode.
+Function declaration are hoisted, we can use them before declare in the code. (calling upr ho function niche declare hva ho)
 
-// Constructor function OR Classes?
-// constructor function are not old syntax, so 100% fine to keep using them.
-// personally prefered classes. -Jonas
+**Remember** Couple of thing regarding Classes:
 
-\*/
+1. Classes are **not hoisted**.
+2. Classes are **first-class citizens**. it means we can pass them into a functions and also return them from functions. b/c class is kind of function. behind he scenes.
+3. The body of a class is always executed in **strict mode**.
 
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-// Lecture #11
-// Heading
+**Constructor Function** OR **Classes**?  
+Constructor Function are not old syntax, so 100% fine to keep using them.  
+Personally prefer classes.
 
-/\*
-// -- Getters and Setters -- //
+---
+
+## Getters_And_Setters
+
 // Every object in javascript can have getter and setter properties. We call these special properties 'assessor properties', while normal properties are called data properties.
 
 // getters and setters are basically a functions that get and set a value, but they look like property.
@@ -398,7 +482,7 @@ class PersonCl {
     // full name expect multiple words sapetated by space. so we can use setter to check if it's full name or not.
 
     set fullName(name) {
-        // remember hare, we are creating a setter for a property name that does alreay exist. fullName is alrady a property then we also have a stter with same name, now  each time in constructor full name is executed, this setter method is also executed. that name we are passing as a fullName will become a name in setter method. lets check
+        // remember hare, we are creating a setter for a property name that does alreay exist. fullName is already a property then we also have a stter with same name, now  each time in constructor full name is executed, this setter method is also executed. that name we are passing as a fullName will become a name in setter method. lets check
         console.log(name);
         if (name.includes(' ')) this._fullName = name;// this underscore is just a convention. but necessasry to do.
         else alert(`${name} is not a full name!`)
