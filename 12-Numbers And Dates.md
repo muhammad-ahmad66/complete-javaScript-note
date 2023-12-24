@@ -1,408 +1,3 @@
-## BANKIST_APP
-
-DIFFERENT DATA! Contains movement dates, currency and locale
-
-const account1 = {
-owner: 'Jonas Schmedtmann',
-movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
-interestRate: 1.2, // %
-pin: 1111,
-
-movementsDates: [
-'2019-11-18T21:31:17.178Z',
-'2019-12-23T07:42:02.383Z',
-'2020-01-28T09:15:04.904Z',
-'2020-04-01T10:17:24.185Z',
-'2020-05-08T14:11:59.604Z',
-'2023-01-28T17:01:17.194Z',
-'2023-02-01T23:36:17.929Z',
-'2023-02-03T10:51:36.790Z',
-],
-currency: 'EUR',
-locale: 'pt-PT', // de-DE
-};
-
-const account2 = {
-owner: 'Jessica Davis',
-movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-interestRate: 1.5,
-pin: 2222,
-
-movementsDates: [
-'2019-11-01T13:15:33.035Z',
-'2019-11-30T09:48:16.867Z',
-'2019-12-25T06:04:23.907Z',
-'2020-01-25T14:18:46.235Z',
-'2020-02-05T16:33:06.386Z',
-'2020-04-10T14:43:26.374Z',
-'2023-01-01T18:49:59.371Z',
-'2023-01-03T12:01:20.894Z',
-],
-currency: 'USD',
-locale: 'en-US',
-};
-
-const accounts = [account1, account2];
-
-/////////////////////////////////////////////////
-// Elements
-const labelWelcome = document.querySelector('.welcome');
-const labelDate = document.querySelector('.date');
-const labelBalance = document.querySelector('.balance**value');
-const labelSumIn = document.querySelector('.summary**value--in');
-const labelSumOut = document.querySelector('.summary**value--out');
-const labelSumInterest = document.querySelector('.summary**value--interest');
-const labelTimer = document.querySelector('.timer');
-
-const containerApp = document.querySelector('.app');
-const containerMovements = document.querySelector('.movements');
-
-const btnLogin = document.querySelector('.login**btn');
-const btnTransfer = document.querySelector('.form**btn--transfer');
-const btnLoan = document.querySelector('.form**btn--loan');
-const btnClose = document.querySelector('.form**btn--close');
-const btnSort = document.querySelector('.btn--sort');
-
-const inputLoginUsername = document.querySelector('.login**input--user');
-const inputLoginPin = document.querySelector('.login**input--pin');
-const inputTransferTo = document.querySelector('.form**input--to');
-const inputTransferAmount = document.querySelector('.form**input--amount');
-const inputLoanAmount = document.querySelector('.form**input--loan-amount');
-const inputCloseUsername = document.querySelector('.form**input--user');
-const inputClosePin = document.querySelector('.form\_\_input--pin');
-
-/////////////////////////////////////////////////
-// Functions
-
-const formatMovementDate = function (date, locale) {
-const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2 - date1) / (1000 _60_ 60 \* 24));
-
-const daysPassed = calcDaysPassed(new Date(), date);
-console.log(daysPassed)
-
-if (daysPassed === 0) return 'Today';
-if (daysPassed === 1) return 'Yestarday';
-if (daysPassed <= 7) return `${daysPassed} days age`;
-else {
-
-    // const day = `${date.getDate()}`.padStart(2, 0);
-    // const month = `${date.getMonth()}`.padStart(2, 0);
-    // const year = date.getFullYear(); // b/c this's zero based.
-    // return `${day}/${month}/${year}`;
-
-
-    return new Intl.DateTimeFormat(locale).format(date);
-
-}
-};
-
-// General function that can take any value, any locale & any currency, then will return it nicely formatted according to that locale.
-const formatCur = function (value, locale, currency) {
-return new Intl.NumberFormat(locale, {
-style: 'currency',
-currency: currency,
-}).format(value)
-};
-
-// now we are also displaying each movement's date.
-const displayMovements = function (acc, sort = false) {
-containerMovements.innerHTML = '';
-const movs = sort ? acc.movements.slice().sort((a, b) => a - b) : acc.movements;
-
-movs.forEach(function (mov, i) {
-const type = mov > 0 ? 'deposit' : 'withdrawal';
-
-    const date = new Date(acc.movementsDates[i]);
-
-    const displayDates = formatMovementDate(date, acc.locale);
-
-    const formattedMov = formatCur(mov, acc.locale, acc.currency)
-    // Refectored by using function (upper)
-    // new Intl.NumberFormat(acc.locale, {
-    //   style: 'currency',
-    //   currency: acc.currency,
-    // }).format(mov)
-
-    const html = `
-      <div class="movements__row">
-        <div class="movements__type movements__type--${type}">${i + 1
-      } ${type}</div>
-        <div class="movements__date">${displayDates}</div>
-        <div class="movements__value">${formattedMov}</div>
-      </div>
-    `;
-
-    containerMovements.insertAdjacentHTML('afterbegin', html);
-
-});
-};
-
-const calcDisplayBalance = function (acc) {
-acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-
-labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency)
-};
-
-const calcDisplaySummary = function (acc) {
-const incomes = acc.movements
-.filter(mov => mov > 0)
-.reduce((acc, mov) => acc + mov, 0);
-labelSumIn.textContent = formatCur(incomes, acc.locale, acc.currency);
-
-const out = acc.movements
-.filter(mov => mov < 0)
-.reduce((acc, mov) => acc + mov, 0);
-labelSumOut.textContent = formatCur(out, acc.locale, acc.currency);
-
-const interest = acc.movements
-.filter(mov => mov > 0)
-.map(deposit => (deposit \* acc.interestRate) / 100)
-.filter((int, i, arr) => {
-// console.log(arr);
-return int >= 1;
-})
-.reduce((acc, int) => acc + int, 0);
-labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
-};
-
-const createUsernames = function (accs) {
-accs.forEach(function (acc) {
-acc.username = acc.owner
-.toLowerCase()
-.split(' ')
-.map(name => name[0])
-.join('');
-});
-};
-createUsernames(accounts);
-
-const updateUI = function (acc) {
-// Display movements
-displayMovements(acc);
-
-// Display balance
-calcDisplayBalance(acc);
-
-// Display summary
-calcDisplaySummary(acc);
-};
-
-// - Function to handle logout timer.
-
-const startLogoutTimer = function () {
-const tick = function () {
-
-    // converting seconds to min. b/c we wants minutes also.
-    const min = String(Math.trunc(time / 60)).padStart(2, 0);
-    const sec = String(time % 60).padStart(2, 0); // reminder of  time/60 should be seconds. (think it's )
-
-
-    //3. In each call print the remaining tiem to UI
-    labelTimer.textContent = `${min}: ${sec}`;
-
-
-    // 4. when reached 0 sec, stop timer and logout user
-    if (time === 0) {
-      clearInterval(timer);
-      labelWelcome.textContent = 'Log in to get started';
-      containerApp.style.opacity = 0;
-    }
-
-    // Decrease one second in each call
-    time--;
-
-};
-// Here tick is very common name of this funcion, if we directly insert this funcion in timeinterval as a callback function then it will take some time to start may be one or half seconds. so will will buid this funtion and then will call this explicetly once loged in.
-
-// some psedu code to what exactly we are doing here..
-// 1-set time to 5 minutes.
-// 2-call the timer every second.
-// 3-in each call print the remaining time to the UI.
-// 4-when reached 0 second, stop timer and logout user.
-
-// 1. set time to 5 minutes
-let time = 30;
-
-tick();
-// 2. call the timer every seconds.
-const timer = setInterval(tick, 1000)
-
-// setting time interval like this is very common in development.
-
-return timer;
-};
-
-///////////////////////////////////////
-// Event handlers
-
-let currentAccount, timer;
-
-// FAKE ALWAYS LOGGED IN [always logged in]
-// currentAccount = account1;
-// updateUI(currentAccount);
-// containerApp.style.opacity = 100;
-
-// Remember : this date & time is static. to change we've to use timer. (will do later)
-
-btnLogin.addEventListener('click', function (e) {
-// Prevent form from submitting
-e.preventDefault();
-
-currentAccount = accounts.find(
-acc => acc.username === inputLoginUsername.value
-);
-console.log(currentAccount);
-
-if (currentAccount?.pin === Number(inputLoginPin.value)) {
-// Display UI and message
-labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]
-      }`;
-containerApp.style.opacity = 100;
-
-    // display current date and time
-
-
-    const now = new Date();
-    const options = {
-      hour: 'numeric',
-      minute: 'numeric',
-      day: 'numeric',
-      month: 'numeric', // 2 for february
-      // month: '2-digit', // 02 for february
-      // month: 'long',  // february
-      year: 'numeric',  // 2023
-      // year: '2-digit' // 23
-
-      // weekday: 'long', // Saturday
-      // weekday: 'narrow', // S
-      // weekday: 'short', // Sat
-    }
-    // const locale = navigator.language;
-    labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now)
-
-
-
-
-    // const now = new Date();
-    // // labelDate.textContent = now; // it's printing like this: As of Sat Feb 04 2023 11:46:51 GMT+0500 (Pakistan Standard Time) BUT we want to display like this: day/month/year only So,
-    // const day = `${now.getDate()}`.padStart(2, 0);
-    // const month = `${now.getMonth()}`.padStart(2, 0);
-    // const year = now.getFullYear() + 1; // b/c this's zero based.
-    // const hour = `${now.getHours()}`.padStart(2, 0);
-    // const min = `${now.getMinutes()}`.padStart(2, 0);
-    // labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`
-
-    // Clear input fields
-    inputLoginUsername.value = inputLoginPin.value = '';
-    inputLoginPin.blur();
-
-
-    if (timer) {
-      clearInterval(timer);
-    }
-    // calling logout timer function
-    timer = startLogoutTimer();
-
-    // Update UI
-    updateUI(currentAccount);
-
-}
-});
-
-btnTransfer.addEventListener('click', function (e) {
-e.preventDefault();
-const amount = Number(inputTransferAmount.value);
-const receiverAcc = accounts.find(
-acc => acc.username === inputTransferTo.value
-);
-inputTransferAmount.value = inputTransferTo.value = '';
-
-if (
-amount > 0 &&
-receiverAcc &&
-currentAccount.balance >= amount &&
-receiverAcc?.username !== currentAccount.username
-) {
-// Doing the transfer
-currentAccount.movements.push(-amount);
-receiverAcc.movements.push(amount);
-
-    // Add transfer Date
-    currentAccount.movementsDates.push(new Date().toISOString());
-    receiverAcc.movementsDates.push(new Date().toISOString());
-
-
-    // Update UI
-    updateUI(currentAccount);
-
-    // Reset the Timer
-    clearInterval(timer);
-    timer = startLogoutTimer();
-
-}
-});
-
-btnLoan.addEventListener('click', function (e) {
-e.preventDefault();
-
-const amount = Math.floor(inputLoanAmount.value);
-
-if (amount > 0 && currentAccount.movements.some(mov => mov >= amount \* 0.1)) {
-// Add movement
-setTimeout(function () {
-currentAccount.movements.push(amount);
-
-      // Add loan Date
-      currentAccount.movementsDates.push(new Date().toISOString());
-
-      // Update UI
-      updateUI(currentAccount);
-
-      // Reset the Timer
-      clearInterval(timer);
-      timer = startLogoutTimer();
-
-    }, 5000)
-
-}
-inputLoanAmount.value = '';
-});
-
-btnClose.addEventListener('click', function (e) {
-e.preventDefault();
-
-if (
-inputCloseUsername.value === currentAccount.username &&
-+(inputClosePin.value) === currentAccount.pin
-) {
-const index = accounts.findIndex(
-acc => acc.username === currentAccount.username
-);
-console.log(index);
-// .indexOf(23)
-
-    // Delete account
-    accounts.splice(index, 1);
-
-    // Hide UI
-    containerApp.style.opacity = 0;
-
-}
-
-inputCloseUsername.value = inputClosePin.value = '';
-});
-
-let sorted = false;
-btnSort.addEventListener('click', function (e) {
-e.preventDefault();
-displayMovements(currentAccount.movements, !sorted);
-sorted = !sorted;
-});
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-LECTURES
-
 # Numbers Dates Intl and Timers
 
 ## Table of Contents
@@ -411,7 +6,11 @@ LECTURES
 2. [SOME_MATHEMATICAL_OPERATIONS_AND_ROUNDING_NUMBERS](#some_mathematical_operations_and_rounding_numbers)
 3. [REMINDER_OPERATOR](#reminder_operator)
 4. [NUMERIC_SEPARATOR](#numeric_separator)
-5. [BIG_INT](#BIG_INT)
+5. [BIG_INT](#big_int)
+6. [DATES_AND_TIMES](#dates_and_times)
+7. [INTERNATIONALIZATION_DATES](#internationalization_dates)
+8. [TIMERS](#timers)
+9. [BANKIST_APP](#bankist_app)
 
 ---
 
@@ -905,258 +504,742 @@ console.log(10 / 3); // 3.3333333335
 
 [ Creating Dates and Times ]
 
-/\*
-// Creating Dates
-// - There are exact four ways of creating dates in Javascript
-// - The all use the new date constructor function, but they can accept different parameters.
+### Creating Dates
 
-// 1.
-// first way is to simple use the new date constructor like this: new Date();
-const now = new Date();
-console.log(now);
+- There are exact four ways of creating dates in Javascript
+- The all use the new date constructor function, but they can accept different parameters.
 
-// 2.
-// Pass the data from a data string
-console.log(new Date('Sat Feb 04 2023'));
+1. First way is to **simple use the new date constructor** like this: new Date();
 
-console.log(new Date('14 august 2022'));
-// Generally this is not a good idea to do this b/c it's quite unreliable, However is the string was actually created by javascript itself then of course it is pretty safe. lets take an exampel from our accounts we have movements date lets try to parse that dates.
-console.log(new Date(account1.movementsDates[0]));
+   ```js
+   const now = new Date();
+   console.log(now);
+   ```
 
-// 3
-// we can also pass years, monts, days, hours, manuts, or sec.
-console.log(new Date(2022, 10, 29, 15, 23, 59)); // on console here printing november so, it means in javascript months are 0 based.
+2. **Pass the date from a data string**
 
-// javascript also auto correct dates
-console.log(new Date(200, 10, 33)); // 33 -> 03 dec
+   ```js
+   console.log(new Date('Sat Feb 04 2023'));
 
-// 4
-// We can also pass into the date constructor function, the ammount of milliseconds passed since the biginning of the UNIX time, which is january 1, 1970.
-console.log(new Date(0)); // yes, jan 01 1970
-// Now create a date three days after this in miliseconds.
-console.log(new Date(3 _24_ 60 _60_ 1000)); // now we get jan 4 1970
-// this output is called timestamp.
+   console.log(new Date('14 august 2022'));
+   ```
 
-// Remember : These dates that we just created here are in fact just another special type of object. therefor they have their own methods. we can use these methods to get or set components of a date,
-_/
-/_
+   Generally this is not a good idea to do this b/c it's quite unreliable, However is the string was actually created by javascript itself then of course it is pretty safe. lets take an example from our accounts we have movements date lets try to parse that dates.
 
-// Subheading :
-// Working With DATES. ( SOME PRACTICE EXERCISE )
+   ```js
+   console.log(new Date(account1.movementsDates[0]));
+   ```
 
+3. We can also pass years, months, days, hours, minutes, or sec.
+
+   ```js
+   console.log(new Date(2022, 10, 29, 15, 23, 59));
+   ```
+
+   On console here printing november so, it means in javascript months are 0 based.  
+   **JavaScript also auto correct dates**
+
+   ```js
+   console.log(new Date(200, 10, 33)); // 33 -> 03 dec
+   ```
+
+4. We can also pass into the date constructor function, the amount of milliseconds passed since the beginning of the UNIX time, which is january 1, 1970.
+
+   ```js
+   console.log(new Date(0)); // yes, jan 01 1970
+   ```
+
+   Now create a date three days after this in milliseconds.
+
+   ```js
+   console.log(new Date(3 * 24 * 60 * 60 * 1000)); // now we get jan 4 1970
+   ```
+
+   This output is called timestamp.
+
+**Remember:** These dates that we just created here are in fact just another special type of object. therefor they have their own methods. we can use these methods to get or set components of a date,
+
+### Working With DATES. ( SOME PRACTICE EXERCISE )
+
+```js
 const future = new Date(2037, 10, 30, 15, 21);
 console.log(future);
+```
 
-// Here is future is an object so, we can apply some methods.
-console.log(future.getFullYear()); // 2037 / Always use getFullYear() to get a year. (ther is another one getYear, don't use that)
-console.log(future.getMonth()); // 20 / remember this one is 0 based, so it's November
+Here is future is an object so, we can apply some methods.
+
+```js
+console.log(future.getFullYear()); // 2037 / Always use getFullYear() to get a year. Their is another one getYear, don't use that
+console.log(future.getMonth()); // 10 / remember this one is 0 based, so it's November
 console.log(future.getDate()); // 30 / this is use to get day. it will get day of month.
 console.log(future.getDay()); // 1 (monday) / use to get Day in week - starting from sunday.
 console.log(future.getHours()); // 15
 console.log(future.getMinutes()); // 21
 console.log(future.getSeconds()); // 0
-
 console.log(future.toISOString()); // it will convert a particular data object to string.
 
 console.log(future.getTime()); // 2143189260000 / using this we can get timestamp for the date.
-// Remember The timestamp is the milliseconds, which has been passed since january 1, 1970.
+```
 
-// we can use this timestamp to get actuall date.(reversed to date)
+**Remember:** The timestamp is the milliseconds, which has been passed since january 1, 1970.
+
+We can use this timestamp to get actual date.(reversed to date)
+
+```js
 console.log(new Date(2143189260000)); // will give the date that we've entered.
+```
 
-// timestamp is soo important, we've a special method that we can use to get the timestamp for right now.
+**Timestamp is soo important**, we've a special method that we can use to get the **timestamp** for right now.
+
+```js
 console.log(Date.now()); //1675491859637 / timestamp
+```
 
-// There is also a set version of all of these methods.
+There is also a **set version** of all of these methods.
+
+```js
 future.setFullYear(2040);
 console.log(future); // changed to 2040;
 // also exist for each methods. to set them.
+```
 
-_/
-/_
+---
 
-// Subheading:
+### Performing_Some_Operations_On_Dates
 
-// --- Performing Some Operations On Dates ---
+**We can do calculation with dates.** For example we can subtract two dates to find how many days have passed between two dates. This work b/c whenever we convert date to a number, then the result is going to be the timestamp in milliseconds. And these milliseconds we can perform calculations.
 
-// - We can do calculation with dates. for example we can subtract two dates to find how many days have passed between two dates. This work b/c whenever we convert date to a number, then the result is going to be the timestamp in milliseconds. And these milliseconds we can perform calculations.
-
+```js
 const future = new Date(2037, 10, 19, 15, 23);
 console.log(Number(future)); // now it'll display in timestamp. Same thing'll happen when we add + operator on it. like this...
 console.log(+future); // same result
-// It means whenever we performs a mathimatical operations it'll converts the date into timestamp then again we've to convert that timestamp into a number.
+```
 
-// NOW CREATE A FUNCTION that takes two dates and return the number of days b/w them.
+**It means whenever we performs a mathematical operations it'll converts the date into timestamp.** Then again we've to convert that timestamp into a number.
 
-const calcDaysPassed = (date1, date2) => Math.abs(date2 - date1) / (1000 _60_ 60 \* 24) // 1000 => convert millisecond to second, 60 => comvert second to minut.... (All of these convert timestamp to days. )
+NOW CREATE A FUNCTION that takes two dates and return the number of days b/w them.
+
+```js
+const calcDaysPassed = (date1, date2) =>
+  Math.abs(date2 - date1) / (1000 * 60 * 60 * 24); // 1000 => convert millisecond to second, 60 => convert second to minute.... (All of these convert timestamp to days. )
 
 const days1 = calcDaysPassed(new Date(2037, 3, 14), new Date(2037, 3, 24));
-console.log(days1);
+console.log(days1); // 10
 
 const days2 = calcDaysPassed(new Date(2037, 3, 14), new Date(2037, 3, 4));
-console.log(days2); // Math.abs(). used to remove -ve.
+console.log(days2); // 10 // Math.abs(). used to remove -ve.
 
-const days3 = calcDaysPassed(new Date(2037, 3, 4), new Date(2037, 3, 14, 10, 8));
-console.log(days3);
+const days3 = calcDaysPassed(
+  new Date(2037, 3, 4),
+  new Date(2037, 3, 14, 10, 8)
+);
+console.log(days3); // 10.422222222222222
+```
 
-// Using these we can display dates in movements in more decent way. like this:
-// if any movement happened today, there should display today instead of date, also for yesterday, two days age, three days age
-// These are really nice use-case of these type of functions. Upper ja ⬆👆🏻🆙⤴
+Using these we can display dates in movements in more decent way. like this:  
+If any movement happened today, there should display today instead of date, also for yesterday, two days age, three days age  
+These are really nice use-case of these type of functions. Implemented in Bankist Section ⬇⤵⏬
 
-\*/
+---
 
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
+## INTERNATIONALIZATION_DATES
 
-// Heading
+Javascript has a new **Internationalization API**, it allow us to easily format numbers and strings according to different languages. So, with this new API we can make our applications support different languages for users around the world, which is pretty important. for example currency and dates are represented in a completely different way in US or in Asia. Now there is a lot of language specific things that we can do with the internationalization API. But in this section we will talk about formatting dates and numbers.
 
-///// ---- INTERNATIONALIZATION DATES ---- /////
-// Javascript has a new initialization API, it allow us to easily format numbers and strings according to different languages. So, with this new API we can make our applications support different languages for users around the world, which is pretty important. for example curriences and dates are represented in a completely different way in US or in Asia. Now there is a lot of language specific things that we can do with the internationalization API.
-// But in this section we will talk about formating dates and numbers.
+### FORMATTING DATES USING INTERNATIONALIZATION API
 
-// Subheading FORMATING DATES USING INTERNATIONALIZATION API.
+#### EXPERIMENTING API
 
-// ------- EXPRIMENTING API ----------//
-// const now = new Date();
-// const options = {
-// hour: 'numeric',
-// minut: 'numeric',
-// day: 'numeric',
-// // month: 'numeric', // 2 for february
-// // month: '2-digit', // 02 for february
-// month: 'long', // february
-// year: 'numeric', // 2023
-// // year: '2-digit' // 23
+```js
+const now = new Date();
+const options = {
+  hour: 'numeric',
+  minute: 'numeric',
+  day: 'numeric',
+  // month: 'numeric', // 2 for february
+  // month: '2-digit', // 02 for february
+  month: 'long', // february
+  year: 'numeric', // 2023
+  // year: '2-digit' // 23
 
-// weekday: 'long', // Saturday
-// // weekday: 'narrow', // S
-// // weekday: 'short', // Sat
-// }
+  weekday: 'long', // Saturday
+  // weekday: 'narrow', // S
+  // weekday: 'short', // Sat
+};
+labelDate.textContent = new Intl.DateTimeFormat('en-US', options).format(now);
+```
 
-// labelDate.textContent = new Intl.DateTimeFormat('en-US', options).format(now) // here intl is a namespace for internationalization. In DateTimeFormat() function we need to pass local string, local string is usually the language-countary, here as a second operator we can also put values itself or first store values in any object an put that object here like done here. All of these creates a new formatter, On that formatter we can call dot format(), and here we pass in the date that we have to format.
-// labelDate.textContent = new Intl.DateTimeFormat('ar-SA').format(now); // wow. it's changed to sudiaArbia format.
-// labelDate.textContent = new Intl.DateTimeFormat('ur-PK').format(now) upper
+Here **Intl** is a namespace for **internationalization**. In **DateTimeFormat()** function we need to pass local string, **local string** is usually the language-country, here as a second operator we can also put values itself or first store values in any object an put that object here like done here. All of these creates a new formatter, On that formatter we can call dot format(), and here we pass in the date that we have to format.
 
-// In many situations, it actually make more sense to not define locale manually, but instead to simply get it from the user's browser. that's pretty easy to do as well. like this. nyche
-// const locale = navigator.language; // it will take from users browser. Now put this local variable into DateTimeFormat's parameter like this.
-// labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(now)
-// uper sei idr paste kya ha insan
+```js
+labelDate.textContent = new Intl.DateTimeFormat('ar-SA').format(now); // wow. it's changed to sudiaArbia format.
+labelDate.textContent = new Intl.DateTimeFormat('ur-PK').format(now);
+```
 
-/////////////////////////////////////////////////////////
+In many situations, it actually make more sense to not define locale manually, but **instead to simply get it from the user's browser.** that's pretty easy to do as well. like this.
 
-//Subheading FORMATING NUMBERS USING INTERNATIONALIZATION API.
+```js
+const locale = navigator.language; // it will take from users browser.
+// Now put this local variable into DateTimeFormat's parameter like this.
+labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(now);
+```
 
-/\*
+---
+
+### FORMATTING NUMBERS USING INTERNATIONALIZATION API
+
+```js
 const num = 3884764.23;
 
 console.log('US: ', new Intl.NumberFormat('en-US').format(num));
 
 console.log('Germany: ', new Intl.NumberFormat('de-DE').format(num));
 
-console.log('Sudia: ', new Intl.NumberFormat('ar-SA').format(num));
+console.log('Saudi: ', new Intl.NumberFormat('ar-SA').format(num));
 
 console.log('Pakistan: ', new Intl.NumberFormat('ur-PK').format(num));
 
 console.log('Browser: ', new Intl.NumberFormat(navigator.language).format(num));
 
-console.log(navigator.language, new Intl.NumberFormat(navigator.language).format(num));
+console.log(
+  navigator.language,
+  new Intl.NumberFormat(navigator.language).format(num)
+);
+```
 
-_/
-/_
+We can also use objects to formatting
 
-// We can also use objects to formating:
-
-const num = 3883433.43
-// const options = {
-// style: 'unit',
-// unit: 'mile-per-hour', // always check MDN documantion
-
-// }
+```js
+const num = 3883433.43;
 const options = {
-style: 'unit', // 'currency', 'percent' are also avaliable.
-// style: 'percent', // unit will ignored
-// style: 'currency', // should define currency after this
-// currency: 'usd',
-// currency: 'PKR',
-currency: 'EUR',
-unit: 'celsius', // always check MDN documantion
+  style: 'unit',
+  unit: 'mile-per-hour', // always check MDN documentation.
+};
+const options = {
+  style: 'unit', // 'currency', 'percent' are also avaliable.
+  // style: 'percent', // unit will ignored
+  // style: 'currency', // should define currency after this
+  // currency: 'usd',
+  // currency: 'PKR',
+  currency: 'EUR',
+  unit: 'celsius', // always check MDN documantion
 
-// useGrouping: false, // it'll remove separator in numbers.
+  // useGrouping: false, // it'll remove separator in numbers.
 
-// For any properties in that we set here in option, just check out MDN documantation.
-}
+  // For any properties in that we set here in option, just check out MDN documantation.
+};
 
 console.log('US: ', new Intl.NumberFormat('en-US', options).format(num));
 
 console.log('Germany: ', new Intl.NumberFormat('de-DE', options).format(num));
 
-console.log('Sudia: ', new Intl.NumberFormat('ar-SA', options).format(num));
+console.log('Saudi: ', new Intl.NumberFormat('ar-SA', options).format(num));
 
 console.log('Pakistan: ', new Intl.NumberFormat('ur-PK', options).format(num));
 
-console.log('Browser: ', new Intl.NumberFormat(navigator.language, options).format(num));
+console.log(
+  'Browser: ',
+  new Intl.NumberFormat(navigator.language, options).format(num)
+);
 
-console.log(navigator.language, new Intl.NumberFormat(navigator.language, options).format(num));
+console.log(
+  navigator.language,
+  new Intl.NumberFormat(navigator.language, options).format(num)
+);
+```
 
-\*/
+---
 
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
+## TIMERS
 
-// Heading
+TWO TYPES OF TIMERS **[setTimeout & setInterval]**  
+**setTimeout** timer runs just once after a defined time while, **setInterval** timer keeps running forever, until we stop it.
 
-/////// --- TIMERS --- /////// [setTimeout & setInterval]
-// TWO TYPES OF TIMERS:
-// setTimeout Timer: It runs just once after a defined time while, setInterval timer keeps running forever, until we stop it.
+### SET TIMEOUT FUNCTION
 
-// Subheading : --- SET TIMEOUT FUNCTION ---
+Basically we can use setTimeout to execute some code at some point in the future.
 
-// Basically we can use setTimeout to execute some code at some point in the future.
+Let use this to simulate ordering a pizza. So when we order a pizza, it doesn't arrive right away, so instead it gonna take some time and we can simulate that.
 
-//let use this to simulate odering a pizza. so when we order a pizza, it doesn't arrive right away, so insted it gonna take some time and we can simulate that.
+**setTimeout** function receives two arguments **1. callback function** **2. specify time in milliseconds**
 
-// Remember setTimeout funcion receives two arguments 1. callback function. 2. specify time in milliseconds
-// setTimeout(() => console.log('Here is your Pizza 🍕'), 5000);
+```js
+setTimeout(() => console.log('Here is your Pizza 🍕'), 5000);
+console.log('I am from after the setTimer function.'); // it will display first.
+```
 
-// But Remember that the code execution does not stop at this point. execution will continues by registering that callback function will be call afer the elapsed of that time. this mechanism is called Asynchronous Javascript. (detil leter)
-// console.log('I am from after the setTimer function.'); // it will display first.
+But Remember that the code execution does not stop at this point. execution will continues by registering that callback function will be call after the elapsed of that time. This mechanism is called Asynchronous Javascript. (Detail Later)
 
-// passing arguments to callback funtion (that is not an easy b/c we are not calling by itself.) But the setTimeout functin has solution of that, basically all the arguments that we passed after the time delay will consider as argument to the callback function.
-// setTimeout((ing1, ing2) =>
-// console.log(`Here is your pizza with ${ing1} and ${ing2}`), 5000,
-// 'olives',
-// 'spinash' // last two are argument to the function.
-// );
+**Passing arguments to callback function** (that is not an easy b/c we are not calling by itself.) But the setTimeout function has solution of that, basically all the arguments that we passed after the time delay will consider as argument to the callback function.
 
-/\*
-// We can cencel the timer, at least until the delay has passed. So befor 5 seconds we can cencel timeout. HOW? like this...
+```js
+setTimeout(
+  (ing1, ing2) => console.log(`Here is your pizza with ${ing1} and ${ing2}`),
+  5000,
+  'olives',
+  'spinash' // last two are argument to the function.
+);
+```
 
+**We can cancel the timer**, at least until the delay has passed. So before 5 seconds we can cancel timeout. HOW? like this.
+
+```js
 const ingredients = ['olvives', 'spinash'];
-const pizzaTimer = setTimeout((ing1, ing2) =>
-console.log(`Here is your pizza with ${ing1} and ${ing2}`), 5000,
-...ingredients,
+const pizzaTimer = setTimeout(
+  (ing1, ing2) => console.log(`Here is your pizza with ${ing1} and ${ing2}`),
+  5000,
+  ...ingredients
 );
 console.log('waiting....');
 
-if (ingredients.includes('spinash')) clearTimeout(pizzaTimer); // here we have clear/delete the timer. here we'll not see this callback funtion in console.
+if (ingredients.includes('spinash')) clearTimeout(pizzaTimer); // here we have clear/delete the timer. here we'll not see this callback function in console.
+```
 
-// lets go back to our application and simulate the loan, by taking five seconds ofter click the button. (upper)
+lets go back to our application and simulate the loan, by taking five seconds ofter click the button. ⤵⏬
 
-\*/
-// Subheading --- SET INTERVEL FUNCTION ---
+---
 
-/\*
-// clock (as a challenge)
+### SET INTERVAL FUNCTION
+
+clock (as a challenge)
+
+```js
 setInterval(function () {
-const now = new Date();
+  const now = new Date();
 
-console.log(`${now.getHours()}:${now.getMinutes()} ${now.getSeconds()}`);
-}, 1000)
+  console.log(`${now.getHours()}:${now.getMinutes()} ${now.getSeconds()}`);
+}, 1000);
+```
 
-\*/
+_06-Feb-2023_
 
-/\*
+---
 
-- Ek or section khatm - little bit confusing the
-  ------------ 06-Feb-2023 ------------
-  \*/
+---
+
+## BANKIST_APP
+
+### DIFFERENT DATA! Contains movement dates, currency and locale
+
+```js
+const account1 = {
+  owner: 'Muhammad Ahmad',
+  movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
+  interestRate: 1.2, // %
+  pin: 1111,
+
+  movementsDates: [
+    '2019-11-18T21:31:17.178Z',
+    '2019-12-23T07:42:02.383Z',
+    '2020-01-28T09:15:04.904Z',
+    '2020-04-01T10:17:24.185Z',
+    '2020-05-08T14:11:59.604Z',
+    '2023-01-28T17:01:17.194Z',
+    '2023-02-01T23:36:17.929Z',
+    '2023-02-03T10:51:36.790Z',
+  ],
+  currency: 'EUR',
+  locale: 'pt-PT', // de-DE
+};
+
+const account2 = {
+  owner: 'Jessica Davis',
+  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+  interestRate: 1.5,
+  pin: 2222,
+
+  movementsDates: [
+    '2019-11-01T13:15:33.035Z',
+    '2019-11-30T09:48:16.867Z',
+    '2019-12-25T06:04:23.907Z',
+    '2020-01-25T14:18:46.235Z',
+    '2020-02-05T16:33:06.386Z',
+    '2020-04-10T14:43:26.374Z',
+    '2023-01-01T18:49:59.371Z',
+    '2023-01-03T12:01:20.894Z',
+  ],
+  currency: 'USD',
+  locale: 'en-US',
+};
+
+const accounts = [account1, account2];
+```
+
+### Elements
+
+```js
+const labelWelcome = document.querySelector('.welcome');
+const labelDate = document.querySelector('.date');
+const labelBalance = document.querySelector('.balance**value');
+const labelSumIn = document.querySelector('.summary**value--in');
+const labelSumOut = document.querySelector('.summary**value--out');
+const labelSumInterest = document.querySelector('.summary**value--interest');
+const labelTimer = document.querySelector('.timer');
+
+const containerApp = document.querySelector('.app');
+const containerMovements = document.querySelector('.movements');
+
+const btnLogin = document.querySelector('.login__btn');
+const btnTransfer = document.querySelector('.form__btn--transfer');
+const btnLoan = document.querySelector('.form__btn--loan');
+const btnClose = document.querySelector('.form__btn--close');
+const btnSort = document.querySelector('.btn--sort');
+
+const inputLoginUsername = document.querySelector('.login**input--user');
+const inputLoginPin = document.querySelector('.login__input--pin');
+const inputTransferTo = document.querySelector('.form__input--to');
+const inputTransferAmount = document.querySelector('.form__input--amount');
+const inputLoanAmount = document.querySelector('.form__input--loan-amount');
+const inputCloseUsername = document.querySelector('.form__input--user');
+const inputClosePin = document.querySelector('.form__input--pin');
+```
+
+### Functions
+
+```js
+const formatMovementDate = function (date, locale) {
+const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2 - date1) / (1000 _60_ 60 \* 24));
+
+const daysPassed = calcDaysPassed(new Date(), date);
+console.log(daysPassed)
+
+if (daysPassed === 0) return 'Today';
+if (daysPassed === 1) return 'Yestarday';
+if (daysPassed <= 7) return `${daysPassed} days age`;
+else {
+
+    // const day = `${date.getDate()}`.padStart(2, 0);
+    // const month = `${date.getMonth()}`.padStart(2, 0);
+    // const year = date.getFullYear(); // b/c this's zero based.
+    // return `${day}/${month}/${year}`;
+
+
+    return new Intl.DateTimeFormat(locale).format(date);
+
+}
+};
+```
+
+General function that can take any value, any locale & any currency, then will return it nicely formatted according to that locale.
+
+```js
+const formatCur = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+```
+
+Now we are also displaying each movement's date.
+
+```js
+const displayMovements = function (acc, sort = false) {
+  containerMovements.innerHTML = '';
+  const movs = sort
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements;
+
+  movs.forEach(function (mov, i) {
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+
+    const date = new Date(acc.movementsDates[i]);
+
+    const displayDates = formatMovementDate(date, acc.locale);
+
+    const formattedMov = formatCur(mov, acc.locale, acc.currency);
+    // Refactored by using function (upper)
+    // new Intl.NumberFormat(acc.locale, {
+    //   style: 'currency',
+    //   currency: acc.currency,
+    // }).format(mov)
+
+    const html = `
+      <div class="movements__row">
+        <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
+        <div class="movements__date">${displayDates}</div>
+        <div class="movements__value">${formattedMov}</div>
+      </div>
+    `;
+
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+```
+
+```js
+const calcDisplayBalance = function (acc) {
+acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+
+labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency)
+};
+
+const calcDisplaySummary = function (acc) {
+const incomes = acc.movements
+.filter(mov => mov > 0)
+.reduce((acc, mov) => acc + mov, 0);
+labelSumIn.textContent = formatCur(incomes, acc.locale, acc.currency);
+
+const out = acc.movements
+.filter(mov => mov < 0)
+.reduce((acc, mov) => acc + mov, 0);
+labelSumOut.textContent = formatCur(out, acc.locale, acc.currency);
+
+const interest = acc.movements
+.filter(mov => mov > 0)
+.map(deposit => (deposit \* acc.interestRate) / 100)
+.filter((int, i, arr) => {
+// console.log(arr);
+return int >= 1;
+})
+.reduce((acc, int) => acc + int, 0);
+labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
+};
+
+const createUsernames = function (accs) {
+accs.forEach(function (acc) {
+acc.username = acc.owner
+.toLowerCase()
+.split(' ')
+.map(name => name[0])
+.join('');
+});
+};
+createUsernames(accounts);
+
+const updateUI = function (acc) {
+// Display movements
+displayMovements(acc);
+
+// Display balance
+calcDisplayBalance(acc);
+
+// Display summary
+calcDisplaySummary(acc);
+};
+```
+
+#### Function to handle logout timer
+
+```js
+const startLogoutTimer = function () {
+  const tick = function () {
+    // converting seconds to min. b/c we wants minutes also.
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0); // reminder of  time/60 should be seconds. (think it's )
+
+    //3. In each call print the remaining tiem to UI
+    labelTimer.textContent = `${min}: ${sec}`;
+
+    // 4. when reached 0 sec, stop timer and logout user
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = 'Log in to get started';
+      containerApp.style.opacity = 0;
+    }
+
+    // Decrease one second in each call
+    time--;
+  };
+  // 1. set time to 5 minutes
+  let time = 30;
+
+  tick();
+  // 2. call the timer every seconds.
+  const timer = setInterval(tick, 1000);
+
+  return timer;
+};
+```
+
+Here tick is very common name of this function, if we directly insert this function in timeInterval as a callback function then it will take some time to start may be one or half seconds. so will will build this function and then will call this explicitly once logged in.⤴
+
+// some pseud code to what exactly we are doing here..
+// 1-set time to 5 minutes.
+// 2-call the timer every second.
+// 3-in each call print the remaining time to the UI.
+// 4-when reached 0 second, stop timer and logout user.
+
+// 1. set time to 5 minutes
+let time = 30;
+
+tick();
+// 2. call the timer every seconds.
+const timer = setInterval(tick, 1000)
+
+⤴⬆ setting time interval like this is very common in development.
+
+---
+
+### Event handlers
+
+```js
+let currentAccount, timer;
+
+// FAKE ALWAYS LOGGED IN [always logged in]
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
+
+// Remember : this date & time is static. to change we've to use timer. (will do later)
+
+btnLogin.addEventListener('click', function (e) {
+  // Prevent form from submitting
+  e.preventDefault();
+
+  currentAccount = accounts.find(
+    (acc) => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // Display UI and message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+
+    // display current date and time
+
+    const now = new Date();
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'numeric', // 2 for february
+      // month: '2-digit', // 02 for february
+      // month: 'long',  // february
+      year: 'numeric', // 2023
+      // year: '2-digit' // 23
+
+      // weekday: 'long', // Saturday
+      // weekday: 'narrow', // S
+      // weekday: 'short', // Sat
+    };
+    // const locale = navigator.language;
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currentAccount.locale,
+      options
+    ).format(now);
+
+    // const now = new Date();
+    // // labelDate.textContent = now; // it's printing like this: As of Sat Feb 04 2023 11:46:51 GMT+0500 (Pakistan Standard Time) BUT we want to display like this: day/month/year only So,
+    // const day = `${now.getDate()}`.padStart(2, 0);
+    // const month = `${now.getMonth()}`.padStart(2, 0);
+    // const year = now.getFullYear() + 1; // b/c this's zero based.
+    // const hour = `${now.getHours()}`.padStart(2, 0);
+    // const min = `${now.getMinutes()}`.padStart(2, 0);
+    // labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`
+
+    // Clear input fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+
+    if (timer) {
+      clearInterval(timer);
+    }
+    // calling logout timer function
+    timer = startLogoutTimer();
+
+    // Update UI
+    updateUI(currentAccount);
+  }
+});
+```
+
+```js
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    (acc) => acc.username === inputTransferTo.value
+  );
+  inputTransferAmount.value = inputTransferTo.value = '';
+
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    // Doing the transfer
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+
+    // Add transfer Date
+    currentAccount.movementsDates.push(new Date().toISOString());
+    receiverAcc.movementsDates.push(new Date().toISOString());
+
+    // Update UI
+    updateUI(currentAccount);
+
+    // Reset the Timer
+    clearInterval(timer);
+    timer = startLogoutTimer();
+  }
+});
+```
+
+```js
+btnLoan.addEventListener('click', function (e) {
+e.preventDefault();
+
+const amount = Math.floor(inputLoanAmount.value);
+
+if (amount > 0 && currentAccount.movements.some(mov => mov >= amount \* 0.1)) {
+// Add movement
+setTimeout(function () {
+currentAccount.movements.push(amount);
+
+      // Add loan Date
+      currentAccount.movementsDates.push(new Date().toISOString());
+
+      // Update UI
+      updateUI(currentAccount);
+
+      // Reset the Timer
+      clearInterval(timer);
+      timer = startLogoutTimer();
+
+    }, 5000)
+
+}
+inputLoanAmount.value = '';
+});
+```
+
+```js
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    +inputClosePin.value === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      (acc) => acc.username === currentAccount.username
+    );
+    console.log(index);
+    // .indexOf(23)
+
+    // Delete account
+    accounts.splice(index, 1);
+
+    // Hide UI
+    containerApp.style.opacity = 0;
+  }
+
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+```
+
+```js
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
+```
