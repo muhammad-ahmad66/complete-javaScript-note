@@ -60,7 +60,7 @@ Fist four are planing steps and then Development.
    This format of format answers: WHO, WHAT AND WHY
    WHO? USER, WHAT? FUNCTION? WHY? BENEFIT
 
-For detail check out **PDF file** [Theory_lecture](theory-lectures-v2.pdf)
+For detail check out **PDF file** [Theory_lecture](./theory-lectures-v2.pdf)
 
 ---
 
