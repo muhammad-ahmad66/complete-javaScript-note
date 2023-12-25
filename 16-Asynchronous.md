@@ -9,6 +9,7 @@ const countriesContainer = document.querySelector('.countries');
 
 1. [Asynchronous_Javascript_AJAX_And_API_Intro](#asynchronous_javascript_ajax_and_api_intro)
 2. [First_AJAX_Call-XML_HTTP_Request](#first_ajax_call-xml_http_request)
+3. [Request_And_Response_On_Web](#request_and_response_on_web)
 
 ---
 
@@ -65,128 +66,120 @@ As **AJAX** stands for Asynchronous Javascript and XML. so here **XML** is a dat
 
 ## First_AJAX_Call-XML_HTTP_Request
 
+Lets make our first API call  
+We built a UI component which will have contains data about certain country, and this data about the countries actually comes from a third party online API.  
+In javascript there are multiple ways of doing AJAX calls.
 
-// lets make our first API call
+### Most old school one: [XML http request]
 
-// we build a UI component which contains data about certain country, and this data about the countries actually comes from a third party online API.
+**Steps to use XMLHttpRequest() function**:
 
-// !In javascript there are multiple ways of doing AJAX calls.
+- Call this function and store it into a variable.
+- Need URL to which we'll make the AJAX call. for that we use object.open() here we pass two parameter.
+  1. request type in string
+  2. url of API in string
 
-// 1)
-// \*Most old school one: [XML http request]
-// XMLHttpRequest()
-// steps to use XMLHttpRequest() function:
-// - call this function and store it into a variable.
-// - need URL to which we'll make the AJAX call. for that we use object.open() here we pass two parameter. 1. request type in string 2. url of API in string Remember for search any public API, https://github.com/public-apis/public-apis GO HERE on github. Here we using 'REST Countries API'
-// - send request to that url by simply using object.send() function. (here object means the we made by using new keyword.) here the API will fetched asynchronously.
-// - Register a callback function on the request object for the load event.
+Remember for search any public API, <https://github.com/public-apis/public-apis> GO HERE on github. Here we using '**REST Countries API**'  
+Send request to that url by simply using object.send() function. (here object means the we made by using new keyword.) here the API will fetched asynchronously.  
+Register a callback function on the request object for the load event.
 
-/\*
+```js
 const getCountryData = function (country) {
+  const request = new XMLHttpRequest();
 
-    const request = new XMLHttpRequest();
+  // request.open('GET', 'https://restcountries.com/v3.1/name/pakistan');
+  // Instead of hard code:
+  request.open('GET', `https://restcountries.com/v3.1/name/${country}`);
 
-    // request.open('GET', 'https://restcountries.com/v3.1/name/pakistan');
-    // Instead of hard code:
-    request.open('GET', `https://restcountries.com/v3.1/name/${country}`)
+  request.send();
 
-    request.send();
+  request.addEventListener('load', function () {
+    console.log(this.responseText); // Remember here this keyword is a request.
+    // This responseText property only gonna be set once the data has actually arrived.
+    // Here in console we have bunch of texts about Pakistan in a JSON format.
+    // Now we have to convert this into javascript object.
 
-    request.addEventListener('load', function () {
-        console.log(this.responseText); // remember here this keyword is a request. this responseText property only gonna be set once the data has actually arrived.
-        here in console we have bunch of texts about Pakistan in a JSON format.
-        now we have to convert this into javascript object.
+    const data = JSON.parse(this.responseText);
+    console.log(data); // CONVERTED!!! // HERE IT'S AN ARRAY CONTAINING ONE OBJECT. so destructure that.
+    const [data] = JSON.parse(this.responseText);
+    console.log(data); // now its one object
 
-        const data = JSON.parse(this.responseText);
-        console.log(data); // CONVERTED!!! // HERE IT'S AN ARRAY CONTAINING ONE OBJECT. so destructure that.
-        const [data] = JSON.parse(this.responseText);
-        console.log(data); // now its one object
-
-        const html = `
+    const html = `
           <article class="country">
             <img class="country__img" src="${data.flags.png}" />
             <div class="country__data">
               <h3 class="country__name">${data.name.common}</h3>
               <h4 class="country__region">${data.region}</h4>
-              <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)}</p>
+              <p class="country__row"><span>👫</span>${(
+                +data.population / 1000000
+              ).toFixed(1)}</p>
               <p class="country__row"><span>🗣️</span>${data.languages.urd}</p>
-              <p class="country__row"><span>💰</span>${data.currencies.PKR?.name}</p>
+              <p class="country__row"><span>💰</span>${
+                data.currencies.PKR?.name
+              }</p>
             </div>
           </article>
-        `
+        `;
 
-        countriesContainer.insertAdjacentHTML('beforeend', html);
-        countriesContainer.style.opacity = 1;
-        // THAT'S AMAZING
-
-
-
-    })
-
+    countriesContainer.insertAdjacentHTML('beforeend', html);
+    countriesContainer.style.opacity = 1;
+    // THAT'S AMAZING
+  });
 };
 
 getCountryData('pakistan');
 getCountryData('usa');
 getCountryData('germany');
-\*/
+```
 
-// Remember here always display in order of the data arrives first. fist arrives will display first on page. no matter we call it last or fist. what's due to ajax calls.
-// if we want to this requests in a specific way what we have to do???
-// here we need to chain the request, second only after finishing first and so on.....this is a topic that we will discuss after next lecture. in lect 007
+**REMEMBER** Here always display in order of the data arrives first. Fist arrives will display first on page. No matter we call it last or first. That's due to ajax calls.
 
-// !Revising this lecture: lec#05
-// !https://github.com/public-apis/public-apis [link of public API]
-// \*XML HTTP Request function:
+**If we want to this requests in a specific way what we have to do???**  
+Here we need to chain the request, second only after finishing first and so on.....this is a topic that we will discuss after next lecture.
 
-// ?AJAX calls using XMLHttpRequest() function: [Old school way of doing AJAX]
-/\*
+### QUICK RECAP
 
-const getCountryData = function (countryName) {
-const request = new XMLHttpRequest();
+<https://github.com/public-apis/public-apis> [link of public API]
 
-// \*Steps in XMLHttpRequest:
-// ?1- Open the Request:
-request.open('GET', `https://restcountries.com/v3.1/name/${countryName}`);
+**XML HTTP Request function:**  
+AJAX calls using **XMLHttpRequest()** function: [Old school way of doing AJAX]
 
-// ?2- Sent the Request:
-request.send();
+#### STEPS IN XMLHttpRequest
 
-// ?3- Register a load event on request object
-request.addEventListener('load', function () {
-// console.log(this.responseText); // !Here in console we see bunch of data in JSON format, we have to convert it into javascript object. JSON is just a big string of text.
+0. **Create a request Object using New operator:**
 
-    const [data] = JSON.parse(this.responseText);
-    console.log(data);
+   ```js
+   const request = new XMLHttpRequest();
+   ```
 
-    const html = `<article class="country">
-        <img class="country__img" src="${data.flags.png}" />
-        <div class="country__data">
-            <h3 class="country__name">${data.name.common}</h3>
-            <h4 class="country__region">${data.region}</h4>
-            <p class="country__row"><span>👫</span>${(
-              +data.population / 10000000
-            ).toFixed(1)} people</p>
-            <p class="country__row"><span>🗣️</span>${data.languages.urd}</p>
-            <p class="country__row"><span>💰</span>${
-              data.currencies.PKR.name
-            }</p>
-        </div>
-    </article>`;
+1. **Open the Request:**
 
-    countriesContainer.insertAdjacentHTML('beforeend', html);
-    countriesContainer.style.opacity = 1;
+   ```js
+   request.open('GET', `https://restcountries.com/v3.1/name/${countryName}`);
+   ```
 
-});
-};
+2. **Sent the Request:**
 
-getCountryData('pakistan');
+   ```js
+   request.send();
+   ```
 
-*/
-//////////////////////////////////////////
-//////////////////////////////////////////
-// *Heading lecture 006
+3. **Register a load event on request object:**
 
-// How Request and Response on the web.
+   ```js
+   request.addEventListener('load', function () {});
+   ```
+
+4. **Convert JSON to JavaScript Object**
+
+   ```js
+   request.addEventListener('load', function () {});
+   const [data] = JSON.parse(this.responseText);
+   ```
+
+---
+
+## Request_And_Response_On_Web
 
 // !Remember, whenever we try to access a web server, the browser(also called client) sends a request to the server, and the server will then send back a response. and that response contains the data or web page that we requested. this whole process is called 'Request-Response Model' or 'Client-Server Architecture'.
 
@@ -200,7 +193,7 @@ getCountryData('pakistan');
 // So the first step that happens when we access any web server, the browser makes a request to a DNS and it will simply match the web address of the url to the server's real IP address. - all of these happens through internet service provider(ISP).
 
 // then DNS will send back IP address to the browser, we can finally call it.
-// looks like: https://10.32.232.89.443
+// looks like: <https://10.32.232.89.443>
 // first part: https protocol
 // second part(10...89): IP address
 // third part(443): port number: port number is a specific service that running on a server. like a sub-address.
@@ -214,7 +207,7 @@ getCountryData('pakistan');
 
 // Request message will look something like this:
 // GET /rest/v2/PT HTTP/1.1
-// Host: www.google.com
+// Host: <www.google.com>
 // user-agent: .....
 // language: ....
 
@@ -433,7 +426,7 @@ getCountryAndNeighbor('pakistan');
 // request.open('GET', `https://restcountries.com/v3.1/name/${country}`);
 // request.send()
 
-// const request = fetch('https://restcountries.com/v3.1/name/pakistan');
+// const request = fetch('<https://restcountries.com/v3.1/name/pakistan>');
 // there are some more arguments we can specify in fetch function -object of options. but to make a simple GET request all we need to pass tha URL.
 // console.log(request); // returned promise here.
 
