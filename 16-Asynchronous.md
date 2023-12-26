@@ -15,6 +15,8 @@ const countriesContainer = document.querySelector('.countries');
 6. [CONSUMING_PROMISES](#consuming_promises)
 7. [Chain_Promises](#chain_promises)
 8. [ERROR_HANDLING](#error_handling)
+9. [THROWING_ERRORS_MANUALLY](#throwing_errors_manually)
+10. [Asynchronous_Behind_The_Scene_The_Event_Loop](#asynchronous_behind_the_scene_the_event_loop)
 
 ---
 
@@ -499,7 +501,7 @@ const getCountryData = function (country) {
 getCountryData('portugal');
 ```
 
-**LET'S ANALYSES THE CODE** ⤴  
+**LET'S ANALYZE THE CODE** ⤴  
 fetch(`https://restcountries.com/v3.1/name/${country}`);  
 **Calling a fetch function will return a promises**. So, we will use **then method to that promises**, **then method is available for all promises**. In that **then method** we will pass a callback function that we want to **execute** as soon as the **promise is fulfilled**. And that callback function will receive one argument that will be a **resulting value(response)** of **fulfilled promise**. And then to that response we will call a **json method**, which is available on all the responses.  
 Now the problem is that, this **json method itself is also an asynchronous function**, it means it will also **return a new promise**, so we return that json method, and remember! that will return a new promise. and then we'll call another **then method** to previous then method, which is returning **AJAX** b/c of .json() method. In this callback function we'll do our main task.
@@ -552,7 +554,8 @@ const getCountryData = function (country) {
 
       // Country 2
       // v common mistake:
-      // fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`).then(response => response.json()); // Instead always return. like this ⤵.
+      // fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`).then(response => response.json()); //
+      // Instead always return. like this ⤵.
       return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
     })
     .then((response) => {
@@ -570,13 +573,24 @@ We can chain many promises without callback hell, Here Instead of callback hell 
 
 ## ERROR_HANDLING
 
-// !REVISION [ERROR HANDLING]
-// !Remember A promise in which an error happens is a rejected promise, so we learn how to handle rejected promise.
-// ?There are two ways to handling rejection:
-// \*1- pass a second callback function into the **then method**. remember we have already passed a first callback function into then method, which will be always for fulfilled promise. second callback function will be for error handling, which will always be call with argument err itself.
+### Handling Rejected Promises
 
-// ! CODE //
-/\*
+**Remember:** **A promise in which an error happens is a rejected promise**, so we learn how to handle rejected promise. The only way in which fetch promise rejects is when the user loses his internet connection. We'll handle only this error here.  
+There are two ways to handling rejection:
+
+1. **Pass a second callback function into the then method**. Remember we have already passed a first callback function into then method, which will be always for fulfilled promise. second callback function will be for error handling, **which will always be call with argument err itself**.
+2. **Handling globally just in one central place. we will add at the end of the chain a catch method.** Here we will pass same callback function. this **catch method** will catch any error that occur in any place in the chain.
+
+Beside **'then'** and **'catch'** methods there is one more methods that are available on all promises that is **'finally'** method. It will also take a callback, this callback always executes no matter if the promise is fulfilled or rejected.  
+One good use case of **finally method is show and hide loading spinners like rotating circles**, while loading.  
+**REMEMBER:** **then method** only called when promise is **fulfilled** and **catch method** only called when promise is **rejected**, while **finally** method will call in **both** cases.
+
+---
+
+#### 1. CODE FOR PASSING SECOND CALLBACK FUNCTION INTO THEN METHOD
+
+```JS
+
 const getCountryData = function (country) {
 // COUNTRY 1
 fetch(`https://restcountries.com/v3.1/name/${country}`)
@@ -614,145 +628,30 @@ const neighbor = data[0].borders[0];
 btn.addEventListener('click', function () {
 getCountryData('portugal');
 });
-\*/
+```
 
-// Consuming Promises
-// Chaining Promises
-// Handling Rejected Promises
-// Throwing Errors Manually
+---
 
-// const getCountryData = function (country) {
-// fetch(`https://restcountries.eu/rest/v2/name/${country}`)
-// .then(function (response) {
-// console.log(response);
-// return response.json();
-// })
-// .then(function (data) {
-// console.log(data);
-// renderCountry(data[0]);
-// });
-// };
+#### 2. CODE WITH ALL OF THESE THINGS
 
-/\*
+- Consuming Promises
+- Chaining Promises
+- Handling Rejected Promises
+- Throwing Errors Manually
+- Implementing All Three Methods [then, catch, finally]
 
-const getCountryData = function (country) {
-// Country 1
-fetch(`https://restcountries.eu/rest/v2/name/${country}`)
-.then(response => {
-console.log(response);
-
-      if (!response.ok)
-        throw new Error(`Country not found (${response.status})`);
-
-      return response.json();
-    })
-    .then(data => {
-      renderCountry(data[0]);
-      const neighbour = data[0].borders[0];
-      // const neighbour = 'ddddd';
-
-      if (!neighbour) return;
-
-      // Country 2
-      return fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`);
-    })
-    .then(response => {
-      if (!response.ok)
-        throw new Error(`Country not found (${response.status})`);
-
-      return response.json();
-    })
-    .then(data => renderCountry(data, 'neighbour'))
-    .catch(err => {
-      console.error(`${err} 💥💥💥`);
-      renderError(`Something went wrong 💥💥 ${err.message}. Try again!`);
-    })
-    .finally(() => {
-      countriesContainer.style.opacity = 1;
-    });
-
-};
-
-\*/
-
-// const getCountryData = function (country) {
-// // Country 1
-// getJSON(
-// `https://restcountries.eu/rest/v2/name/${country}`,
-// 'Country not found'
-// )
-// .then(data => {
-// renderCountry(data[0]);
-// const neighbour = data[0].borders[0];
-
-// if (!neighbour) throw new Error('No neighbour found!');
-
-// // Country 2
-// return getJSON(
-// `https://restcountries.eu/rest/v2/alpha/${neighbour}`,
-// 'Country not found'
-// );
-// })
-
-// .then(data => renderCountry(data, 'neighbour'))
-// .catch(err => {
-// console.error(`${err} 💥💥💥`);
-// renderError(`Something went wrong 💥💥 ${err.message}. Try again!`);
-// })
-// .finally(() => {
-// countriesContainer.style.opacity = 1;
-// });
-// };
-
-btn.addEventListener('click', function () {
-getCountryData('portugal');
-});
-// Handling Rejected Promises
-
-// A promises in which error happens is a rejected promise.
-// The only way in which fetch promise rejects is when the user loses his internet connection. we'll handle only this error here.
-
-// there are two ways of handling rejections
-// 1. pass a second callback function into a then method, which(second callback) will be error handler.
-
-// 2. Handling globally just in one central place. we will add at the end of the chain a catch method. here we will pass same callback function. this catch method will catch any error that occur in any place in the chain.
-
-// Beside 'then' and 'catch' methods there is one more methods that are available on all promises that is 'finally' method. it will also take a callback, this callback always executes no matter if the promise is fulfilled or rejected.
-// one good use case of finally method is show and hide loading spinners like rotating circles, while loading.
-// Remember then method only called when promise is fulfilled and catch method only called when promise is rejected, while finally method will call in both cases.
-
-/\*
-
-const renderCountry = function (data, className = '') {
-const html = `<article class="country ${className}">
-            <img class="country__img" src="${data.flags.png}" />
-            <div class="country__data">
-            <h3 class="country__name">${data.name.common}</h3>
-            <h4 class="country__region">${data.region}</h4>
-            <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)}</p>
-            <p class="country__row"><span>🗣️</span>${data.languages.eng}</p>
-            <p class="country__row"><span>💰</span>${data.currencies.PKR?.name}</p>
-            </div>
-        </article>`;
-countriesContainer.insertAdjacentHTML('beforeend', html)
-
-    // countriesContainer.style.opacity = 1; // this code is common in both catch and then so we'll put it in finally method.
-
-}
+```JS
 
 const renderError = function (msg) {
 countriesContainer.insertAdjacentText('beforeend', msg);
-// countriesContainer.style.opacity = 1;
+// countriesContainer.style.opacity = 1; // Added in finally method
 }
 
 const getCountryData = function (country) {
 // Country 1
 fetch(`https://restcountries.com/v3.1/name/${country}`)
 .then(response => {
-console.log(response); // here we see in cl the 'ok' property is false since it couldn't found that country name
-remember that if we find then ok property will true and status property should be 200 else ok: false and status: 404
-so we use this property to print exact 404 error on page.
-throw will immediately terminate function like a return. and promise will reject and this rejection will propagate down to the catch handler. and will display this error.
+console.log(response);
 
             if (!response.ok) {
                 throw new Error(`Country not found (${response.status})`)
@@ -782,45 +681,46 @@ throw will immediately terminate function like a return. and promise will reject
         }).finally(() => {
             countriesContainer.style.opacity = 1;
         });
-    // remember err is an object in js it has methods like message...
 
 }
 
-// Remember catch and then methods always return a promises.
 
 btn.addEventListener('click', function () {
 // getCountryData('pakistan');
 });
 
-\*/
+```
 
-// getCountryData('kkkk'); // it is giving a 404 error on console, it means API couldn't find any country by this name, but fetch function still not reject in this case. it is going to execute a then method, and from there it is printing an error other then 404 error. So we sill have to do it manually. this is all about next lecture.
-//
+## THROWING_ERRORS_MANUALLY
 
-////////////////////////////////////////
-// Lecture 12 Heading
+[CODE ⤴]
 
-// THROWING ERRORS MANUALLY:
+HERE ⤴ without using response.ok property in then method. getCountryData('kkkk'); giving a 404 error on console, it means API couldn't find any country by this name, BUT fetch function still not reject in this case. it is going to execute a then method, and from there it is printing an error other then 404 error. So we sill have to do it manually. this is all about next lecture.
 
-// we seen in console the response object have many properties including ok and status property. if API find then ok property will true and status property should be 200 else ok: false and status: 404
-// so we use this property to print exact 404 error on page..
+Here we see in console the 'ok' property is false since it couldn't found that country name remember that if we find then ok property will true and status property should be 200 else ok: false and status: 404 so we use this property to print exact 404 error on page. throw will immediately terminate function like a return. and promise will reject and this rejection will propagate down to the catch handler. and will display this error.
 
-// Refactoring our code.
-// we will build a helper functions for all main functionalities(fetch, error handling, conversion to JSON)
+countriesContainer.style.opacity = 1; // this code is common in both catch and then so we'll put it in finally method.
 
-// !FINAL CODE TILL NOW
-/\*
+Remember err is an object in js it has methods like message...  
+Also note that catch and then methods always return a promises.
+
+---
+
+FINAL CODE TILL NOW WITH SOME REFACTORING⤵  
+we will build a helper functions for all main functionalities(fetch, error handling, conversion to JSON)
+
+```js
 const renderCountry = function (data, className = '') {
-const html = `
+  const html = `
 
 <article class="country ${className}">
 <img class="country__img" src="${data.flags.png}" />
 <div class="country__data">
 <h3 class="country__name">${data.name.common}</h3>
     <h4 class="country__region">${data.region}</h4>
-<p class="country__row"><span>👫</span>${(
-      +data.population / 1000000
-    ).toFixed(1)}</p>
+<p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(
+    1
+  )}</p>
     <p class="country__row"><span>🗣️</span>${data.languages.eng}</p>
 <p class="country__row"><span>💰</span>${data.currencies.PKR?.name}</p>
 </div>
@@ -828,82 +728,59 @@ const html = `
 </article>
 `;
 
-countriesContainer.insertAdjacentHTML('beforeend', html);
+  countriesContainer.insertAdjacentHTML('beforeend', html);
 };
 
 const renderError = function (errMsg) {
-countriesContainer.insertAdjacentText('beforeend', errMsg);
+  countriesContainer.insertAdjacentText('beforeend', errMsg);
 };
 
 // Converting to JSON
 const getJSON = function (url, errorMsg = 'Something went wrong') {
-return fetch(url).then(response => {
-if (!response.ok) {
-throw new Error(`${errorMsg} (${response.status})`);
-}
+  return fetch(url).then((response) => {
+    if (!response.ok) {
+      throw new Error(`${errorMsg} (${response.status})`);
+    }
 
     return response.json();
-
-});
+  });
 };
 
 const getCountryData = function (country) {
-getJSON(`https://restcountries.com/v3.1/name/${country}`, `Country not found`)
-.then(data => {
-renderCountry(data[0]);
+  getJSON(`https://restcountries.com/v3.1/name/${country}`, `Country not found`)
+    .then((data) => {
+      renderCountry(data[0]);
 
       const neighbour = data[0].borders[0];
       if (!neighbour) return;
       return getJSON(`https://restcountries.com/v3.1/alpha/${neighbour}`);
     })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`Country not found. (${response.status})`);
       }
 
       return response.json();
     })
-    .then(data => {
+    .then((data) => {
       renderCountry(data[0], 'neighbour');
     })
-    .catch(err => {
+    .catch((err) => {
       renderError(`Something went wrong 🔴 🔴 ${err.message}. Try again!`);
       console.error(`Something went wrong 🔴 🔴 ${err.message}`);
     })
     .finally(() => {
       countriesContainer.style.opacity = 1;
     });
-
 };
 
 getCountryData('pakistan');
-\*/
+```
 
-// !-----------------------------------! //
-// _-----------------------------------_ //
-// ?-----------------------------------? //
+---
 
-// ! CHALLENGE 1
-/_
-const whereAmI = function (lat, lng) {
-fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
-.then(function (response) {
-// console.log(response.json());
-return response.json();
-})
-.then(function (data) {
-console.log(data);
-});
-};
-whereAmI(52.508, 13.381);
-_/
+## Asynchronous_Behind_The_Scene_The_Event_Loop
 
-// !-----------------------------------! //
-// _-----------------------------------_ //
-// ?-----------------------------------? //
-
-// !Lecture 014
-// \*Asynchronous Behind the Scene_The Event Loop
 // !remember: javascript engine is built around the idea of a single threat. It means it can only do one thing at a time.
 // ? if there is only one thead of execution in the engine then how can asynchronous code be executed in a non blocking way?
 // fist all asynchronous codes will be added in WEB APIs section(js has three main parts call stack, web APIs, Callback & microtask queue). as any asynchronous code completes its execution it will add into callback queue.
@@ -1599,3 +1476,19 @@ loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg ']);
 
 // !26 / 05 / 2023 (6 : 08 PM)
 // !Q-Hostel (MUST)
+
+### CHALLENGE #1
+
+```js
+const whereAmI = function (lat, lng) {
+  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    .then(function (response) {
+      // console.log(response.json());
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+    });
+};
+whereAmI(52.508, 13.381);
+```
