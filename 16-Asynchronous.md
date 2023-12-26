@@ -13,6 +13,8 @@ const countriesContainer = document.querySelector('.countries');
 4. [Sequence_of_AJAX_Calls](#sequence_of_ajax_calls)
 5. [PROMISES_AND_FETCH_API](#promises_and_fetch_api)
 6. [CONSUMING_PROMISES](#consuming_promises)
+7. [Chain_Promises](#chain_promises)
+8. [ERROR_HANDLING](#error_handling)
 
 ---
 
@@ -407,8 +409,9 @@ getCountryAndNeighbor('pakistan');
 ## REMEMBER SOME ABBREVIATIONS
 
 **AJAX:** Asynchronous JavaScript And XML  
-**API:** Application Programming Interface
-**DNS:** Domain Name System/Server/Service
+**API:** Application Programming Interface  
+**DNS:** Domain Name System/Server/Service  
+**JSON:** JavaScript Object Notation
 
 ---
 
@@ -455,30 +458,10 @@ Perfect example of future value is value coming from an AJAX call. When we call 
 
 ## CONSUMING_PROMISES
 
+```js
+// CONSUMING PROMISE
 const renderCountry = function (data, className = '') {
-const html = `<article class="country ${className}">
-            <img class="country__img" src="${data.flags.png}" />
-            <div class="country__data">
-            <h3 class="country__name">${data.name.common}</h3>
-            <h4 class="country__region">${data.region}</h4>
-            <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)}</p>
-            <p class="country__row"><span>🗣️</span>${data.languages.eng}</p>
-            <p class="country__row"><span>💰</span>${data.currencies.PKR?.name}</p>
-            </div>
-        </article>`;
-countriesContainer.insertAdjacentHTML('beforeend', html)
-
-    countriesContainer.style.opacity = 1;
-
-}
-
-*/
-//*CONSUMING PROMISES
-
-/\*
-
-const renderCountry = function (data, className = '') {
-const html = `
+  const html = `
 
   <article class="country ${className}">
     <img class="country__img" src="${data.flag}" />
@@ -498,132 +481,99 @@ const html = `
 };
 
 const renderError = function (msg) {
-countriesContainer.insertAdjacentText('beforeend', msg);
-countriesContainer.style.opacity = 1;
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  countriesContainer.style.opacity = 1;
 };
 
-\*/
-
-// !REVISION:
-
-// fetch(`https://restcountries.com/v3.1/name/${country}`); // !calling a fetch function will return a promises. So, we will use then method to that promises, then method is available for all promises. In that then method we will pass a callback function that we want to execute as soon as the promise is fulfilled. And that callback function will receive one argument that will be a resulting value(response) of fulfilled promise. And then to that response we will call a json method, which is available on all the responses.
-// \*Now the problem is that, this json method itself is also an asynchronous function, it means it will also return a new promise, so we return that json method, and remember! that will return a new promise. and then we'll call another then function to previous then function, which is returning ajax b/c of .json() method. In this callback function we'll do our main task.
-
-// ! CODE //
-// const getCountryData = function (country) {
-// fetch(`https://restcountries.com/v3.1/name/${country}`)
-// .then(function (response) {
-// return response.json();
-// })
-// .then(function (data) {
-// renderCountry(data[0]);
-// });
-// };
-
-// getCountryData('portugal');
-
-// ?How to consuming Promises:
-// we'll consume the promise that was returned by the fetch function
-//fetch('url') method will return a promise. In all promise we will call after that 'then' method, into 'then' method we need to pass a callback function that we want to execute as soon as the promise is actually fulfilled.
-// 'then' function will receive one argument and that argument is resulting value of fulfilled promise.
-// then inside the callback function on the response we need to call json method.
-// json() method is available on each response.
-// here the Problem is that this json function is also an asynchronous function. it will also return a new promise. so we will return that promise. After that we have to call another then method to callback function after returning the json promise. In this callback function we'll do our main task. in this case render Country data dy calling renderCountry() function.
-
-/\*
-
+// CODE //
 const getCountryData = function (country) {
-fetch(`https://restcountries.com/v3.1/name/${country}`).then(function (response) {
-// console.log(response);
-
-        return response.json();
-    }).then(function (data) {
-        // console.log(data);  // now it's working.
-        renderCountry(data[0]);
+  fetch(`https://restcountries.com/v3.1/name/${country}`)
+    .then(function (response) {
+      return response.json();
     })
+    .then(function (data) {
+      renderCountry(data[0]);
+    });
+};
 
+getCountryData('portugal');
+```
+
+**LET'S ANALYSES THE CODE** ⤴  
+fetch(`https://restcountries.com/v3.1/name/${country}`);  
+**Calling a fetch function will return a promises**. So, we will use **then method to that promises**, **then method is available for all promises**. In that **then method** we will pass a callback function that we want to **execute** as soon as the **promise is fulfilled**. And that callback function will receive one argument that will be a **resulting value(response)** of **fulfilled promise**. And then to that response we will call a **json method**, which is available on all the responses.  
+Now the problem is that, this **json method itself is also an asynchronous function**, it means it will also **return a new promise**, so we return that json method, and remember! that will return a new promise. and then we'll call another **then method** to previous then method, which is returning **AJAX** b/c of .json() method. In this callback function we'll do our main task.
+
+### How to consuming Promises
+
+We'll consume the promise that was returned by the fetch function.  
+**fetch('url') method will return a promise.** In all promise we will call after that **then method**, into **then method** we need to pass a callback function that we want to execute as soon as the promise is actually fulfilled.  
+**then function** will receive one argument and that argument is resulting value of fulfilled promise.  
+Then inside the callback function on the response we need to call **json method**. json() method is available on each response.  
+Here the Problem is that this **json function** is also an asynchronous function. it will also return a new promise. so we will return that **promise**. After that we have to call another **then method** to callback function after returning the json promise. In this callback function we'll do our main task. In this case render Country data dy calling renderCountry() function.
+
+```js
+const getCountryData = function (country) {
+  fetch(`https://restcountries.com/v3.1/name/${country}`)
+    .then(function (response) {
+      // console.log(response);
+
+      return response.json();
+    })
+    .then(function (data) {
+      // console.log(data);  // now it's working.
+      renderCountry(data[0]);
+    });
 };
 
 getCountryData('pakistan');
+```
 
-\*/
+---
 
-////////////////////////////////////////
-////////////////////////////////////////
+## Chain_Promises
 
-// \*REVISION
-// ?How to chain Promises:
-// ! CODE //
-// const getCountryData = function (country) {
-// // COUNTRY 1
-// fetch(`https://restcountries.com/v3.1/name/${country}`)
-// .then(function (response) {
-// return response.json();
-// })
-// .then(function (data) {
-// renderCountry(data[0]);
-// const neighbor = data[0].borders[0];
+we will chain promises by rendering the neighbor country of the initial country.
 
-// if (!neighbor) return;
-
-// // COUNTRY 2
-// return fetch(`https://restcountries.com/v3.1/alpha/${neighbor}`);
-// })
-// .then(function (response) {
-// return response.json().then(function (data) {
-// renderCountry(data, 'neighbour');
-// });
-// });
-// };
-
-// getCountryData('portugal');
-//
-// Heading lecture 10
-
-// CHAINING PROMISES
-
-// we will chain promises by rendering the neighbor country of the initial country.
-
-/\*
-
+```js
 const getCountryData = function (country) {
-// Country 1
-fetch(`https://restcountries.com/v3.1/name/${country}`)
-.then(response => {
-return response.json()
-})
-.then(data => {
-// console.log(data);
-renderCountry(data[0]);
+  // Country 1
+  fetch(`https://restcountries.com/v3.1/name/${country}`)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      // console.log(data);
+      renderCountry(data[0]);
 
-            const neighbour = data[0].borders[1];
-            // console.log(neighbour);
-            if (!neighbour) return;
+      const neighbour = data[0].borders[1];
+      // console.log(neighbour);
+      if (!neighbour) return;
 
-            // Country 2
-            return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+      // Country 2
+      // v common mistake:
+      // fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`).then(response => response.json()); // Instead always return. like this ⤵.
+      return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => renderCountry(data[0], 'neighbour'));
+};
 
-            // v common mistake:
-            // fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`).then(response => response.json()); // Instead always return
-        }).then(response => {
-            return response.json();
-        }).then(data => renderCountry(data[0], 'neighbour'));
+getCountryData('pakistan');
+```
 
-}
+We can chain many promises without callback hell, Here Instead of callback hell we have a flat chain of promises
 
-// getCountryData('pakistan');
+---
 
-// We can chain many promises without callback hell, Here Instead of callback hell we have a flat chain of promises.
-
-\*/
-///////////////////////////////////////
-///////////////////////////////////////
-// Heading -ERROR HANDLING
+## ERROR_HANDLING
 
 // !REVISION [ERROR HANDLING]
 // !Remember A promise in which an error happens is a rejected promise, so we learn how to handle rejected promise.
 // ?There are two ways to handling rejection:
-// \*1- pass a second callback function into the then method. remember we have already passed a first callback function into then method, which will be always for fulfilled promise. second callback function will be for error handling, which will always be call with argument err itself.
+// \*1- pass a second callback function into the **then method**. remember we have already passed a first callback function into then method, which will be always for fulfilled promise. second callback function will be for error handling, which will always be call with argument err itself.
 
 // ! CODE //
 /\*
