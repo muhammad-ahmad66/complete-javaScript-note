@@ -10,6 +10,9 @@ const countriesContainer = document.querySelector('.countries');
 1. [Asynchronous_Javascript_AJAX_And_API_Intro](#asynchronous_javascript_ajax_and_api_intro)
 2. [First_AJAX_Call-XML_HTTP_Request](#first_ajax_call-xml_http_request)
 3. [Request_And_Response_On_Web](#request_and_response_on_web)
+4. [Sequence_of_AJAX_Calls](#sequence_of_ajax_calls)
+5. [PROMISES_AND_FETCH_API](#promises_and_fetch_api)
+6. [CONSUMING_PROMISES](#consuming_promises)
 
 ---
 
@@ -181,62 +184,60 @@ AJAX calls using **XMLHttpRequest()** function: [Old school way of doing AJAX]
 
 ## Request_And_Response_On_Web
 
-// !Remember, whenever we try to access a web server, the browser(also called client) sends a request to the server, and the server will then send back a response. and that response contains the data or web page that we requested. this whole process is called 'Request-Response Model' or 'Client-Server Architecture'.
+**REMEMBER:** Whenever we try to access a web server, the browser(also called client) sends a request to the server, and the server will then send back a response. And that response contains the data or web page that we requested. This whole process is called **'Request-Response Model'** OR **'Client-Server Architecture'**.
 
-// ?dive deeper into this
-// every URL gets an HTTP or HTTPS,(protocol use to connection) then domain name, and after a slash we have so-called resource, that we want to access.
-// this domain name is not actual real address of the server that we're trying to access, (it's just a nice name).
-// ?which means we need a way of converting the domain name to the real address of the server. that's the work of DNS.
+### Dive Deeper into this Process
 
-// DNS is a special kind of server. like a phone books of the internet.
+Every URL gets an **HTTP** or **HTTPS**,(protocol use to connection) then domain name, and then after a slash we have so-called **resource**, that we want to access.  
+This domain name is not actual real address of the server that we're trying to access, (it's just a nice name).  
+Which means we need a way of converting the domain name to the real address of the server. that's the work of **DNS**.
 
-// So the first step that happens when we access any web server, the browser makes a request to a DNS and it will simply match the web address of the url to the server's real IP address. - all of these happens through internet service provider(ISP).
+**DNS** is a special kind of server. like a phone books of the internet.
 
-// then DNS will send back IP address to the browser, we can finally call it.
-// looks like: <https://10.32.232.89.443>
-// first part: https protocol
-// second part(10...89): IP address
-// third part(443): port number: port number is a specific service that running on a server. like a sub-address.
+So the first step that happens when we access any web server, the browser makes a request to a **DNS** and it will simply match the web address of the url to the server's real IP address. - All of these happens through **Internet Service Provider(ISP)**.
 
-// Once we have real IP address a TCP/IP socket connection is established between the browser and the server.
+Then DNS will send back IP address to the browser, we can finally call it.  
+Looks like: <https://10.32.232.89.443>  
+First part: **https protocol**  
+Second part(10...89): **IP address**  
+Third part(443): **Port number.** Port number is a specific service that running on a server. like a sub-address.
 
-// TCP is the Transmission Control Protocol and IP is the Internet protocol. they are the one who set the rules about how data moves on the internet.
+**Once we have real IP address a TCP/IP socket connection is established between the browser and the server.**
 
-// After establishing a connection it's time to make the request. the request means http request, where http stands for hypertext transfer protocol.
-// it in yet another communication protocol. In the case of HTTP, it's just a protocol that allows clients and web servers to communicate, that works by sending requests and response messages from client to server and back.
+**TCP** is the **T**ransmission **C**ontrol **P**rotocol and **IP** is the **I**nternet **P**rotocol. they are the one who set the rules about how data moves on the internet.
 
-// Request message will look something like this:
-// GET /rest/v2/PT HTTP/1.1
-// Host: <www.google.com>
-// user-agent: .....
-// language: ....
+After establishing a connection it's time to make the request. the request means http request, where **HTTP stands for HyperText Transfer Protocol.**  
+It is yet another communication protocol. **In the case of HTTP**, it's just a protocol that allows clients and web servers to communicate, that works by sending requests and response messages from client to server and back.
 
-// beginning of the message is called start line, and this one contains the HTTP method that is used in the request. some http methods are 'get', 'post', 'put', patch'
+#### Request message will look something like this
 
-// rest/v2/PT is a target in http request.
+GET /rest/v2/PT HTTP/1.1  
+Host: <www.google.com>  
+user-agent: .....  
+language: ....
 
-// after that there are some information about request called header. language etc.
+Beginning of the message is called start line, and this one contains the HTTP method that is used in the request. some HTTP methods are '**get**', '**post**', '**put**', '**patch**'
 
-// there also a request body. that body contains the data we are sending.
+rest/v2/PT is a target in http request.  
+After that there are some information about request called header. language etc.  
+There also a request body. that **body** contains the data we are sending.
 
-// not it hit server. then server will work on it. Once it ready it will send back using http response, http response message is quite similar to the request, with a start line, headers and body.
+Now it hit server. Then server will work on it. Once it ready it will send back using http response, http response message is quite similar to the request, with a **start line**, **headers** and **body**.
 
-// it will tell about weather the request has been successful or failed. for example in standard 200 means successful and 404 means page not found.
+It will tell about weather the request has been successful or failed. for example in standard **200** means successful and **404** means page not found.
 
-// TCP/IP
-// ?job of TCP is to break the requests and responses down into thousands of small chunks, called packets before they are sent. once the final packet arrives at final destination, TCP will reassemble all the packets into the original request or response.
+**TCP/IP**  
+**Job of TCP is to break the requests and responses down into thousands of small chunks, called packets before they are sent.** Once the final packet arrives at final destination, TCP will reassemble all the packets into the original request or response.
 
-// ?Job of the IP protocol is to actually send and route these packets through the Internet, It ensures that they arrives at the destination using IP addresses on each packet.
+**Job of the IP protocol is to actually send and route these packets through the Internet**, It ensures that they arrives at the destination using IP addresses on each packet.
 
-////////////////////////////////////////
-////////////////////////////////////////
-// Heading lecture 007
+---
 
-// *REVISION
-// *Sequence of AJAX calls.
-/\*
+## Sequence_of_AJAX_Calls
+
+```js
 const renderCountry = function (data, className = '') {
-const html = `<article class="country ${className}">
+  const html = `<article class="country ${className}">
     <img class="country__img" src="${data.flags.png}" />
     <div class="country__data">
         <h3 class="country__name">${data.name.common}</h3>
@@ -248,30 +249,30 @@ const html = `<article class="country ${className}">
         <p class="country__row"><span>💰</span>${data.currencies.PKR.name}</p>
     </div>
     </article>`;
-countriesContainer.insertAdjacentHTML('beforeend', html);
-countriesContainer.style.opacity = 1;
+  countriesContainer.insertAdjacentHTML('beforeend', html);
+  countriesContainer.style.opacity = 1;
 };
 
 const getCountryAndNeighbor = function (countryName) {
-// !AJAX CALL COUNTRY 1:
-const request = new XMLHttpRequest();
-request.open('GET', `https://restcountries.com/v3.1/name/${countryName}`);
-request.send();
+  // !AJAX CALL COUNTRY 1:
+  const request = new XMLHttpRequest();
+  request.open('GET', `https://restcountries.com/v3.1/name/${countryName}`);
+  request.send();
 
-request.addEventListener('load', function () {
-const [data] = JSON.parse(this.responseText);
-console.log(data);
+  request.addEventListener('load', function () {
+    const [data] = JSON.parse(this.responseText);
+    console.log(data);
 
-    // !RENDER COUNTRY 1:
+    // RENDER COUNTRY 1:
     renderCountry(data);
 
-    // !NOW GET NEIGHBOR COUNTRY:
+    // NOW GET NEIGHBOR COUNTRY:
     const neighbor = data.borders[0];
 
-    // ?if any country have no neighbor at all:
+    // If any country have no neighbor at all:
     if (!neighbor) return;
 
-    // !SECOND AJAX CALL FOR COUNTRY 2
+    // SECOND AJAX CALL FOR COUNTRY 2
     const request2 = new XMLHttpRequest();
     request2.open('GET', `https://restcountries.com/v3.1/alpha/${neighbor}`);
     request2.send();
@@ -297,48 +298,44 @@ console.log(data);
       countriesContainer.insertAdjacentHTML('beforeend', html);
       countriesContainer.style.opacity = 1;
     });
-
-});
+  });
 };
 
 getCountryAndNeighbor('pakistan');
+```
 
-\*/
+In this API we see there is a property of borders for each country. like pakistan have india, china, afghanistan etc.  
+Using this property we can also render the neighboring countries, besides the original country. It means **second AJAX call really depends on the first** one. To implement **AJAX calls** should be in sequence, without completing first one we will never get border property of it. so we need order here.  
+Here we have one **AJAX call that depends on another call**. One callback function then inside of that we have yet another one. In other words **We have nested callbacks.**
 
-// In this API we see there is a property of borders for each country. like pakistan have india, china, afghanistan etc.
-// using this property we can also render the neighboring countries, besides the original country. It means second AJAX call really depends on the first one. to implement AJAX calls should be in sequence, without completing first one we will never get border property of it. so we need order here.
-// Here we have one AJAX call that depends on another call. one callback function then inside of that we have yet another one. in other words We have nested callbacks.
+**Now how we do if we want to do more requests in sequence..?** like neighbor of neighbor and more....  
+In these case we will end up callbacks inside of callbacks, inside of callbacks.... for That kind of structure and behavior we have a special name called **'Callback Hell'**  
+**Callback Hell** is when we have lot of nested callbacks. in order to execute asynchronous tasks in sequence. And In fact, this happens for all asynchronous tasks not just AJAX calls. for example:⤵
 
-// Now how we do if we want to do more requests in sequence..? like neighbor of neighbor and more....
-// In these case we will end up callbacks inside of callbacks, inside of callbacks.... for That kind of structure and behavior we have a special name called 'callback hell';
-// callback hell is when we have lot of nested callbacks. in order to execute asynchronous tasks in sequence. and In fact, this happens for all asynchronous tasks not just AJAX calls. for example:
-/\*
+```js
 setTimeout(() => {
+  console.log('1 Second Passed!');
+  // new timer
+  setTimeout(() => {
+    console.log('2 seconds passed!');
 
-    console.log('1 Second Passed!');
-    // new timer
+    // another one
     setTimeout(() => {
-        console.log('2 seconds passed!');
-
-        // another one
-        setTimeout(() => {
-            console.log('3 seconds passed!');
-            setTimeout(() => {
-                console.log('4 seconds passed!');
-            }, 1000);
-        }, 1000);
+      console.log('3 seconds passed!');
+      setTimeout(() => {
+        console.log('4 seconds passed!');
+      }, 1000);
     }, 1000);
-
+  }, 1000);
 }, 1000);
-\*/
+```
 
-// Problem with callback hell is that it makes code look very messy, had to maintain and very difficult to understand.
-// solution of callback hell is simply escape callback hell, Instead we use promises.
+Problem with **callback hell** is that it makes code look very messy, had to maintain and very difficult to understand.  
+Solution of **callback hell** is simply escape **callback hell**. Instead we use **Promises**.
 
-/\*
-
+```js
 const renderCountry = function (data, className = '') {
-const html = `    <article class="country ${className}">
+const html = `<article class="country ${className}">
             <img class="country__img" src="${data.flags.png}" />
             <div class="country__data">
             <h3 class="country__name">${data.name.common}</h3>
@@ -352,7 +349,6 @@ const html = `    <article class="country ${className}">
     countriesContainer.insertAdjacentHTML('beforeend', html)
 
     countriesContainer.style.opacity = 1;
-
 }
 
 const getCountryAndNeighbor = function (country) {
@@ -385,8 +381,6 @@ const getCountryAndNeighbor = function (country) {
         //request.open('GET', `https://restcountries.com/v3.1/name/${country}`); // here we not don't have a country name only we have a country code (CHN  -NOT CHINA)
 
         // IN THIS API we can also search any country using country code.
-
-
         request2.open('GET', `https://restcountries.com/v3.1/alpha/${neighbour}`)
 
         request2.send();
@@ -400,59 +394,69 @@ const getCountryAndNeighbor = function (country) {
             console.log(data2);
 
             renderCountry(data2, 'neighbor');
-
         })
-
-
     })
-
 }
 
 getCountryAndNeighbor('pakistan');
 
-\*/
+```
 
-////////////////////////////////////////
-////////////////////////////////////////
-// \*Heading -Lecture 008
+---
 
-// PROMISES AND THE FETCH API (ES6 feature)
+## REMEMBER SOME ABBREVIATIONS
 
-// before starting promises we should know about Fetch API
-// replace old XMLHttpRequest() function with modern way of making AJAX calls. that is by using Fetch API.
+**AJAX:** Asynchronous JavaScript And XML  
+**API:** Application Programming Interface
+**DNS:** Domain Name System/Server/Service
 
-// DONE USING XMLHttpRequest()
-// const request = new XMLHttpRequest();
-// request.open('GET', `https://restcountries.com/v3.1/name/${country}`);
-// request.send()
+---
 
-// const request = fetch('<https://restcountries.com/v3.1/name/pakistan>');
-// there are some more arguments we can specify in fetch function -object of options. but to make a simple GET request all we need to pass tha URL.
-// console.log(request); // returned promise here.
+## PROMISES_AND_FETCH_API
 
-// ? Now what exactly promise is? And what can we do with it?
-// Promise is an object that is used as a placeholder for the future result of an asynchronous operation. we can also say Promise is a container for an asynchronously delivered value. OR promise is a container for a future value.
-// perfect example of future value is value coming from an AJAX call. when we call ajax call there is no value yet,
+[ES6_Feature]
 
-// ? what's the big advantages of promises?
-// 1. by using promises, we no longer need to rely on events and callback function to handle asynchronous result.
-// 2. We can chain promises to a sequence of asynchronous operations instead callbacks (escape callback hell)
+Before starting promises we should know about **Fetch API**  
+Replace old **XMLHttpRequest()** function with modern way of making **AJAX calls**. that is by using **Fetch API**.
 
-// The Promise Lifecycle:
-// Pending promise: this is before any value resulting from the asynchronous task.
-// Settled promise: when the task finally finished, we say promise is settled. There are two different types of settled promises 'fulfilled' and 'rejected' promises.
-// A promise is only settled once. so promise will either fulfilled or rejected, it's impossible to change their states.
+DONE USING XMLHttpRequest()
 
-// !Consume a promise: get a result of promise. fetch API build a promise and return us to consume.
+```js
+const request = new XMLHttpRequest();
+request.open('GET', `https://restcountries.com/v3.1/name/${country}`);
+request.send();
 
-///////////////////////////////////////
-///////////////////////////////////////
-// \*Heading -Lecture 009
+// Fetch API
+const request = fetch('<https://restcountries.com/v3.1/name/pakistan>');
+console.log(request); // returned promise here.
+```
 
-// CONSUMING PROMISES
-/\*
+There are some more arguments we can specify in fetch function -object of options. But to make a **simple GET request** all we need to pass tha URL.
+
+### Now what exactly promise is? And what can we do with it?
+
+**Promise** **is an object that is used as a placeholder for the future result of an asynchronous operation.** we can also say **Promise is a container for an asynchronously delivered value**. OR **promise is a container for a future value.**  
+Perfect example of future value is value coming from an AJAX call. When we call ajax call there is no value yet.
+
+**What's the big advantages of promises?**
+
+1. By using promises, **we no longer need to rely on events and callback function to handle asynchronous result**.
+2. We can **chain promises to a sequence of asynchronous operations instead callbacks** (escape callback hell)
+
+### The Promise Lifecycle
+
+**Pending promise:** This is before any value resulting from the asynchronous task.  
+**Settled promise:** When the task finally finished, we say promise is settled. There are two different types of settled promises '**fulfilled**' and '**rejected**' promises.  
+**A promise is only settled once**. **so promise will either fulfilled or rejected**, it's impossible to change their states.
+
+**Consume a Promise:** Get a result of promise. fetch API build a promise and return us to consume.
+
+---
+
+## CONSUMING_PROMISES
+
 const renderCountry = function (data, className = '') {
-const html = `    <article class="country ${className}">
+const html = `<article class="country ${className}">
             <img class="country__img" src="${data.flags.png}" />
             <div class="country__data">
             <h3 class="country__name">${data.name.common}</h3>
@@ -469,7 +473,7 @@ countriesContainer.insertAdjacentHTML('beforeend', html)
 }
 
 */
-// *CONSUMING PROMISES
+//*CONSUMING PROMISES
 
 /\*
 
@@ -770,7 +774,7 @@ getCountryData('portugal');
 /\*
 
 const renderCountry = function (data, className = '') {
-const html = `    <article class="country ${className}">
+const html = `<article class="country ${className}">
             <img class="country__img" src="${data.flags.png}" />
             <div class="country__data">
             <h3 class="country__name">${data.name.common}</h3>
@@ -996,9 +1000,9 @@ console.log('Test end');
 
 _/
 // !-----------------------------------! //
-// _-----------------------------------* //
+//_-----------------------------------*//
 // ?-----------------------------------? //
-// *Lecture 016
+//*Lecture 016
 // \*BUILDING A SIMPLE PROMISE:
 
 // At this point in course we know about consuming promises but we have never built our own promise. LETS DO THAT:
@@ -1074,7 +1078,7 @@ console.log('I waited for 1 second.');
 // _-----------------------------------_ //
 // ?-----------------------------------? //
 // *Lecture 017
-// *PROMISIFYING THE GEOLOCATION API
+//*PROMISIFYING THE GEOLOCATION API
 /\*
 navigator.geolocation.getCurrentPosition(
 position => console.log(position),
@@ -1140,7 +1144,7 @@ btn.addEventListener('click', whereAmI);
 /_
 const wait = function (seconds) {
 return new Promise(function (resolve) {
-setTimeout(resolve, seconds _ 1000);
+setTimeout(resolve, seconds_ 1000);
 });
 };
 
@@ -1228,7 +1232,7 @@ countriesContainer.style.opacity = 1;
 // ! ------------------------------- !
 
 // *lecture# 019
-// *Consuming Promises with Async Await
+//*Consuming Promises with Async Await
 // ?Better way to consuming promises in ES17, which is called async await.
 
 // We start with creating a special kind of function, which is an async function. we do that with writing async before function keyword before any function.
@@ -1312,7 +1316,7 @@ console.log('First');
 // _-----------------------------------_ //
 // ?-----------------------------------? //
 // *Lecture# 20
-// *Error Handling with try ... catch
+//*Error Handling with try ... catch
 
 // ?How error handling works with async await??
 // With async await we can't use the catch method Instead we use something called a try catch statement. Try catch statement is used regular javascript as well. Try catch is not really attached with async await, but we can use it to catch errors in async functions.
@@ -1383,7 +1387,7 @@ console.log('1: will get location');
 
 // whereAmI()
 // .then(city => console.log(city))
-// .catch(err => console.error(`2: ${err.message} 🔥 `))
+// .catch(err => console.error(`2: ${err.message} 🔥`))
 // .finally(() => console.log('3: finished getting location.'));
 // console.log('3: Finished getting location');
 
@@ -1404,7 +1408,7 @@ _/
 // ?-----------------------------------? //
 
 // *Lecture# 021
-// *code modified in above example.
+//*code modified in above example.
 // \*Returning Values from Async Functions
 
 // !Remember async function will always return a promise.
@@ -1419,7 +1423,7 @@ _/
 // ?-------------------------------? //
 
 // *Lecture# 022
-// *Running promises in Parallel
+//*Running promises in Parallel
 /\*
 const getJSON = function (url, errorMsg = 'Something went wrong') {
 return fetch(url).then(response => {
@@ -1466,11 +1470,11 @@ console.error(err);
 get3Countries('portugal', 'canada', 'tanzania');
 _/
 // !-------------------------------! //
-// _-------------------------------\* //
+//_-------------------------------\* //
 // ?-------------------------------? //
 
 // *Lecture# 023
-// *Other Promise Combinators
+//*Other Promise Combinators
 // \*race, allSettled and any
 
 // _Promise.race: It is just like any other combinator receives an array of promises and it also returns a promise. Now this promise returned by Promise.race is settled as soon as one of the input promise settles.
@@ -1499,7 +1503,7 @@ const timeout = function (sec) {
 return new Promise(function (\_, reject) {
 setTimeout(() => {
 reject(new Error('Request took too long'));
-}, sec _ 1000);
+}, sec_ 1000);
 });
 };
 
@@ -1522,7 +1526,7 @@ Promise.reject('Error'),
 Promise.resolve('Success'),
 ]).then(res => console.log(res));
 */
-// *Promise.any (ES2021)
+//*Promise.any (ES2021)
 // ?Promise.any also takes an array of multiple promises and will return only the first fulfilled promise. It'll simply ignore rejected promises.
 // !Promise.any is very similar to Promise.race with the difference that rejected promises are ignored by Promise.any.
 /_
