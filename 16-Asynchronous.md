@@ -1175,7 +1175,7 @@ const getJSON = function (url, errorMsg = 'Something went wrong') {
 
 ```js
 const get3Countries = async function (c1, c2, c3) {
-  // !in async function always write a code in try catch block.
+  // In async function always write a code in try catch block.
   try {
     const [data1] = await getJSON(`https://restcountries.com/v3.1/name/${c1}`);
     const [data2] = await getJSON(`https://restcountries.com/v3.1/name/${c2}`);
@@ -1211,11 +1211,11 @@ get3Countries('portugal', 'canada', 'tanzania');
 
 **race**, **allSettled** and **any**
 
-// _Promise.race: It is just like any other combinator receives an array of promises and it also returns a promise. Now this promise returned by Promise.race is settled as soon as one of the input promise settles.
-// !remember, Settles means that a value is available, but it doesn't matter if the promise got rejected or fulfilled.
-// ?So basically in promise.race the first settled promise wins the race.
-// !Code
-/_
+**Promise.race:** It is just like any other combinator receives an array of promises and it also returns a promise. Now this promise returned by Promise.race is settled as soon as one of the input promise settles.  
+**REMEMBER:** Settles means that a value is available, but it doesn't matter if the promise got rejected or fulfilled.  
+So basically **In promise.race the first settled promise wins the race.**
+
+```JS
 (async function () {
 const res = await Promise.race([
 getJSON(`https://restcountries.com/v3.1/name/italy`),
@@ -1225,164 +1225,61 @@ getJSON(`https://restcountries.com/v3.1/name/mexico`),
 
 console.log(res[0]);
 })();
-\*/
-// !Remember, In promise.race we get only one result. the result that win the race, a rejected promise can also win the race.
-// !So we say, Promise.race short circuits whenever one of the promise gets settled.
-// ?In real world Promise.race is actually very useful to prevent against never ending promises or also very long running promises.
 
-// ?If any promise take too log to fetch, then we can create a set time out function that automatically rejects after a certain time has passed.
-// !code
-/_
+```
+
+**REMEMBER:** In **promise.race** we get only one result. The result that win the race, a rejected promise can also win the race.  
+So we say, Promise.race short circuits whenever one of the promise gets settled.  
+In real world Promise.race is actually very useful **To prevent against never ending promises or also very long running promises.**
+
+If any promise take too log to fetch, then we can create a set time out function that automatically rejects after a certain time has passed.
+
+```js
 const timeout = function (sec) {
-return new Promise(function (\_, reject) {
-setTimeout(() => {
-reject(new Error('Request took too long'));
-}, sec_ 1000);
-});
+  return new Promise(function (_, reject) {
+    setTimeout(() => {
+      reject(new Error('Request took too long'));
+    }, sec * 1000);
+  });
 };
 
 Promise.race([
-getJSON(`https://restcountries.com/v3.1/name/italy`),
-timeout(0.1),
+  getJSON(`https://restcountries.com/v3.1/name/italy`),
+  timeout(0.1),
 ])
-.then(res => console.log(res[0]))
-.catch(err => console.error(err));
-\*/
-// ? Promise.all and Promise.race are two most important combinators. there are two more combinators...
+  .then((res) => console.log(res[0]))
+  .catch((err) => console.error(err));
+```
 
-// _Promise.allSettled (ES2020)
-// ?It is also takes an array of promises and it will simply return an array of all settled promises, No matter if the promise got rejected or not.
-// !It's similar to Promise.all but Promise.all will short circuit as soon as one promise rejects. It means Promise.all will display error as soon as one of the promise is rejected. but promise.allSettled never short circuits. It will returns all the results of all the promises.
-/_
+**Promise.all and Promise.race are two most important combinators.** there are two more combinators...
+
+**Promise.allSettled** (ES2020)  
+It is also takes an array of promises and it will simply return an array of all settled promises, No matter if the promise got rejected or not.  
+It's similar to Promise.all but **Promise.all** will short circuit as soon as one promise rejects. It means **Promise.all** will display error as soon as one of the promise is rejected. but promise.allSettled never short circuits. It will returns all the results of all the promises.
+
+```js
 Promise.allSettled([
-Promise.resolve('success'),
-Promise.reject('Error'),
-Promise.resolve('Success'),
-]).then(res => console.log(res));
-*/
-//*Promise.any (ES2021)
-// ?Promise.any also takes an array of multiple promises and will return only the first fulfilled promise. It'll simply ignore rejected promises.
-// !Promise.any is very similar to Promise.race with the difference that rejected promises are ignored by Promise.any.
-/_
+  Promise.resolve('success'),
+  Promise.reject('Error'),
+  Promise.resolve('Success'),
+]).then((res) => console.log(res));
+```
+
+**Promise.any** (ES2021)
+Promise.any also takes an array of multiple promises and will return only the first fulfilled promise. It'll simply ignore rejected promises.  
+Promise.any is very similar to Promise.race with the difference that rejected promises are ignored by Promise.any.
+
+```js
 Promise.any([
-Promise.resolve('success'),
-Promise.reject('Error'),
-Promise.resolve('Success'),
-]).then(res => console.log(res));
-_/
-// !Important ones are Promise.all and Promise.race.
+  Promise.resolve('success'),
+  Promise.reject('Error'),
+  Promise.resolve('Success'),
+]).then((res) => console.log(res));
+```
 
-// !-------------------------------! //
-// _-------------------------------_ //
-// ?-------------------------------? //
-// \*CODING CHALLENGE #03
+Important ones are **Promise.all()** and **Promise.race()**
 
-const wait = function (seconds) {
-return new Promise(function (resolve) {
-setTimeout(resolve, seconds \* 1000);
-});
-};
-
-const imgContainer = document.querySelector('.images');
-
-const createImage = function (imgPath) {
-return new Promise(function (resolve, reject) {
-const img = document.createElement('img');
-img.src = imgPath;
-img.addEventListener('load', function () {
-imgContainer.append(img);
-resolve(img);
-});
-
-    img.addEventListener('error', function () {
-      reject(new Error('Image not found'));
-    });
-
-});
-};
-
-let currentImg;
-
-/\*
-createImage('img/img-1.jpg')
-.then(img => {
-currentImg = img;
-console.log('Image 1 loaded');
-return wait(2);
-})
-.then(() => {
-currentImg.style.display = 'none';
-return createImage('img/img-2.jpg');
-})
-.then(img => {
-currentImg = img;
-console.log('Image 2 loaded');
-return wait(2);
-})
-.then(() => {
-currentImg.style.display = 'none';
-return createImage('img/img-3.jpg');
-})
-.then(img => {
-currentImg = img;
-console.log('Image 3 loaded');
-return wait(2);
-})
-.then(() => {
-currentImg.style.display = 'none';
-})
-.catch(err => console.log(err));
-
-\*/
-// !--------------------------!
-// Solution
-// !Part 1:
-
-const loadNPause = async function () {
-try {
-// Load Image 1
-let img = await createImage('img/img-1.jpg');
-console.log('Image 1 loaded');
-await wait(2);
-img.style.display = 'none';
-
-    // Load Image 2
-    img = await createImage('img/img-2.jpg');
-    console.log('Image 2 loaded');
-    await wait(2);
-    img.style.display = 'none';
-
-    // Load Image 2
-    img = await createImage('img/img-3.jpg');
-    console.log('Image 3 loaded');
-    await wait(2);
-    img.style.display = 'none';
-
-} catch (err) {
-console.error(err);
-}
-};
-
-// loadNPause();
-
-// !Part 2
-const loadAll = async function (imgArr) {
-try {
-const imgs = imgArr.map(async img => await createImage(img));
-console.log(imgs);
-
-    const imgsEl = await Promise.all(imgs);
-    console.log(imgsEl);
-
-    imgsEl.forEach(img => img.classList.add('parallel'));
-
-} catch (err) {}
-};
-
-loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg ']);
-
-// !26 / 05 / 2023 (6 : 08 PM)
-// !Q-Hostel (MUST)
+---
 
 ### CHALLENGE #1
 
@@ -1464,3 +1361,118 @@ currentImg.style.display = 'none';
 ```
 
 ---
+
+### CODING_CHALLENGE #03
+
+```js
+
+const wait = function (seconds) {
+return new Promise(function (resolve) {
+setTimeout(resolve, seconds \* 1000);
+});
+};
+
+const imgContainer = document.querySelector('.images');
+
+const createImage = function (imgPath) {
+return new Promise(function (resolve, reject) {
+const img = document.createElement('img');
+img.src = imgPath;
+img.addEventListener('load', function () {
+imgContainer.append(img);
+resolve(img);
+});
+
+    img.addEventListener('error', function () {
+      reject(new Error('Image not found'));
+    });
+
+});
+};
+
+let currentImg;
+
+```
+
+```js
+createImage('img/img-1.jpg')
+  .then((img) => {
+    currentImg = img;
+    console.log('Image 1 loaded');
+    return wait(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+    return createImage('img/img-2.jpg');
+  })
+  .then((img) => {
+    currentImg = img;
+    console.log('Image 2 loaded');
+    return wait(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+    return createImage('img/img-3.jpg');
+  })
+  .then((img) => {
+    currentImg = img;
+    console.log('Image 3 loaded');
+    return wait(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+  })
+  .catch((err) => console.log(err));
+```
+
+---
+
+Solution_Part 1
+
+```js
+const loadNPause = async function () {
+  try {
+    // Load Image 1
+    let img = await createImage('img/img-1.jpg');
+    console.log('Image 1 loaded');
+    await wait(2);
+    img.style.display = 'none';
+
+    // Load Image 2
+    img = await createImage('img/img-2.jpg');
+    console.log('Image 2 loaded');
+    await wait(2);
+    img.style.display = 'none';
+
+    // Load Image 2
+    img = await createImage('img/img-3.jpg');
+    console.log('Image 3 loaded');
+    await wait(2);
+    img.style.display = 'none';
+  } catch (err) {
+    console.error(err);
+  }
+};
+loadNPause();
+```
+
+Part: 2
+
+```js
+const loadAll = async function (imgArr) {
+  try {
+    const image = imgArr.map(async (img) => await createImage(img));
+    console.log(image);
+
+    const imageEl = await Promise.all(image);
+    console.log(imageEl);
+
+    imageEl.forEach((img) => img.classList.add('parallel'));
+  } catch (err) {}
+};
+
+loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg ']);
+```
+
+26 / 05 / 2023 (6 : 08 PM)
+Q-Hostel (MUST)
